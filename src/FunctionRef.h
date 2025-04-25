@@ -35,13 +35,12 @@ long as the referred object is still alive. */
 template <class Ret, class... Args>
 class cFunctionRef<Ret(Args...)>
 {
-public:
+	public:
 	/** Construct from a function object. */
 	template <class FunctionObject,
-		typename std::enable_if<  // Don't disable the default copy constructor
-			!std::is_same<typename std::decay<FunctionObject>::type, cFunctionRef>::value,
-		int>::type = 0
-	>
+			  typename std::enable_if<  // Don't disable the default copy constructor
+				  !std::is_same<typename std::decay<FunctionObject>::type, cFunctionRef>::value,
+				  int>::type = 0>
 	cFunctionRef(FunctionObject && a_FunctionObject)
 	{
 		// Store an opaque reference to the object.
@@ -52,16 +51,15 @@ public:
 	}
 
 	/** Call the referenced function object */
-	Ret operator () (Args... a_Args)
+	Ret operator() (Args... a_Args)
 	{
 		return m_CallFunction(m_CallableData, std::forward<Args>(a_Args)...);
 	}
 
-private:
-
+	private:
 	/** Function that performs the call. */
 	template <class ObjectType>
-	static Ret ObjectFunctionCaller(void * a_Callable, Args...  a_Args)
+	static Ret ObjectFunctionCaller(void * a_Callable, Args... a_Args)
 	{
 		// Convert opaque reference to the concrete type.
 		using ObjectPtr = typename std::add_pointer<ObjectType>::type;
@@ -71,7 +69,7 @@ private:
 		return Object(std::forward<Args>(a_Args)...);
 	}
 
-	using cCallFunction = Ret(*)(void *, Args...);
+	using cCallFunction = Ret (*)(void *, Args...);
 
 	/** Type erased reference to a callable. */
 	void * m_CallableData;
@@ -79,5 +77,3 @@ private:
 	/** Function that knows how to call the type erased reference. */
 	cCallFunction m_CallFunction;
 };
-
-

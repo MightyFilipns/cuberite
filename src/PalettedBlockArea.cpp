@@ -117,7 +117,7 @@ const std::pair<AString, CustomBlockState> & PalettedBlockArea::paletteEntry(UIn
 bool PalettedBlockArea::isPositionValid(Vector3i aPos) const
 {
 	return (
-		(aPos.x >= 0) && (aPos.y >= 0) && (aPos.z >= 0) &&              // Non-negative coords
+		(aPos.x >= 0) && (aPos.y >= 0) && (aPos.z >= 0) &&  // Non-negative coords
 		(aPos.x < mSize.x) && (aPos.y < mSize.y) && (aPos.z < mSize.z)  // Fit into size
 	);
 }

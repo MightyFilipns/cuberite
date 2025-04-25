@@ -12,7 +12,7 @@
 
 
 
-cItemGrid::cItemGrid(int a_Width, int a_Height):
+cItemGrid::cItemGrid(int a_Width, int a_Height) :
 	m_Width(a_Width),
 	m_Height(a_Height),
 	m_Slots(a_Width * a_Height),
@@ -49,9 +49,7 @@ int cItemGrid::GetSlotNum(int a_X, int a_Y) const
 {
 	if (!IsValidSlotCoords(a_X, a_Y))
 	{
-		LOGWARNING("%s: coords out of range: (%d, %d) in grid of size (%d, %d)",
-			__FUNCTION__, a_X, a_Y, m_Width, m_Height
-		);
+		LOGWARNING("%s: coords out of range: (%d, %d) in grid of size (%d, %d)", __FUNCTION__, a_X, a_Y, m_Width, m_Height);
 		return -1;
 	}
 	return a_X + m_Width * a_Y;
@@ -65,9 +63,7 @@ void cItemGrid::GetSlotCoords(int a_SlotNum, int & a_X, int & a_Y) const
 {
 	if (!IsValidSlotNum(a_SlotNum))
 	{
-		LOGWARNING("%s: SlotNum out of range: %d in grid of range %d",
-			__FUNCTION__, a_SlotNum, m_Slots.size()
-		);
+		LOGWARNING("%s: SlotNum out of range: %d in grid of range %d", __FUNCTION__, a_SlotNum, m_Slots.size());
 		a_X = -1;
 		a_Y = -1;
 		return;
@@ -106,9 +102,7 @@ const cItem & cItemGrid::GetSlot(int a_SlotNum) const
 {
 	if (!IsValidSlotNum(a_SlotNum))
 	{
-		LOGWARNING("%s: Invalid slot number, %d out of %d slots",
-			__FUNCTION__, a_SlotNum, m_Slots.size()
-		);
+		LOGWARNING("%s: Invalid slot number, %d out of %d slots", __FUNCTION__, a_SlotNum, m_Slots.size());
 		a_SlotNum = 0;
 	}
 	return m_Slots.GetAt(a_SlotNum);
@@ -140,9 +134,7 @@ void cItemGrid::SetSlot(int a_SlotNum, const cItem & a_Item)
 {
 	if (!IsValidSlotNum(a_SlotNum))
 	{
-		LOGWARNING("%s: Invalid slot number %d out of %d slots",
-			__FUNCTION__, a_SlotNum, m_Slots.size()
-		);
+		LOGWARNING("%s: Invalid slot number %d out of %d slots", __FUNCTION__, a_SlotNum, m_Slots.size());
 		return;
 	}
 
@@ -179,9 +171,7 @@ void cItemGrid::EmptySlot(int a_SlotNum)
 {
 	if (!IsValidSlotNum(a_SlotNum))
 	{
-		LOGWARNING("%s: Invalid slot number %d out of %d slots",
-			__FUNCTION__, a_SlotNum, m_Slots.size()
-		);
+		LOGWARNING("%s: Invalid slot number %d out of %d slots", __FUNCTION__, a_SlotNum, m_Slots.size());
 		return;
 	}
 
@@ -204,9 +194,7 @@ bool cItemGrid::IsSlotEmpty(int a_SlotNum) const
 {
 	if (!IsValidSlotNum(a_SlotNum))
 	{
-		LOGWARNING("%s: Invalid slot number %d out of %d slots",
-			__FUNCTION__, a_SlotNum, m_Slots.size()
-		);
+		LOGWARNING("%s: Invalid slot number %d out of %d slots", __FUNCTION__, a_SlotNum, m_Slots.size());
 		return true;
 	}
 	return m_Slots.GetAt(a_SlotNum).IsEmpty();
@@ -284,9 +272,7 @@ char cItemGrid::AddItemToSlot(const cItem & a_ItemStack, int a_Slot, int a_Num, 
 {
 	if (!IsValidSlotNum(a_Slot))
 	{
-		LOGWARNING("%s: Invalid slot number %d out of %d slots",
-			__FUNCTION__, a_Slot, m_Slots.size()
-		);
+		LOGWARNING("%s: Invalid slot number %d out of %d slots", __FUNCTION__, a_Slot, m_Slots.size());
 		return 0;
 	}
 
@@ -317,9 +303,7 @@ char cItemGrid::AddItem(cItem & a_ItemStack, bool a_AllowNewStacks, int a_Priori
 
 	if ((a_PrioritySlot != -1) && !IsValidSlotNum(a_PrioritySlot))
 	{
-		LOGWARNING("%s: Invalid slot number %d out of %d slots",
-			__FUNCTION__, a_PrioritySlot, m_Slots.size()
-		);
+		LOGWARNING("%s: Invalid slot number %d out of %d slots", __FUNCTION__, a_PrioritySlot, m_Slots.size());
 		a_PrioritySlot = -1;
 	}
 
@@ -331,9 +315,8 @@ char cItemGrid::AddItem(cItem & a_ItemStack, bool a_AllowNewStacks, int a_Priori
 	// Try prioritySlot first:
 	if (
 		(a_PrioritySlot != -1) &&
-		(
-			m_Slots[a_PrioritySlot].IsEmpty() ||
-			m_Slots[a_PrioritySlot].IsEqual(a_ItemStack)
+		(m_Slots[a_PrioritySlot].IsEmpty() ||
+		 m_Slots[a_PrioritySlot].IsEqual(a_ItemStack)
 		)
 	)
 	{
@@ -450,7 +433,7 @@ cItem * cItemGrid::FindItem(const cItem & a_RecipeItem)
 	for (int i = 0; i < m_Slots.size(); i++)
 	{
 		// Items are equal if none is greater the other
-		auto compare = cItem::sItemCompare{};
+		auto compare = cItem::sItemCompare {};
 		if (!compare(a_RecipeItem, m_Slots[i]) &&
 			!compare(m_Slots[i], a_RecipeItem))
 		{
@@ -469,9 +452,7 @@ char cItemGrid::ChangeSlotCount(int a_SlotNum, char a_AddToCount)
 {
 	if (!IsValidSlotNum(a_SlotNum))
 	{
-		LOGWARNING("%s: Invalid slot number %d out of %d slots, ignoring the call, returning -1",
-			__FUNCTION__, a_SlotNum, m_Slots.size()
-		);
+		LOGWARNING("%s: Invalid slot number %d out of %d slots, ignoring the call, returning -1", __FUNCTION__, a_SlotNum, m_Slots.size());
 		return -1;
 	}
 
@@ -517,9 +498,7 @@ cItem cItemGrid::RemoveOneItem(int a_SlotNum)
 {
 	if (!IsValidSlotNum(a_SlotNum))
 	{
-		LOGWARNING("%s: Invalid slot number %d out of %d slots, ignoring the call, returning empty item",
-			__FUNCTION__, a_SlotNum, m_Slots.size()
-		);
+		LOGWARNING("%s: Invalid slot number %d out of %d slots, ignoring the call, returning empty item", __FUNCTION__, a_SlotNum, m_Slots.size());
 		return cItem();
 	}
 
@@ -651,9 +630,7 @@ int cItemGrid::GetNextEmptySlot(int a_StartFrom) const
 {
 	if ((a_StartFrom != -1) && !IsValidSlotNum(a_StartFrom))
 	{
-		LOGWARNING("%s: Invalid slot number %d out of %d slots",
-			__FUNCTION__, a_StartFrom, m_Slots.size()
-		);
+		LOGWARNING("%s: Invalid slot number %d out of %d slots", __FUNCTION__, a_StartFrom, m_Slots.size());
 		a_StartFrom = -1;
 	}
 
@@ -675,9 +652,7 @@ int cItemGrid::GetNextUsedSlot(int a_StartFrom) const
 {
 	if ((a_StartFrom != -1) && !IsValidSlotNum(a_StartFrom))
 	{
-		LOGWARNING("%s: Invalid slot number %d out of %d slots",
-			__FUNCTION__, a_StartFrom, m_Slots.size()
-		);
+		LOGWARNING("%s: Invalid slot number %d out of %d slots", __FUNCTION__, a_StartFrom, m_Slots.size());
 		a_StartFrom = -1;
 	}
 

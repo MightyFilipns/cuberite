@@ -26,21 +26,22 @@ std::string_view Compression::Result::GetStringView() const
 ContiguousByteBufferView Compression::Result::GetView() const
 {
 	// Get a generic std::byte * to what the variant is currently storing:
-	return
-	{
+	return {
 		std::visit([](const auto & Buffer) -> const std::byte *
-		{
-			using Variant = std::decay_t<decltype(Buffer)>;
+	{
+		using Variant = std::decay_t<decltype(Buffer)>;
 
-			if constexpr (std::is_same_v<Variant, Compression::Result::Static>)
-			{
-				return Buffer.data();
-			}
-			else
-			{
-				return Buffer.get();
-			}
-		}, Storage), Size
+		if constexpr (std::is_same_v<Variant, Compression::Result::Static>)
+		{
+			return Buffer.data();
+		}
+		else
+		{
+			return Buffer.get();
+		}
+	},
+				   Storage),
+		Size
 	};
 }
 
@@ -194,9 +195,9 @@ Compression::Result Compression::Extractor::Extract(const ContiguousByteBufferVi
 
 		switch (Algorithm(m_Handle, Input.data(), Input.size(), Buffer.data(), Buffer.size(), &BytesWrittenOut))
 		{
-			case LIBDEFLATE_SUCCESS: return { Buffer, BytesWrittenOut };
+			case LIBDEFLATE_SUCCESS:            return { Buffer, BytesWrittenOut };
 			case LIBDEFLATE_INSUFFICIENT_SPACE: break;
-			default: throw std::runtime_error("Data extraction failed.");
+			default:                            throw std::runtime_error("Data extraction failed.");
 		}
 	}
 

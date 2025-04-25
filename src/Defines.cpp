@@ -162,7 +162,7 @@ eBlockFace RotateBlockFaceCW(eBlockFace a_BlockFace)
 
 
 
-eBlockFace ReverseBlockFace(eBlockFace  a_BlockFace)
+eBlockFace ReverseBlockFace(eBlockFace a_BlockFace)
 {
 	switch (a_BlockFace)
 	{
@@ -186,12 +186,12 @@ AString BlockFaceToString(eBlockFace a_BlockFace)
 {
 	switch (a_BlockFace)
 	{
-		case BLOCK_FACE_XM: return "BLOCK_FACE_XM";
-		case BLOCK_FACE_XP: return "BLOCK_FACE_XP";
-		case BLOCK_FACE_YM: return "BLOCK_FACE_YM";
-		case BLOCK_FACE_YP: return "BLOCK_FACE_YP";
-		case BLOCK_FACE_ZM: return "BLOCK_FACE_ZM";
-		case BLOCK_FACE_ZP: return "BLOCK_FACE_ZP";
+		case BLOCK_FACE_XM:   return "BLOCK_FACE_XM";
+		case BLOCK_FACE_XP:   return "BLOCK_FACE_XP";
+		case BLOCK_FACE_YM:   return "BLOCK_FACE_YM";
+		case BLOCK_FACE_YP:   return "BLOCK_FACE_YP";
+		case BLOCK_FACE_ZM:   return "BLOCK_FACE_ZM";
+		case BLOCK_FACE_ZP:   return "BLOCK_FACE_ZP";
 		case BLOCK_FACE_NONE: return "BLOCK_FACE_NONE";
 	}
 	UNREACHABLE("Unsupported block face");
@@ -223,7 +223,7 @@ eBlockFace RotationToBlockFace(double a_Rotation, bool a_Inverse)
 		{
 			return eBlockFace::BLOCK_FACE_EAST;
 		}
-		if ((45 > a_Rotation)  && (a_Rotation >= -45))  // 0
+		if ((45 > a_Rotation) && (a_Rotation >= -45))  // 0
 		{
 			return eBlockFace::BLOCK_FACE_SOUTH;
 		}
@@ -234,19 +234,19 @@ eBlockFace RotationToBlockFace(double a_Rotation, bool a_Inverse)
 	}
 	else
 	{
-		if ((a_Rotation > 135) || (a_Rotation < -135))    // -180/180
+		if ((a_Rotation > 135) || (a_Rotation < -135))  // -180/180
 		{
 			return eBlockFace::BLOCK_FACE_SOUTH;
 		}
-		if ((-45 > a_Rotation) && (a_Rotation >= -135))   // -90
+		if ((-45 > a_Rotation) && (a_Rotation >= -135))  // -90
 		{
 			return eBlockFace::BLOCK_FACE_WEST;
 		}
-		if ((45 > a_Rotation)  && (a_Rotation >= -45))    // 0
+		if ((45 > a_Rotation) && (a_Rotation >= -45))  // 0
 		{
 			return eBlockFace::BLOCK_FACE_NORTH;
 		}
-		if ((135 > a_Rotation) && (a_Rotation >= 45))      // 90
+		if ((135 > a_Rotation) && (a_Rotation >= 45))  // 90
 		{
 			return eBlockFace::BLOCK_FACE_EAST;
 		}
@@ -261,7 +261,7 @@ eBlockFace RotationToBlockFace(double a_Rotation, bool a_Inverse)
 unsigned char RotationToFineFace(double a_Rotation, bool a_Invert)
 {
 	unsigned char ret = 0;
-	if ((a_Rotation >= - 11.25f) && (a_Rotation < 11.25f))
+	if ((a_Rotation >= -11.25f) && (a_Rotation < 11.25f))
 	{
 		// South
 		ret = 8;
@@ -359,8 +359,8 @@ eBlockFace DisplacementYawToFacing(Vector3d a_PlacePosition, Vector3d a_EyePosit
 {
 	if (
 		const auto Displacement = a_EyePosition - a_PlacePosition.addedXZ(0.5, 0.5);
-			(std::abs(Displacement.x) < 2) && (std::abs(Displacement.z) < 2)
-			)
+		(std::abs(Displacement.x) < 2) && (std::abs(Displacement.z) < 2)
+	)
 	{
 		if (Displacement.y > 2)
 		{
@@ -395,16 +395,15 @@ eDimension StringToDimension(const AString & a_DimensionString)
 	{
 		eDimension m_Dimension;
 		const char * m_String;
-	} DimensionMap [] =
-	{
-		{ dimOverworld, "Overworld"},
-		{ dimOverworld, "Normal"},
-		{ dimOverworld, "World"},
-		{ dimNether,    "Nether"},
-		{ dimNether,    "Hell"},  // Alternate name for Nether
-		{ dimEnd,       "End"},
-		{ dimEnd,       "Sky"},  // Old name for End
-	} ;
+	} DimensionMap[] = {
+		{ dimOverworld, "Overworld" },
+		{ dimOverworld, "Normal" },
+		{ dimOverworld, "World" },
+		{ dimNether, "Nether" },
+		{ dimNether, "Hell" },  // Alternate name for Nether
+		{ dimEnd, "End" },
+		{ dimEnd, "Sky" },  // Old name for End
+	};
 	for (size_t i = 0; i < ARRAYCOUNT(DimensionMap); i++)
 	{
 		if (NoCaseCompare(DimensionMap[i].m_String, a_DimensionString) == 0)
@@ -429,8 +428,7 @@ AString DimensionToString(eDimension a_Dimension)
 	{
 		eDimension m_Dimension;
 		const char * m_String;
-	} DimensionMap[] =
-	{
+	} DimensionMap[] = {
 		{ dimOverworld, "Overworld" },
 		{ dimNether, "Nether" },
 		{ dimEnd, "End" },
@@ -499,55 +497,54 @@ eDamageType StringToDamageType(const AString & a_DamageTypeString)
 	// Decode using a built-in map:
 	static struct
 	{
-		eDamageType  m_DamageType;
+		eDamageType m_DamageType;
 		const char * m_String;
-	} DamageTypeMap [] =
-	{
+	} DamageTypeMap[] = {
 		// Cannonical names:
-		{ dtAttack,          "dtAttack"},
-		{ dtRangedAttack,    "dtRangedAttack"},
-		{ dtLightning,       "dtLightning"},
-		{ dtFalling,         "dtFalling"},
-		{ dtDrowning,        "dtDrowning"},
-		{ dtSuffocating,     "dtSuffocation"},
-		{ dtStarving,        "dtStarving"},
-		{ dtCactusContact,   "dtCactusContact"},
-		{ dtMagmaContact,    "dtMagmaContact"},
-		{ dtLavaContact,     "dtLavaContact"},
-		{ dtPoisoning,       "dtPoisoning"},
-		{ dtWithering,       "dtWithering"},
-		{ dtOnFire,          "dtOnFire"},
-		{ dtFireContact,     "dtFireContact"},
-		{ dtInVoid,          "dtInVoid"},
-		{ dtPotionOfHarming, "dtPotionOfHarming"},
-		{ dtAdmin,           "dtAdmin"},
-		{ dtExplosion,       "dtExplosion"},
-		{ dtEnvironment,     "dtEnvironment"},
+		{ dtAttack, "dtAttack" },
+		{ dtRangedAttack, "dtRangedAttack" },
+		{ dtLightning, "dtLightning" },
+		{ dtFalling, "dtFalling" },
+		{ dtDrowning, "dtDrowning" },
+		{ dtSuffocating, "dtSuffocation" },
+		{ dtStarving, "dtStarving" },
+		{ dtCactusContact, "dtCactusContact" },
+		{ dtMagmaContact, "dtMagmaContact" },
+		{ dtLavaContact, "dtLavaContact" },
+		{ dtPoisoning, "dtPoisoning" },
+		{ dtWithering, "dtWithering" },
+		{ dtOnFire, "dtOnFire" },
+		{ dtFireContact, "dtFireContact" },
+		{ dtInVoid, "dtInVoid" },
+		{ dtPotionOfHarming, "dtPotionOfHarming" },
+		{ dtAdmin, "dtAdmin" },
+		{ dtExplosion, "dtExplosion" },
+		{ dtEnvironment, "dtEnvironment" },
 
 		// Common synonyms:
-		{ dtAttack,        "dtPawnAttack"},
-		{ dtAttack,        "dtEntityAttack"},
-		{ dtAttack,        "dtMob"},
-		{ dtAttack,        "dtMobAttack"},
-		{ dtRangedAttack,  "dtArrowAttack"},
-		{ dtRangedAttack,  "dtArrow"},
-		{ dtRangedAttack,  "dtProjectile"},
-		{ dtFalling,       "dtFall"},
-		{ dtDrowning,      "dtDrown"},
-		{ dtSuffocating,   "dtSuffocation"},
-		{ dtStarving,      "dtStarvation"},
-		{ dtStarving,      "dtHunger"},
-		{ dtCactusContact, "dtCactus"},
-		{ dtCactusContact, "dtCactuses"},
-		{ dtCactusContact, "dtCacti"},
-		{ dtMagmaContact,  "dtMagma"},
-		{ dtLavaContact,   "dtLava"},
-		{ dtPoisoning,     "dtPoison"},
-		{ dtWithering,     "dtWither"},
-		{ dtOnFire,        "dtBurning"},
-		{ dtFireContact,   "dtInFire"},
-		{ dtAdmin,         "dtPlugin"},
-	} ;
+		{ dtAttack, "dtPawnAttack" },
+		{ dtAttack, "dtEntityAttack" },
+		{ dtAttack, "dtMob" },
+		{ dtAttack, "dtMobAttack" },
+		{ dtRangedAttack, "dtArrowAttack" },
+		{ dtRangedAttack, "dtArrow" },
+		{ dtRangedAttack, "dtProjectile" },
+		{ dtFalling, "dtFall" },
+		{ dtDrowning, "dtDrown" },
+		{ dtSuffocating, "dtSuffocation" },
+		{ dtStarving, "dtStarvation" },
+		{ dtStarving, "dtHunger" },
+		{ dtCactusContact, "dtCactus" },
+		{ dtCactusContact, "dtCactuses" },
+		{ dtCactusContact, "dtCacti" },
+		{ dtMagmaContact, "dtMagma" },
+		{ dtLavaContact, "dtLava" },
+		{ dtPoisoning, "dtPoison" },
+		{ dtWithering, "dtWither" },
+		{ dtOnFire, "dtBurning" },
+		{ dtFireContact, "dtInFire" },
+		{ dtAdmin, "dtPlugin" },
+	};
 	for (size_t i = 0; i < ARRAYCOUNT(DamageTypeMap); i++)
 	{
 		if (NoCaseCompare(DamageTypeMap[i].m_String, a_DamageTypeString) == 0)
@@ -702,11 +699,7 @@ bool ItemCategory::IsShovel(Item a_ItemID)
 
 bool ItemCategory::IsTool(Item a_ItemID)
 {
-	return IsPickaxe( a_ItemID)
-		|| IsAxe    ( a_ItemID)
-		|| IsSword  ( a_ItemID)
-		|| IsHoe    ( a_ItemID)
-		|| IsShovel ( a_ItemID);
+	return IsPickaxe(a_ItemID) || IsAxe(a_ItemID) || IsSword(a_ItemID) || IsHoe(a_ItemID) || IsShovel(a_ItemID);
 }
 
 

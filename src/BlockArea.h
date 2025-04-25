@@ -41,18 +41,17 @@ class cBlockArea
 	DISALLOW_COPY_AND_ASSIGN(cBlockArea);
 	// tolua_begin
 
-public:
-
+	public:
 	/** What data is to be queried (bit-mask) */
 	enum
 	{
-		baBlocks        =  1,
+		baBlocks = 1,
 		// baMetas         =  2,  // Not supported anymore
-		baLight         =  4,
-		baSkyLight      =  8,
+		baLight = 4,
+		baSkyLight = 8,
 		// baEntities   = 16,  // Not supported yet
 		baBlockEntities = 32,
-	} ;
+	};
 
 	/** The per-block strategy to use when merging another block area into this object.
 	See the Merge function for the description of these */
@@ -66,12 +65,12 @@ public:
 		msDifference,
 		msSimpleCompare,
 		msMask,
-	} ;
+	};
 
 	// tolua_end
 
-	using LIGHTARRAY  = std::unique_ptr<LIGHTTYPE[]>;
-	using BLOCKARRAY  = std::unique_ptr<BlockState[]>;
+	using LIGHTARRAY = std::unique_ptr<LIGHTTYPE[]>;
+	using BLOCKARRAY = std::unique_ptr<BlockState[]>;
 	using cBlockEntitiesPtr = std::unique_ptr<cBlockEntities>;
 
 	// tolua_begin
@@ -248,27 +247,15 @@ public:
 	// tolua_end
 
 	/** Fills a cuboid inside the block area with the specified data */
-	void FillRelCuboid(int a_MinRelX, int a_MaxRelX, int a_MinRelY, int a_MaxRelY, int a_MinRelZ, int a_MaxRelZ,
-		int a_DataTypes, BlockState a_Block,
-		LIGHTTYPE a_BlockLight = 0, LIGHTTYPE a_BlockSkyLight = 0x0f
-	);
+	void FillRelCuboid(int a_MinRelX, int a_MaxRelX, int a_MinRelY, int a_MaxRelY, int a_MinRelZ, int a_MaxRelZ, int a_DataTypes, BlockState a_Block, LIGHTTYPE a_BlockLight = 0, LIGHTTYPE a_BlockSkyLight = 0x0f);
 
 	/** Fills a cuboid inside the block area with the specified data. a_Cuboid must be sorted. */
-	void FillRelCuboid(const cCuboid & a_RelCuboid,
-		int a_DataTypes, BlockState a_Block,
-		LIGHTTYPE a_BlockLight = 0, LIGHTTYPE a_BlockSkyLight = 0x0f
-	);
+	void FillRelCuboid(const cCuboid & a_RelCuboid, int a_DataTypes, BlockState a_Block, LIGHTTYPE a_BlockLight = 0, LIGHTTYPE a_BlockSkyLight = 0x0f);
 
 	/** Draws a line between two points with the specified data. The line endpoints needn't be valid coords inside the area. */
-	void RelLine(int a_RelX1, int a_RelY1, int a_RelZ1, int a_RelX2, int a_RelY2, int a_RelZ2,
-		int a_DataTypes, BlockState a_Block,
-		LIGHTTYPE a_BlockLight = 0, LIGHTTYPE a_BlockSkyLight = 0x0f
-	);
+	void RelLine(int a_RelX1, int a_RelY1, int a_RelZ1, int a_RelX2, int a_RelY2, int a_RelZ2, int a_DataTypes, BlockState a_Block, LIGHTTYPE a_BlockLight = 0, LIGHTTYPE a_BlockSkyLight = 0x0f);
 
-	void RelLine(const Vector3i & a_Rel1, const Vector3i & a_Rel2,
-		int a_DataTypes, BlockState a_Block,
-		LIGHTTYPE a_BlockLight = 0, LIGHTTYPE a_BlockSkyLight = 0x0f
-	);
+	void RelLine(const Vector3i & a_Rel1, const Vector3i & a_Rel2, int a_DataTypes, BlockState a_Block, LIGHTTYPE a_BlockLight = 0, LIGHTTYPE a_BlockSkyLight = 0x0f);
 
 	// tolua_begin
 
@@ -290,47 +277,47 @@ public:
 	// tolua_end
 
 	// Setters:
-	void SetRelBlock        (Vector3i a_RelPos, BlockState a_Block);
-	void SetBlock           (Vector3i a_Pos,    BlockState a_Block);
-	void SetRelBlockLight   (Vector3i a_RelPos, LIGHTTYPE a_BlockLight);
-	void SetBlockLight      (Vector3i a_Pos,    LIGHTTYPE a_BlockLight);
+	void SetRelBlock(Vector3i a_RelPos, BlockState a_Block);
+	void SetBlock(Vector3i a_Pos, BlockState a_Block);
+	void SetRelBlockLight(Vector3i a_RelPos, LIGHTTYPE a_BlockLight);
+	void SetBlockLight(Vector3i a_Pos, LIGHTTYPE a_BlockLight);
 	void SetRelBlockSkyLight(Vector3i a_RelPos, LIGHTTYPE a_SkyLight);
-	void SetBlockSkyLight   (Vector3i a_Pos,    LIGHTTYPE a_SkyLight);
+	void SetBlockSkyLight(Vector3i a_Pos, LIGHTTYPE a_SkyLight);
 
 	// Basic Setters:
-	void SetRelLightValue(Vector3i a_RelPos,   LIGHTTYPE a_Value, LIGHTTYPE * a_Array);
-	void SetLightValue   (Vector3i a_Pos, LIGHTTYPE a_Value, LIGHTTYPE * a_Array);
+	void SetRelLightValue(Vector3i a_RelPos, LIGHTTYPE a_Value, LIGHTTYPE * a_Array);
+	void SetLightValue(Vector3i a_Pos, LIGHTTYPE a_Value, LIGHTTYPE * a_Array);
 
 	// tolua_begin
 
-	void SetWEOffset (int a_OffsetX, int a_OffsetY, int a_OffsetZ);
-	void SetWEOffset (const Vector3i & a_Offset);
-	const Vector3i & GetWEOffset  (void) const {return m_WEOffset;}
+	void SetWEOffset(int a_OffsetX, int a_OffsetY, int a_OffsetZ);
+	void SetWEOffset(const Vector3i & a_Offset);
+	const Vector3i & GetWEOffset(void) const { return m_WEOffset; }
 
 	// tolua_end
 
 	// Getters:
-	BlockState GetRelBlock        (Vector3i a_RelPos) const;
-	BlockState GetBlock           (Vector3i a_Pos) const;
-	LIGHTTYPE  GetRelBlockLight   (Vector3i a_RelPos) const;
-	LIGHTTYPE  GetBlockLight      (Vector3i a_Pos) const;
-	LIGHTTYPE  GetRelBlockSkyLight(Vector3i a_RelPos) const;
-	LIGHTTYPE  GetBlockSkyLight   (Vector3i a_Pos) const;
+	BlockState GetRelBlock(Vector3i a_RelPos) const;
+	BlockState GetBlock(Vector3i a_Pos) const;
+	LIGHTTYPE GetRelBlockLight(Vector3i a_RelPos) const;
+	LIGHTTYPE GetBlockLight(Vector3i a_Pos) const;
+	LIGHTTYPE GetRelBlockSkyLight(Vector3i a_RelPos) const;
+	LIGHTTYPE GetBlockSkyLight(Vector3i a_Pos) const;
 
 	/** TODO: 12xx12 remove - deprecated */
-	unsigned char GetBlockType(Vector3i a_Pos) const    { return PaletteUpgrade::ToBlock(GetBlock(a_Pos)).first; }
+	unsigned char GetBlockType(Vector3i a_Pos) const { return PaletteUpgrade::ToBlock(GetBlock(a_Pos)).first; }
 	unsigned char GetRelBlockType(Vector3i a_Pos) const { return PaletteUpgrade::ToBlock(GetRelBlock(a_Pos)).first; }
-	unsigned char GetBlockMeta(Vector3i a_Pos) const    { return PaletteUpgrade::ToBlock(GetBlock(a_Pos)).second; }
+	unsigned char GetBlockMeta(Vector3i a_Pos) const { return PaletteUpgrade::ToBlock(GetBlock(a_Pos)).second; }
 	unsigned char GetRelBlockMeta(Vector3i a_Pos) const { return PaletteUpgrade::ToBlock(GetRelBlock(a_Pos)).second; }
-	void SetBlockType(Vector3i a_Pos, unsigned char a_Block)     { SetBlock(a_Pos, PaletteUpgrade::FromBlock(a_Block, GetBlockMeta(a_Pos))); }
-	void SetRelBlockType(Vector3i a_Pos, unsigned char a_Block)  { SetRelBlock(a_Pos, PaletteUpgrade::FromBlock(a_Block, GetRelBlockMeta(a_Pos))); }
-	void SetBlockMeta(Vector3i a_Pos, unsigned char a_Meta)      { SetBlock(a_Pos, PaletteUpgrade::FromBlock(GetBlockType(a_Pos), a_Meta)); }
-	void SetRelBlockMeta(Vector3i a_Pos, unsigned char a_Meta)   { SetRelBlock(a_Pos, PaletteUpgrade::FromBlock(GetRelBlockType(a_Pos), a_Meta)); }
+	void SetBlockType(Vector3i a_Pos, unsigned char a_Block) { SetBlock(a_Pos, PaletteUpgrade::FromBlock(a_Block, GetBlockMeta(a_Pos))); }
+	void SetRelBlockType(Vector3i a_Pos, unsigned char a_Block) { SetRelBlock(a_Pos, PaletteUpgrade::FromBlock(a_Block, GetRelBlockMeta(a_Pos))); }
+	void SetBlockMeta(Vector3i a_Pos, unsigned char a_Meta) { SetBlock(a_Pos, PaletteUpgrade::FromBlock(GetBlockType(a_Pos), a_Meta)); }
+	void SetRelBlockMeta(Vector3i a_Pos, unsigned char a_Meta) { SetRelBlock(a_Pos, PaletteUpgrade::FromBlock(GetRelBlockType(a_Pos), a_Meta)); }
 
 
 	// Basic Getters:
-	LIGHTTYPE GetRelLightValue(Vector3i a_RelPos,   LIGHTTYPE * a_Array) const;
-	LIGHTTYPE GetLightValue   (Vector3i a_Pos, LIGHTTYPE * a_Array) const;
+	LIGHTTYPE GetRelLightValue(Vector3i a_RelPos, LIGHTTYPE * a_Array) const;
+	LIGHTTYPE GetLightValue(Vector3i a_Pos, LIGHTTYPE * a_Array) const;
 
 	const Vector3i & GetSize(void) const { return m_Size; }
 	const Vector3i & GetOrigin(void) const { return m_Origin; }
@@ -353,10 +340,10 @@ public:
 	/** Returns the datatypes that are stored in the object (bitmask of baXXX values) */
 	int GetDataTypes(void) const;
 
-	bool HasBlocks        (void) const { return (m_Blocks        != nullptr); }
-	bool HasBlockLights   (void) const { return (m_BlockLight    != nullptr); }
+	bool HasBlocks(void) const { return (m_Blocks != nullptr); }
+	bool HasBlockLights(void) const { return (m_BlockLight != nullptr); }
 	bool HasBlockSkyLights(void) const { return (m_BlockSkyLight != nullptr); }
-	bool HasBlockEntities (void) const { return m_BlockEntities.operator bool(); }
+	bool HasBlockEntities(void) const { return m_BlockEntities.operator bool (); }
 
 	/** Returns the count of blocks that are not air.
 	Returns 0 if blocktypes not available. Block metas are ignored (if present, air with any meta is still considered air). */
@@ -374,12 +361,12 @@ public:
 
 	// Clients can use these for faster access to all blocktypes. Be careful though!
 	/** Returns the internal pointer to the block types */
-	const BlockState * GetBlocks (void) const { return m_Blocks.get(); }
-	BlockState *       GetBlocks (void)       { return m_Blocks.get(); }
-	LIGHTTYPE  * GetBlockLight         (void) const { return m_BlockLight.get();    }  // NOTE: one byte per block!
-	LIGHTTYPE  * GetBlockSkyLight      (void) const { return m_BlockSkyLight.get(); }  // NOTE: one byte per block!
+	const BlockState * GetBlocks(void) const { return m_Blocks.get(); }
+	BlockState * GetBlocks(void) { return m_Blocks.get(); }
+	LIGHTTYPE * GetBlockLight(void) const { return m_BlockLight.get(); }  // NOTE: one byte per block!
+	LIGHTTYPE * GetBlockSkyLight(void) const { return m_BlockSkyLight.get(); }  // NOTE: one byte per block!
 
-	size_t        GetBlockCount(void) const { return static_cast<size_t>(m_Size.x * m_Size.y * m_Size.z); }
+	size_t GetBlockCount(void) const { return static_cast<size_t>(m_Size.x * m_Size.y * m_Size.z); }
 	static size_t MakeIndexForSize(Vector3i a_RelPos, Vector3i a_Size);
 
 	/** Returns the index into the internal arrays for the specified coords */
@@ -403,7 +390,7 @@ public:
 	/** Calls the callback for the block entity at the specified coords.
 	Returns false if there is no block entity at those coords.
 	Returns the value that the callback has returned if there is a block entity. */
-	bool DoWithBlockEntityAt   (Vector3i a_Pos, cBlockEntityCallback a_Callback);
+	bool DoWithBlockEntityAt(Vector3i a_Pos, cBlockEntityCallback a_Callback);
 
 	/** Calls the callback for all the block entities.
 	If the callback returns true, aborts the enumeration and returns false.
@@ -412,23 +399,29 @@ public:
 	bool ForEachBlockEntity(cBlockEntityCallback a_Callback);
 
 	/** Direct read-only access to block entities. */
-	const cBlockEntities & GetBlockEntities(void) const { ASSERT(HasBlockEntities()); return *m_BlockEntities.get(); }
-	cBlockEntities &       GetBlockEntities(void)       { ASSERT(HasBlockEntities()); return *m_BlockEntities.get(); }
+	const cBlockEntities & GetBlockEntities(void) const
+	{
+		ASSERT(HasBlockEntities());
+		return *m_BlockEntities.get();
+	}
+	cBlockEntities & GetBlockEntities(void)
+	{
+		ASSERT(HasBlockEntities());
+		return *m_BlockEntities.get();
+	}
 
 
 
-protected:
-
+	protected:
 	friend class cChunkDesc;
 	friend class cSchematicFileSerializer;
 
-	class cChunkReader:
-		public cChunkDataCallback
+	class cChunkReader : public cChunkDataCallback
 	{
-	public:
+		public:
 		cChunkReader(cBlockArea & a_Area);
 
-	protected:
+		protected:
 		cBlockArea & m_Area;
 		cCuboid m_AreaBounds;  ///< Bounds of the whole area being read, in world coords
 		Vector3i m_Origin;
@@ -439,7 +432,7 @@ protected:
 		virtual bool Coords(int a_ChunkX, int a_ChunkZ) override;
 		virtual void ChunkData(const ChunkBlockData & a_BlockData, const ChunkLightData & a_LightData) override;
 		virtual void BlockEntity(cBlockEntity * a_BlockEntity) override;
-	} ;
+	};
 
 	Vector3i m_Origin;
 	Vector3i m_Size;
@@ -449,7 +442,7 @@ protected:
 	Vector3i m_WEOffset;
 
 	BLOCKARRAY m_Blocks;
-	LIGHTARRAY m_BlockLight;     // Each light value is stored as a separate byte for faster access
+	LIGHTARRAY m_BlockLight;  // Each light value is stored as a separate byte for faster access
 	LIGHTARRAY m_BlockSkyLight;  // Each light value is stored as a separate byte for faster access
 
 	/** The block entities contained within the area.
@@ -461,19 +454,21 @@ protected:
 	bool SetSize(int a_SizeX, int a_SizeY, int a_SizeZ, int a_DataTypes);
 
 	// Crop helpers:
-	void CropBlocks      (int a_AddMinX, int a_SubMaxX, int a_AddMinY, int a_SubMaxY, int a_AddMinZ, int a_SubMaxZ);
-	void CropLightValues (LIGHTARRAY & a_Array, int a_AddMinX, int a_SubMaxX, int a_AddMinY, int a_SubMaxY, int a_AddMinZ, int a_SubMaxZ);
+	void CropBlocks(int a_AddMinX, int a_SubMaxX, int a_AddMinY, int a_SubMaxY, int a_AddMinZ, int a_SubMaxZ);
+	void CropLightValues(LIGHTARRAY & a_Array, int a_AddMinX, int a_SubMaxX, int a_AddMinY, int a_SubMaxY, int a_AddMinZ, int a_SubMaxZ);
 
 	// Expand helpers:
-	void ExpandBlocks      (int a_SubMinX, int a_AddMaxX, int a_SubMinY, int a_AddMaxY, int a_SubMinZ, int a_AddMaxZ);
-	void ExpandLightValues (LIGHTARRAY & a_Array, int a_SubMinX, int a_AddMaxX, int a_SubMinY, int a_AddMaxY, int a_SubMinZ, int a_AddMaxZ);
+	void ExpandBlocks(int a_SubMinX, int a_AddMaxX, int a_SubMinY, int a_AddMaxY, int a_SubMinZ, int a_AddMaxZ);
+	void ExpandLightValues(LIGHTARRAY & a_Array, int a_SubMinX, int a_AddMaxX, int a_SubMinY, int a_AddMaxY, int a_SubMinZ, int a_AddMaxZ);
 
 	/** Sets the specified datatypes at the specified location.
 	If the coords are not valid, ignores the call (so that RelLine() can work simply). */
 	void RelSetData(
 		Vector3i a_RelPos,
-		int a_DataTypes, BlockState a_Block,
-		LIGHTTYPE a_BlockLight, LIGHTTYPE a_BlockSkyLight
+		int a_DataTypes,
+		BlockState a_Block,
+		LIGHTTYPE a_BlockLight,
+		LIGHTTYPE a_BlockSkyLight
 	);
 
 	void MergeByStrategy(const cBlockArea & a_Src, Vector3i a_RelPos, eMergeStrategy a_Strategy);
@@ -493,9 +488,5 @@ protected:
 	cBlockEntity * GetBlockEntityRel(Vector3i a_RelPos);
 
 	// tolua_begin
-} ;
+};
 // tolua_end
-
-
-
-

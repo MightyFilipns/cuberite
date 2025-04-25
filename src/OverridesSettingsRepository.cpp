@@ -89,7 +89,7 @@ bool cOverridesSettingsRepository::DeleteKeyComment(const AString & a_keyname, c
 
 
 
-void cOverridesSettingsRepository::AddValue (const AString & a_KeyName, const AString & a_ValueName, const AString & a_Value)
+void cOverridesSettingsRepository::AddValue(const AString & a_KeyName, const AString & a_ValueName, const AString & a_Value)
 {
 	if (m_Overrides->HasValue(a_KeyName, a_ValueName))
 	{
@@ -151,7 +151,7 @@ AString cOverridesSettingsRepository::GetValue(const AString & a_KeyName, const 
 
 
 
-AString cOverridesSettingsRepository::GetValueSet (const AString & a_KeyName, const AString & a_ValueName, const AString & defValue)
+AString cOverridesSettingsRepository::GetValueSet(const AString & a_KeyName, const AString & a_ValueName, const AString & defValue)
 {
 	if (m_Overrides->HasValue(a_KeyName, a_ValueName))
 	{
@@ -215,7 +215,7 @@ bool cOverridesSettingsRepository::GetValueSetB(const AString & a_KeyName, const
 
 
 
-bool cOverridesSettingsRepository::SetValue (const AString & a_KeyName, const AString & a_ValueName, const AString & a_Value, const bool a_CreateIfNotExists)
+bool cOverridesSettingsRepository::SetValue(const AString & a_KeyName, const AString & a_ValueName, const AString & a_Value, const bool a_CreateIfNotExists)
 {
 	if (m_Overrides->HasValue(a_KeyName, a_ValueName))
 	{
@@ -267,4 +267,3 @@ bool cOverridesSettingsRepository::Flush()
 {
 	return m_Overrides->Flush() && m_Main->Flush();
 }
-

@@ -11,7 +11,7 @@
 
 #include "BiomeDef.h"
 
-//#include "BlockType.h";
+// #include "BlockType.h";
 
 // Used to smoothly convert to new axis ordering. One will be removed when deemed stable.
 #define AXIS_ORDER_YZX 1  // Original (1.1-)
@@ -56,27 +56,30 @@ typedef unsigned char HEIGHTTYPE;
 /** Wraps the chunk coords into a single structure. */
 class cChunkCoords
 {
-public:
+	public:
 	int m_ChunkX;
 	int m_ChunkZ;
 
-	cChunkCoords(int a_ChunkX, int a_ChunkZ) : m_ChunkX(a_ChunkX), m_ChunkZ(a_ChunkZ) {}
+	cChunkCoords(int a_ChunkX, int a_ChunkZ) :
+		m_ChunkX(a_ChunkX), m_ChunkZ(a_ChunkZ)
+	{
+	}
 
 
-	bool operator == (const cChunkCoords & a_Other) const
+	bool operator== (const cChunkCoords & a_Other) const
 	{
 		return ((m_ChunkX == a_Other.m_ChunkX) && (m_ChunkZ == a_Other.m_ChunkZ));
 	}
 
 
-	bool operator != (const cChunkCoords & a_Other) const
+	bool operator!= (const cChunkCoords & a_Other) const
 	{
-		return !(operator == (a_Other));
+		return !(operator== (a_Other));
 	}
 
 
 	/** Simple comparison, to support ordering. */
-	bool operator < (const cChunkCoords & a_Other) const
+	bool operator< (const cChunkCoords & a_Other) const
 	{
 		if (a_Other.m_ChunkX == m_ChunkX)
 		{
@@ -94,7 +97,7 @@ public:
 	{
 		return fmt::format(FMT_STRING("[{}, {}]"), m_ChunkX, m_ChunkZ);
 	}
-} ;
+};
 
 
 
@@ -103,14 +106,15 @@ public:
 /** Implements custom fmtlib formatting for cChunkCoords. */
 namespace fmt
 {
-	template <> struct formatter<cChunkCoords>: formatter<int>
+	template <>
+	struct formatter<cChunkCoords> : formatter<int>
 	{
 		auto format(cChunkCoords a_Coords, format_context & a_Ctx) const
 		{
 			return format_to(a_Ctx.out(), "[{}, {}]", a_Coords.m_ChunkX, a_Coords.m_ChunkZ);
 		}
 	};
-}
+}  // namespace fmt
 
 
 
@@ -119,8 +123,7 @@ namespace fmt
 /** Constants used throughout the code, useful typedefs and utility functions */
 class cChunkDef
 {
-public:
-
+	public:
 	// Chunk dimensions:
 	static const int Width = 16;
 	static const int Height = 256;
@@ -244,30 +247,30 @@ public:
 	{
 		ASSERT(IsValidRelPos({ x, y, z }));
 
-		#if AXIS_ORDER == AXIS_ORDER_XZY
-			// For some reason, NOT using the Horner schema is faster. Weird.
-			return static_cast<size_t>(x + (z * Width) + (y * Width * Width));   // 1.2 uses XZY
-		#elif AXIS_ORDER == AXIS_ORDER_YZX
-			return static_cast<size_t>(y + (z * Width) + (x * Height * Width));  // 1.1 uses YZX
-		#endif
+#if AXIS_ORDER == AXIS_ORDER_XZY
+		// For some reason, NOT using the Horner schema is faster. Weird.
+		return static_cast<size_t>(x + (z * Width) + (y * Width * Width));  // 1.2 uses XZY
+#elif AXIS_ORDER == AXIS_ORDER_YZX
+		return static_cast<size_t>(y + (z * Width) + (x * Height * Width));  // 1.1 uses YZX
+#endif
 	}
 
 
 	inline static Vector3i IndexToCoordinate(size_t index)
 	{
-		#if AXIS_ORDER == AXIS_ORDER_XZY
-			return Vector3i(  // 1.2
-				static_cast<int>(index % cChunkDef::Width),                       // X
-				static_cast<int>(index / (cChunkDef::Width * cChunkDef::Width)),  // Y
-				static_cast<int>((index / cChunkDef::Width) % cChunkDef::Width)   // Z
-			);
-		#elif AXIS_ORDER == AXIS_ORDER_YZX
-			return Vector3i(  // 1.1
-				static_cast<int>(index / (cChunkDef::Height * cChunkDef::Width)),  // X
-				static_cast<int>(index % cChunkDef::Height),                       // Y
-				static_cast<int>((index / cChunkDef::Height) % cChunkDef::Width)   // Z
-			);
-		#endif
+#if AXIS_ORDER == AXIS_ORDER_XZY
+		return Vector3i(  // 1.2
+			static_cast<int>(index % cChunkDef::Width),  // X
+			static_cast<int>(index / (cChunkDef::Width * cChunkDef::Width)),  // Y
+			static_cast<int>((index / cChunkDef::Width) % cChunkDef::Width)  // Z
+		);
+#elif AXIS_ORDER == AXIS_ORDER_YZX
+		return Vector3i(  // 1.1
+			static_cast<int>(index / (cChunkDef::Height * cChunkDef::Width)),  // X
+			static_cast<int>(index % cChunkDef::Height),  // Y
+			static_cast<int>((index / cChunkDef::Height) % cChunkDef::Width)  // Z
+		);
+#endif
 	}
 
 
@@ -383,7 +386,7 @@ public:
 	{
 		return a_Buffer[a_Index];
 	}
-} ;
+};
 
 
 
@@ -393,8 +396,7 @@ public:
 Used primarily for entity moving while both chunks are locked. */
 class cClientDiffCallback
 {
-public:
-
+	public:
 	virtual ~cClientDiffCallback() {}
 
 	/** Called for clients that are in Chunk1 and not in Chunk2, */
@@ -402,7 +404,7 @@ public:
 
 	/** Called for clients that are in Chunk2 and not in Chunk1. */
 	virtual void Added(cClientHandle * a_Client) = 0;
-} ;
+};
 
 
 
@@ -414,7 +416,7 @@ struct sSetBlock
 	int m_ChunkX, m_ChunkZ;
 	BlockState m_Block;
 
-	sSetBlock(int a_BlockX, int a_BlockY, int a_BlockZ, BlockState a_Block):
+	sSetBlock(int a_BlockX, int a_BlockY, int a_BlockZ, BlockState a_Block) :
 		m_RelX(a_BlockX),
 		m_RelY(a_BlockY),
 		m_RelZ(a_BlockZ),
@@ -429,15 +431,13 @@ struct sSetBlock
 	}
 
 	sSetBlock(int a_ChunkX, int a_ChunkZ, int a_RelX, int a_RelY, int a_RelZ, BlockState a_Block) :
-		m_RelX(a_RelX), m_RelY(a_RelY), m_RelZ(a_RelZ),
-		m_ChunkX(a_ChunkX), m_ChunkZ(a_ChunkZ),
-		m_Block(a_Block)
+		m_RelX(a_RelX), m_RelY(a_RelY), m_RelZ(a_RelZ), m_ChunkX(a_ChunkX), m_ChunkZ(a_ChunkZ), m_Block(a_Block)
 	{
 		ASSERT((a_RelX >= 0) && (a_RelX < cChunkDef::Width));
 		ASSERT((a_RelZ >= 0) && (a_RelZ < cChunkDef::Width));
 	}
 
-	bool operator<(const sSetBlock & v1) const
+	bool operator< (const sSetBlock & v1) const
 	{
 		return v1.m_RelY > this->m_RelY;
 	}
@@ -478,8 +478,8 @@ typedef std::vector<cChunkCoords> cChunkCoordsVector;
 Used for std::unordered_map<cChunkCoords, ...> */
 class cChunkCoordsHash
 {
-public:
-	size_t operator () (const cChunkCoords & a_Coords) const
+	public:
+	size_t operator() (const cChunkCoords & a_Coords) const
 	{
 		return (static_cast<size_t>(a_Coords.m_ChunkX) << 16) ^ static_cast<size_t>(a_Coords.m_ChunkZ);
 	}
@@ -492,26 +492,26 @@ public:
 /** Interface class used as a callback for operations that involve chunk coords */
 class cChunkCoordCallback
 {
-public:
-
+	public:
 	virtual ~cChunkCoordCallback() {}
 
 	/** Called with the chunk's coords, and an optional operation status flag for operations that support it. */
 	virtual void Call(cChunkCoords a_Coords, bool a_IsSuccess) = 0;
-} ;
+};
 
 
 
 
 
 /** Generic template that can store any kind of data together with a triplet of 3 coords */
-template <typename X> class cCoordWithData
+template <typename X>
+class cCoordWithData
 {
-public:
+	public:
 	int x;
 	int y;
 	int z;
-	X   Data;
+	X Data;
 
 	cCoordWithData(int a_X, int a_Y, int a_Z) :
 		x(a_X), y(a_Y), z(a_Z), Data()
@@ -522,9 +522,9 @@ public:
 		x(a_X), y(a_Y), z(a_Z), Data(a_Data)
 	{
 	}
-} ;
+};
 
-typedef cCoordWithData<int>        cCoordWithInt;
+typedef cCoordWithData<int> cCoordWithInt;
 
-typedef std::list<cCoordWithInt>   cCoordWithIntList;
+typedef std::list<cCoordWithInt> cCoordWithIntList;
 typedef std::vector<cCoordWithInt> cCoordWithIntVector;

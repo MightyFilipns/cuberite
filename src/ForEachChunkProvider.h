@@ -23,7 +23,7 @@ class cBlockArea;
 
 class cForEachChunkProvider
 {
-public:
+	public:
 	virtual ~cForEachChunkProvider() {}
 
 	/** Calls the callback for each chunk in the specified range. */
@@ -35,7 +35,3 @@ public:
 	*/
 	virtual bool WriteBlockArea(cBlockArea & a_Area, int a_MinBlockX, int a_MinBlockY, int a_MinBlockZ, int a_DataTypes) = 0;
 };
-
-
-
-

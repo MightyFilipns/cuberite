@@ -81,11 +81,6 @@ void cMobCensus::Logd()
 {
 	LOGD("Hostile mobs : %d %s", m_MobFamilyCollecter.GetNumberOfCollectedMobs(cMonster::mfHostile), IsCapped(cMonster::mfHostile) ? "(capped)" : "");
 	LOGD("Ambient mobs : %d %s", m_MobFamilyCollecter.GetNumberOfCollectedMobs(cMonster::mfAmbient), IsCapped(cMonster::mfAmbient) ? "(capped)" : "");
-	LOGD("Water mobs   : %d %s", m_MobFamilyCollecter.GetNumberOfCollectedMobs(cMonster::mfWater),   IsCapped(cMonster::mfWater)   ? "(capped)" : "");
+	LOGD("Water mobs   : %d %s", m_MobFamilyCollecter.GetNumberOfCollectedMobs(cMonster::mfWater), IsCapped(cMonster::mfWater) ? "(capped)" : "");
 	LOGD("Passive mobs : %d %s", m_MobFamilyCollecter.GetNumberOfCollectedMobs(cMonster::mfPassive), IsCapped(cMonster::mfPassive) ? "(capped)" : "");
 }
-
-
-
-
-

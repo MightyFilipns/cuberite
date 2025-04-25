@@ -80,8 +80,10 @@ int cVoronoiMap::GetValueAt(int a_X, int a_Y, int & a_MinDist)
 
 
 int cVoronoiMap::GetValueAt(
-	int a_X, int a_Y,  // Coords to query
-	int & a_NearestSeedX, int & a_NearestSeedY,  // Coords of the closest cell
+	int a_X,
+	int a_Y,  // Coords to query
+	int & a_NearestSeedX,
+	int & a_NearestSeedY,  // Coords of the closest cell
 	int & a_MinDist2  // Distance to the second closest cell
 )
 {
@@ -129,9 +131,12 @@ int cVoronoiMap::GetValueAt(
 
 
 void cVoronoiMap::FindNearestSeeds(
-	int a_X, int a_Y,
-	int & a_NearestSeedX, int & a_NearestSeedY,
-	int & a_SecondNearestSeedX, int & a_SecondNearestSeedY
+	int a_X,
+	int a_Y,
+	int & a_NearestSeedX,
+	int & a_NearestSeedY,
+	int & a_SecondNearestSeedX,
+	int & a_SecondNearestSeedY
 )
 {
 	int CellX = a_X / m_CellSize;
@@ -206,7 +211,3 @@ void cVoronoiMap::UpdateCell(int a_CellX, int a_CellZ)
 	m_CurrentCellX = a_CellX;
 	m_CurrentCellZ = a_CellZ;
 }
-
-
-
-

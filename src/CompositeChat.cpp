@@ -32,7 +32,8 @@ cCompositeChat::cCompositeChat(const AString & a_ParseText, eMessageType a_Messa
 
 
 
-cCompositeChat::cCompositeChat(const cParsedNBT & a_ParsedNbt) : m_MessageType(mtCustom)
+cCompositeChat::cCompositeChat(const cParsedNBT & a_ParsedNbt) :
+	m_MessageType(mtCustom)
 {
 	ParseNBT(a_ParsedNbt);
 }
@@ -52,7 +53,7 @@ void cCompositeChat::Clear(void)
 
 void cCompositeChat::AddTextPart(const AString & a_Message, const AString & a_Style)
 {
-	m_Parts.push_back(TextPart{{ a_Message, a_Style, {} } });
+	m_Parts.push_back(TextPart { { a_Message, a_Style, {} } });
 }
 
 
@@ -61,7 +62,7 @@ void cCompositeChat::AddTextPart(const AString & a_Message, const AString & a_St
 
 void cCompositeChat::AddClientTranslatedPart(const AString & a_TranslationID, const AStringVector & a_Parameters, const AString & a_Style)
 {
-	m_Parts.push_back(ClientTranslatedPart{{ a_TranslationID, a_Style, {} }, a_Parameters });
+	m_Parts.push_back(ClientTranslatedPart { { a_TranslationID, a_Style, {} }, a_Parameters });
 }
 
 
@@ -70,7 +71,7 @@ void cCompositeChat::AddClientTranslatedPart(const AString & a_TranslationID, co
 
 void cCompositeChat::AddUrlPart(const AString & a_Text, const AString & a_Url, const AString & a_Style)
 {
-	m_Parts.push_back(UrlPart{{ a_Text, a_Style, {} }, a_Url });
+	m_Parts.push_back(UrlPart { { a_Text, a_Style, {} }, a_Url });
 }
 
 
@@ -79,7 +80,7 @@ void cCompositeChat::AddUrlPart(const AString & a_Text, const AString & a_Url, c
 
 void cCompositeChat::AddRunCommandPart(const AString & a_Text, const AString & a_Command, const AString & a_Style)
 {
-	m_Parts.push_back(RunCommandPart{{{ a_Text, a_Style, {} }, a_Command } });
+	m_Parts.push_back(RunCommandPart { { { a_Text, a_Style, {} }, a_Command } });
 }
 
 
@@ -88,7 +89,7 @@ void cCompositeChat::AddRunCommandPart(const AString & a_Text, const AString & a
 
 void cCompositeChat::AddSuggestCommandPart(const AString & a_Text, const AString & a_SuggestedCommand, const AString & a_Style)
 {
-	m_Parts.push_back(SuggestCommandPart{{{ a_Text, a_Style, {} }, a_SuggestedCommand } });
+	m_Parts.push_back(SuggestCommandPart { { { a_Text, a_Style, {} }, a_SuggestedCommand } });
 }
 
 
@@ -97,20 +98,20 @@ void cCompositeChat::AddSuggestCommandPart(const AString & a_Text, const AString
 
 void cCompositeChat::AddShowAchievementPart(const AString & a_PlayerName, const AString & a_Achievement, const AString & a_Style)
 {
-	m_Parts.push_back(ShowAchievementPart{{ a_Achievement, a_Style, {} }, a_PlayerName });
+	m_Parts.push_back(ShowAchievementPart { { a_Achievement, a_Style, {} }, a_PlayerName });
 }
 
 
 
 
 /**
-* Parse the input message to add colors or link then add it to the object.
-*
-* It detects every & of the message and the next character for it to colorize.
-* It detect : in the text to detect link structures.
-*
-* @param a_ParseText The input text to parse
-*/
+ * Parse the input message to add colors or link then add it to the object.
+ *
+ * It detects every & of the message and the next character for it to colorize.
+ * It detect : in the text to detect link structures.
+ *
+ * @param a_ParseText The input text to parse
+ */
 void cCompositeChat::ParseText(const AString & a_ParseText)
 {
 	size_t len = a_ParseText.length();
@@ -124,7 +125,7 @@ void cCompositeChat::ParseText(const AString & a_ParseText)
 		{
 			case '&':  //< Color code
 			{
-				if ((i != 0) && (a_ParseText[i-1] == '\\'))
+				if ((i != 0) && (a_ParseText[i - 1] == '\\'))
 				{
 					CurrentText.append(a_ParseText, cursor, i - cursor - 1).append("&");
 					AddTextPart(CurrentText, CurrentStyle);
@@ -155,12 +156,9 @@ void cCompositeChat::ParseText(const AString & a_ParseText)
 
 			case ':':
 			{
-				static const constexpr std::array<std::string_view, 2> LinkPrefixes =
-				{
-					{
-						"http",
-						"https"
-					}
+				static const constexpr std::array<std::string_view, 2> LinkPrefixes = {
+					{ "http",
+					  "https" }
 				};
 				for (const auto & Prefix : LinkPrefixes)
 				{
@@ -171,10 +169,10 @@ void cCompositeChat::ParseText(const AString & a_ParseText)
 					)
 					{
 						// Add everything before this as a text part:
-						if (i > cursor+ PrefixLen)
+						if (i > cursor + PrefixLen)
 						{
 							CurrentText.append(a_ParseText.c_str() + cursor, i - cursor - PrefixLen);
-							cursor= i - PrefixLen;
+							cursor = i - PrefixLen;
 						}
 						if (!CurrentText.empty())
 						{
@@ -225,15 +223,16 @@ void cCompositeChat::UnderlineUrls(void)
 {
 	for (auto & Part : m_Parts)
 	{
-		std::visit(OverloadedVariantAccess
-		{
-			[](TextPart &             a_Part) {  },
-			[](ClientTranslatedPart & a_Part) {  },
-			[](UrlPart &              a_Part) { a_Part.Style += 'n'; },
-			[](RunCommandPart &       a_Part) {  },
-			[](SuggestCommandPart &   a_Part) {  },
-			[](ShowAchievementPart &  a_Part) {  },
-		}, Part);
+		std::visit(OverloadedVariantAccess {
+					   [](TextPart & a_Part) {},
+					   [](ClientTranslatedPart & a_Part) {},
+					   [](UrlPart & a_Part)
+		{ a_Part.Style += 'n'; },
+					   [](RunCommandPart & a_Part) {},
+					   [](SuggestCommandPart & a_Part) {},
+					   [](ShowAchievementPart & a_Part) {},
+				   },
+				   Part);
 	}
 }
 
@@ -246,15 +245,20 @@ AString cCompositeChat::ExtractText(void) const
 	AString Msg;
 	for (const auto & Part : m_Parts)
 	{
-		std::visit(OverloadedVariantAccess
-		{
-			[&Msg](const TextPart &             a_Part) { Msg.append(a_Part.Text); },
-			[&Msg](const ClientTranslatedPart & a_Part) { Msg.append(a_Part.Text); },
-			[&Msg](const UrlPart &              a_Part) { Msg.append(a_Part.Url); },
-			[&Msg](const RunCommandPart &       a_Part) { Msg.append(a_Part.Text); },
-			[&Msg](const SuggestCommandPart &   a_Part) { Msg.append(a_Part.Text); },
-			[    ](const ShowAchievementPart &  a_Part) {  },
-		}, Part);
+		std::visit(OverloadedVariantAccess {
+					   [&Msg](const TextPart & a_Part)
+		{ Msg.append(a_Part.Text); },
+					   [&Msg](const ClientTranslatedPart & a_Part)
+		{ Msg.append(a_Part.Text); },
+					   [&Msg](const UrlPart & a_Part)
+		{ Msg.append(a_Part.Url); },
+					   [&Msg](const RunCommandPart & a_Part)
+		{ Msg.append(a_Part.Text); },
+					   [&Msg](const SuggestCommandPart & a_Part)
+		{ Msg.append(a_Part.Text); },
+					   [](const ShowAchievementPart & a_Part) {},
+				   },
+				   Part);
 	}
 	return Msg;
 }
@@ -277,7 +281,7 @@ eLogLevel cCompositeChat::MessageTypeToLogLevel(eMessageType a_MessageType)
 		case mtPrivateMessage: return eLogLevel::Regular;
 		case mtJoin:           return eLogLevel::Regular;
 		case mtLeave:          return eLogLevel::Regular;
-		case mtMaxPlusOne: break;
+		case mtMaxPlusOne:     break;
 	}
 	ASSERT(!"Unhandled MessageType");
 	return eLogLevel::Error;
@@ -294,91 +298,91 @@ AString cCompositeChat::CreateJsonString(bool a_ShouldUseChatPrefixes) const
 	for (const auto & Part : m_Parts)
 	{
 		Json::Value JsonPart;
-		std::visit(OverloadedVariantAccess
+		std::visit(OverloadedVariantAccess {
+					   [this, &JsonPart](const TextPart & a_Part)
 		{
-			[this, &JsonPart](const TextPart & a_Part)
+			JsonPart["text"] = a_Part.Text;
+			AddChatPartStyle(JsonPart, a_Part.Style);
+		},
+					   [this, &JsonPart](const ClientTranslatedPart & a_Part)
+		{
+			JsonPart["translate"] = a_Part.Text;
+			Json::Value With;
+			for (const auto & Parameter : a_Part.Parameters)
 			{
-				JsonPart["text"] = a_Part.Text;
-				AddChatPartStyle(JsonPart, a_Part.Style);
-			},
-			[this, &JsonPart](const ClientTranslatedPart & a_Part)
+				With.append(Parameter);
+			}
+			if (!a_Part.Parameters.empty())
 			{
-				JsonPart["translate"] = a_Part.Text;
-				Json::Value With;
-				for (const auto & Parameter : a_Part.Parameters)
-				{
-					With.append(Parameter);
-				}
-				if (!a_Part.Parameters.empty())
-				{
-					JsonPart["with"] = With;
-				}
-				AddChatPartStyle(JsonPart, a_Part.Style);
-			},
-			[this, &JsonPart](const UrlPart & a_Part)
-			{
-				JsonPart["text"] = a_Part.Text;
-				Json::Value Url;
-				Url["action"] = "open_url";
-				Url["value"] = a_Part.Url;
-				JsonPart["clickEvent"] = Url;
-				AddChatPartStyle(JsonPart, a_Part.Style);
-			},
-			[this, &JsonPart](const RunCommandPart & a_Part)
-			{
-				JsonPart["text"] = a_Part.Text;
-				Json::Value Cmd;
-				Cmd["action"] = "run_command";
-				Cmd["value"] = a_Part.Command;
-				JsonPart["clickEvent"] = Cmd;
-				AddChatPartStyle(JsonPart, a_Part.Style);
-			},
-			[this, &JsonPart](const SuggestCommandPart & a_Part)
-			{
-				JsonPart["text"] = a_Part.Text;
-				Json::Value Cmd;
-				Cmd["action"] = "suggest_command";
-				Cmd["value"] = a_Part.Command;
-				JsonPart["clickEvent"] = Cmd;
-				AddChatPartStyle(JsonPart, a_Part.Style);
-			},
-			[this, &JsonPart](const ShowAchievementPart & a_Part)
-			{
-				JsonPart["translate"] = "chat.type.achievement";
-
-				Json::Value Ach;
-				Ach["action"] = "show_achievement";
-				Ach["value"] = a_Part.Text;
-
-				Json::Value AchColourAndName;
-				AchColourAndName["color"] = "green";
-				AchColourAndName["translate"] = a_Part.Text;
-				AchColourAndName["hoverEvent"] = Ach;
-
-				Json::Value Extra;
-				Extra.append(AchColourAndName);
-
-				Json::Value Name;
-				Name["text"] = a_Part.PlayerName;
-
-				Json::Value With;
-				With.append(Name);
-				With.append(Extra);
-
 				JsonPart["with"] = With;
-				AddChatPartStyle(JsonPart, a_Part.Style);
-			},
-		}, Part);
+			}
+			AddChatPartStyle(JsonPart, a_Part.Style);
+		},
+					   [this, &JsonPart](const UrlPart & a_Part)
+		{
+			JsonPart["text"] = a_Part.Text;
+			Json::Value Url;
+			Url["action"] = "open_url";
+			Url["value"] = a_Part.Url;
+			JsonPart["clickEvent"] = Url;
+			AddChatPartStyle(JsonPart, a_Part.Style);
+		},
+					   [this, &JsonPart](const RunCommandPart & a_Part)
+		{
+			JsonPart["text"] = a_Part.Text;
+			Json::Value Cmd;
+			Cmd["action"] = "run_command";
+			Cmd["value"] = a_Part.Command;
+			JsonPart["clickEvent"] = Cmd;
+			AddChatPartStyle(JsonPart, a_Part.Style);
+		},
+					   [this, &JsonPart](const SuggestCommandPart & a_Part)
+		{
+			JsonPart["text"] = a_Part.Text;
+			Json::Value Cmd;
+			Cmd["action"] = "suggest_command";
+			Cmd["value"] = a_Part.Command;
+			JsonPart["clickEvent"] = Cmd;
+			AddChatPartStyle(JsonPart, a_Part.Style);
+		},
+					   [this, &JsonPart](const ShowAchievementPart & a_Part)
+		{
+			JsonPart["translate"] = "chat.type.achievement";
+
+			Json::Value Ach;
+			Ach["action"] = "show_achievement";
+			Ach["value"] = a_Part.Text;
+
+			Json::Value AchColourAndName;
+			AchColourAndName["color"] = "green";
+			AchColourAndName["translate"] = a_Part.Text;
+			AchColourAndName["hoverEvent"] = Ach;
+
+			Json::Value Extra;
+			Extra.append(AchColourAndName);
+
+			Json::Value Name;
+			Name["text"] = a_Part.PlayerName;
+
+			Json::Value With;
+			With.append(Name);
+			With.append(Extra);
+
+			JsonPart["with"] = With;
+			AddChatPartStyle(JsonPart, a_Part.Style);
+		},
+				   },
+				   Part);
 		Message["extra"].append(JsonPart);
 	}  // for itr - Parts[]
 
-	#if 1
-		// Serialize as machine-readable string (no whitespace):
-		return JsonUtils::WriteFastString(Message);
-	#else
-		// Serialize as human-readable string (pretty-printed):
-		return JsonUtils::WriteStyledString(msg);
-	#endif
+#if 1
+	   // Serialize as machine-readable string (no whitespace):
+	return JsonUtils::WriteFastString(Message);
+#else
+	   // Serialize as human-readable string (pretty-printed):
+	return JsonUtils::WriteStyledString(msg);
+#endif
 }
 
 
@@ -425,66 +429,66 @@ void cCompositeChat::WriteAsNBT(cFastNBTWriter & a_Writer, bool a_ShouldUseChatP
 	for (const auto & Part : m_Parts)
 	{
 		a_Writer.BeginCompound("");
-		std::visit(OverloadedVariantAccess
+		std::visit(OverloadedVariantAccess {
+					   [this, &a_Writer](const TextPart & a_Part)
 		{
-			[this, &a_Writer](const TextPart & a_Part)
+			a_Writer.AddString("text", a_Part.Text);
+			AddChatPartStyle(a_Writer, a_Part.Style);
+		},
+					   [this, &a_Writer](const ClientTranslatedPart & a_Part)
+		{
+			a_Writer.AddString("translate", a_Part.Text);
+			a_Writer.BeginList("with", eTagType::TAG_String);
+			Json::Value With;
+			for (const auto & Parameter : a_Part.Parameters)
 			{
-				a_Writer.AddString("text", a_Part.Text);
-				AddChatPartStyle(a_Writer, a_Part.Style);
-			},
-			[this, &a_Writer](const ClientTranslatedPart & a_Part)
-			{
-				a_Writer.AddString("translate", a_Part.Text);
-				a_Writer.BeginList("with", eTagType::TAG_String);
-				Json::Value With;
-				for (const auto & Parameter : a_Part.Parameters)
-				{
-					a_Writer.AddString("", Parameter);
-				}
-				AddChatPartStyle(a_Writer, a_Part.Style);
-			},
-			[this, &a_Writer](const UrlPart & a_Part)
-			{
-				a_Writer.AddString("text", a_Part.Text);
-				a_Writer.BeginCompound("click_event");
-				a_Writer.AddString("action", "open_url");
-				a_Writer.AddString("value", a_Part.Url);  // kept for backward compatibility
-				a_Writer.AddString("url", a_Part.Url);  // added in 1.21.5
-				a_Writer.EndCompound();
-				AddChatPartStyle(a_Writer, a_Part.Style);
-			},
-			[this, &a_Writer](const RunCommandPart & a_Part)
-			{
-				a_Writer.AddString("text", a_Part.Text);
-				a_Writer.BeginCompound("click_event");
-				a_Writer.AddString("action", "run_command");
-				a_Writer.AddString("value", a_Part.Command);  // same as url
-				a_Writer.AddString("command", a_Part.Command);
-				a_Writer.EndCompound();
-				AddChatPartStyle(a_Writer, a_Part.Style);
-			},
-			[this, &a_Writer](const SuggestCommandPart & a_Part)
-			{
-				a_Writer.AddString("text", a_Part.Text);
-				a_Writer.BeginCompound("click_event");
-				a_Writer.AddString("action", "suggest_command");
-				a_Writer.AddString("value", a_Part.Command);  // same as url
-				a_Writer.AddString("command", a_Part.Command);
-				a_Writer.EndCompound();
-				AddChatPartStyle(a_Writer, a_Part.Style);
-			},
-			[](const ShowAchievementPart & a_Part)
-			{
-				/*
-				a_Writer.AddString("text", a_Part.Text);
-				a_Writer.BeginCompound("click_event");
-				a_Writer.AddString("action", "suggest_command");
-				a_Writer.AddString("value", a_Part.Command);
-				a_Writer.EndCompound();
-				AddChatPartStyle(a_Writer, a_Part.Style);
-				*/
-			},
-		}, Part);
+				a_Writer.AddString("", Parameter);
+			}
+			AddChatPartStyle(a_Writer, a_Part.Style);
+		},
+					   [this, &a_Writer](const UrlPart & a_Part)
+		{
+			a_Writer.AddString("text", a_Part.Text);
+			a_Writer.BeginCompound("click_event");
+			a_Writer.AddString("action", "open_url");
+			a_Writer.AddString("value", a_Part.Url);  // kept for backward compatibility
+			a_Writer.AddString("url", a_Part.Url);  // added in 1.21.5
+			a_Writer.EndCompound();
+			AddChatPartStyle(a_Writer, a_Part.Style);
+		},
+					   [this, &a_Writer](const RunCommandPart & a_Part)
+		{
+			a_Writer.AddString("text", a_Part.Text);
+			a_Writer.BeginCompound("click_event");
+			a_Writer.AddString("action", "run_command");
+			a_Writer.AddString("value", a_Part.Command);  // same as url
+			a_Writer.AddString("command", a_Part.Command);
+			a_Writer.EndCompound();
+			AddChatPartStyle(a_Writer, a_Part.Style);
+		},
+					   [this, &a_Writer](const SuggestCommandPart & a_Part)
+		{
+			a_Writer.AddString("text", a_Part.Text);
+			a_Writer.BeginCompound("click_event");
+			a_Writer.AddString("action", "suggest_command");
+			a_Writer.AddString("value", a_Part.Command);  // same as url
+			a_Writer.AddString("command", a_Part.Command);
+			a_Writer.EndCompound();
+			AddChatPartStyle(a_Writer, a_Part.Style);
+		},
+					   [](const ShowAchievementPart & a_Part)
+		{
+			/*
+			a_Writer.AddString("text", a_Part.Text);
+			a_Writer.BeginCompound("click_event");
+			a_Writer.AddString("action", "suggest_command");
+			a_Writer.AddString("value", a_Part.Command);
+			a_Writer.EndCompound();
+			AddChatPartStyle(a_Writer, a_Part.Style);
+			*/
+		},
+				   },
+				   Part);
 		a_Writer.EndCompound();
 	}  // for itr - Parts[]
 	a_Writer.EndList();

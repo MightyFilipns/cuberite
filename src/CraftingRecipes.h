@@ -19,19 +19,19 @@ class cPlayer;
 
 class cCraftingGrid  // tolua_export
 {  // tolua_export
-public:
+	public:
 	cCraftingGrid(const cCraftingGrid & a_Original);
 	cCraftingGrid(int a_Width, int a_Height);  // tolua_export
 	cCraftingGrid(const cItem * a_Items, int a_Width, int a_Height);
 	~cCraftingGrid();
 
 	// tolua_begin
-	int     GetWidth (void) const {return m_Width; }
-	int     GetHeight(void) const {return m_Height; }
-	cItem & GetItem  (int x, int y) const;
-	void    SetItem  (int x, int y, Item a_Item, char a_ItemCount);
-	void    SetItem  (int x, int y, const cItem & a_Item);
-	void    Clear    (void);
+	int GetWidth(void) const { return m_Width; }
+	int GetHeight(void) const { return m_Height; }
+	cItem & GetItem(int x, int y) const;
+	void SetItem(int x, int y, Item a_Item, char a_ItemCount);
+	void SetItem(int x, int y, const cItem & a_Item);
+	void Clear(void);
 
 	/** Removes items in a_Grid from m_Items[] (used by cCraftingRecipe::ConsumeIngredients()) */
 	void ConsumeGrid(const cCraftingGrid & a_Grid);
@@ -41,17 +41,16 @@ public:
 
 	// tolua_end
 
-	cItem * GetItems(void) const {return m_Items; }
+	cItem * GetItems(void) const { return m_Items; }
 
 	/** Copies internal contents into the item array specified. Assumes that the array has the same dimensions as self */
-	void  CopyToItems(cItem * a_Items) const;
+	void CopyToItems(cItem * a_Items) const;
 
-protected:
-
-	int     m_Width;
-	int     m_Height;
+	protected:
+	int m_Width;
+	int m_Height;
 	cItem * m_Items;
-} ;  // tolua_export
+};  // tolua_export
 
 
 
@@ -59,27 +58,27 @@ protected:
 
 class cCraftingRecipe  // tolua_export
 {  // tolua_export
-public:
+	public:
 	cCraftingRecipe(const cCraftingGrid & a_CraftingGrid);
 
 	// tolua_begin
-	void          Clear               (void);
-	int           GetIngredientsWidth (void) const {return m_Ingredients.GetWidth(); }
-	int           GetIngredientsHeight(void) const {return m_Ingredients.GetHeight(); }
-	cItem &       GetIngredient       (int x, int y) const {return m_Ingredients.GetItem(x, y); }
-	const cItem & GetResult           (void) const {return m_Result; }
-	void          SetResult           (Item a_Item, char a_ItemCount);
-	void          SetResult           (const cItem & a_Item)
+	void Clear(void);
+	int GetIngredientsWidth(void) const { return m_Ingredients.GetWidth(); }
+	int GetIngredientsHeight(void) const { return m_Ingredients.GetHeight(); }
+	cItem & GetIngredient(int x, int y) const { return m_Ingredients.GetItem(x, y); }
+	const cItem & GetResult(void) const { return m_Result; }
+	void SetResult(Item a_Item, char a_ItemCount);
+	void SetResult(const cItem & a_Item)
 	{
 		m_Result = a_Item;
 	}
 
-	void          SetIngredient       (int x, int y, Item a_Item, char a_ItemCount)
+	void SetIngredient(int x, int y, Item a_Item, char a_ItemCount)
 	{
 		m_Ingredients.SetItem(x, y, a_Item, a_ItemCount);
 	}
 
-	void          SetIngredient       (int x, int y, const cItem & a_Item)
+	void SetIngredient(int x, int y, const cItem & a_Item)
 	{
 		m_Ingredients.SetItem(x, y, a_Item);
 	}
@@ -91,11 +90,10 @@ public:
 	void Dump(void);
 	// tolua_end
 
-protected:
-
+	protected:
 	cCraftingGrid m_Ingredients;  // Adjusted to correspond to the input crafting grid!
-	cItem         m_Result;
-} ;  // tolua_export
+	cItem m_Result;
+};  // tolua_export
 
 
 
@@ -116,8 +114,8 @@ To handle the crafting recipes internally efficient the vector index of the
 */
 class cCraftingRecipes
 {
-public:
-	static const int MAX_GRID_WIDTH  = 3;
+	public:
+	static const int MAX_GRID_WIDTH = 3;
 	static const int MAX_GRID_HEIGHT = 3;
 
 	cCraftingRecipes(void);
@@ -133,7 +131,7 @@ public:
 	{
 		cItem m_Item;
 		int x, y;  // 1..3, or -1 for "any"
-	} ;
+	};
 	typedef std::vector<cRecipeSlot> cRecipeSlots;
 
 	/** A single recipe, stored. Each recipe is normalized right after parsing (NormalizeIngredients())
@@ -141,13 +139,13 @@ public:
 	struct cRecipe
 	{
 		cRecipeSlots m_Ingredients;
-		cItem        m_Result;
-		AString      m_RecipeName;
+		cItem m_Result;
+		AString m_RecipeName;
 
 		// Size of the regular items in the recipe; "anywhere" items are excluded:
 		int m_Width;
 		int m_Height;
-	} ;
+	};
 
 	/** Returns the recipe by id */
 	cRecipe * GetRecipeById(UInt32 a_RecipeId);
@@ -155,8 +153,7 @@ public:
 	/** Gets a map of all recipes with name and recipe id */
 	const std::map<AString, UInt32> & GetRecipeNameMap();
 
-protected:
-
+	protected:
 	typedef std::vector<cRecipe *> cRecipes;
 
 	cRecipes m_Recipes;
@@ -191,7 +188,7 @@ protected:
 	/** Searches for anything dye related for leather, calculates the appropriate color value, and sets the resulting value. */
 	void HandleDyedLeather(const cItem * a_CraftingGrid, cCraftingRecipes::cRecipe * a_Recipe, int a_GridStride, int a_GridWidth, int a_GridHeight);
 
-private:
+	private:
 	/** Mapping the minecraft recipe names to the internal cuberite recipe Ids */
 	std::map<AString, UInt32> m_RecipeNameMap;
 
@@ -208,4 +205,4 @@ private:
 
 	/** Populates the RecipeNameMap */
 	void PopulateRecipeNameMap(void);
-} ;
+};

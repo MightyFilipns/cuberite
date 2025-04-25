@@ -40,39 +40,39 @@ Serialization will never put zero-level enchantments into the stringspec and wil
 // tolua_begin
 class cEnchantments
 {
-public:
+	public:
 	/** Individual enchantment IDs, corresponding to their NBT IDs: https://minecraft.wiki/w/Data_values#Enchantment_IDs
-	*/
+	 */
 
 	enum eEnchantment
 	{
 		// Currently missing: Frost walker, curse of binding, sweeping edge, mending, quick charge, riptide, piercing, multishot, loyalty and curse of vanishing.
-		enchProtection           = 0,
-		enchFireProtection       = 1,
-		enchFeatherFalling       = 2,
-		enchBlastProtection      = 3,
+		enchProtection = 0,
+		enchFireProtection = 1,
+		enchFeatherFalling = 2,
+		enchBlastProtection = 3,
 		enchProjectileProtection = 4,
-		enchRespiration          = 5,
-		enchAquaAffinity         = 6,
-		enchThorns               = 7,
-		enchDepthStrider         = 8,
-		enchSharpness            = 16,
-		enchSmite                = 17,
-		enchBaneOfArthropods     = 18,
-		enchKnockback            = 19,
-		enchFireAspect           = 20,
-		enchLooting              = 21,
-		enchEfficiency           = 32,
-		enchSilkTouch            = 33,
-		enchUnbreaking           = 34,
-		enchFortune              = 35,
-		enchPower                = 48,
-		enchPunch                = 49,
-		enchFlame                = 50,
-		enchInfinity             = 51,
-		enchLuckOfTheSea         = 61,
-		enchLure                 = 62,
-	} ;
+		enchRespiration = 5,
+		enchAquaAffinity = 6,
+		enchThorns = 7,
+		enchDepthStrider = 8,
+		enchSharpness = 16,
+		enchSmite = 17,
+		enchBaneOfArthropods = 18,
+		enchKnockback = 19,
+		enchFireAspect = 20,
+		enchLooting = 21,
+		enchEfficiency = 32,
+		enchSilkTouch = 33,
+		enchUnbreaking = 34,
+		enchFortune = 35,
+		enchPower = 48,
+		enchPunch = 49,
+		enchFlame = 50,
+		enchInfinity = 51,
+		enchLuckOfTheSea = 61,
+		enchLure = 62,
+	};
 
 	/** Creates an empty enchantments container */
 	cEnchantments(void);
@@ -112,7 +112,7 @@ public:
 	static int StringToEnchantmentID(const AString & a_EnchantmentName);
 
 	/** Returns true if a_Other contains exactly the same enchantments and levels */
-	bool operator ==(const cEnchantments & a_Other) const;
+	bool operator== (const cEnchantments & a_Other) const;
 
 	// tolua_end
 
@@ -149,7 +149,7 @@ public:
 	static cEnchantments SelectEnchantmentFromVector(const cWeightedEnchantments & a_Enchantments, int a_Seed);
 
 	/** Returns true if a_Other doesn't contain exactly the same enchantments and levels */
-	bool operator !=(const cEnchantments & a_Other) const;
+	bool operator!= (const cEnchantments & a_Other) const;
 
 	/** Writes the enchantments into the specified NBT writer; begins with the LIST tag of the specified name ("ench" or "StoredEnchantments") */
 	friend void EnchantmentSerializer::WriteToNBTCompound(const cEnchantments & a_Enchantments, cFastNBTWriter & a_Writer, const AString & a_ListTagName, bool stringmode);
@@ -157,17 +157,17 @@ public:
 	/** Reads the enchantments from the specified NBT list tag (ench or StoredEnchantments) */
 	friend void EnchantmentSerializer::ParseFromNBT(cEnchantments & a_Enchantments, const cParsedNBT & a_NBT, int a_EnchListTagIdx);
 
-protected:
+	protected:
 	/** Maps enchantment ID -> enchantment level */
 	typedef std::map<int, unsigned int> cMap;
 
 	/** Currently stored enchantments */
 	cMap m_Enchantments;
 
-public:
+	public:
 	/** Make this class iterable */
 	cMap::const_iterator begin() const { return m_Enchantments.begin(); }
-	cMap::const_iterator end()   const { return m_Enchantments.end(); }
+	cMap::const_iterator end() const { return m_Enchantments.end(); }
 };  // tolua_export
 
 
@@ -179,6 +179,3 @@ struct cWeightedEnchantment
 	int m_Weight;
 	cEnchantments m_Enchantments;
 };
-
-
-

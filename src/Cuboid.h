@@ -8,17 +8,23 @@
 // tolua_begin
 class cCuboid
 {
-public:
+	public:
 	// p1 is expected to have the smaller of the coords; Sort() swaps coords to match this
 	Vector3i p1, p2;
 
 	cCuboid(void) {}
-	cCuboid(Vector3i a_p1, Vector3i a_p2) : p1(a_p1), p2(a_p2) {}
-	cCuboid(int a_X1, int a_Y1, int a_Z1) : p1(a_X1, a_Y1, a_Z1), p2(a_X1, a_Y1, a_Z1) {}
+	cCuboid(Vector3i a_p1, Vector3i a_p2) :
+		p1(a_p1), p2(a_p2)
+	{
+	}
+	cCuboid(int a_X1, int a_Y1, int a_Z1) :
+		p1(a_X1, a_Y1, a_Z1), p2(a_X1, a_Y1, a_Z1)
+	{
+	}
 
-	#ifdef TOLUA_EXPOSITION  // tolua isn't aware of implicitly generated copy constructors
-		cCuboid(const cCuboid & a_Cuboid);
-	#endif
+#ifdef TOLUA_EXPOSITION  // tolua isn't aware of implicitly generated copy constructors
+	cCuboid(const cCuboid & a_Cuboid);
+#endif
 
 	// tolua_end
 	// Exported in ManualBindings.cpp to support the old deprecated coord-based overload.
@@ -120,7 +126,7 @@ public:
 	// tolua_end
 
 	/** Checks the two cuboids for equality. */
-	bool operator == (const cCuboid & aOther) const
+	bool operator== (const cCuboid & aOther) const
 	{
 		return (
 			(p1.x == aOther.p1.x) &&
@@ -132,16 +138,15 @@ public:
 		);
 	}
 
-	bool operator != (const cCuboid & aOther) const
+	bool operator!= (const cCuboid & aOther) const
 	{
-		return !operator ==(aOther);
+		return !operator== (aOther);
 	}
 
 
 	// tolua_begin
 
-private:
-
+	private:
 	/** Returns true if the two specified intervals have a non-empty union */
 	inline static bool DoIntervalsIntersect(int a_Min1, int a_Max1, int a_Min2, int a_Max2)
 	{
@@ -149,10 +154,5 @@ private:
 		ASSERT(a_Min2 <= a_Max2);
 		return ((a_Min1 <= a_Max2) && (a_Max1 >= a_Min2));
 	}
-
-} ;
+};
 // tolua_end
-
-
-
-

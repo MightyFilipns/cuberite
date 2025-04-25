@@ -42,8 +42,7 @@ namespace Compression
 	/** Contains routines for data compression. */
 	class Compressor
 	{
-	public:
-
+		public:
 		/** Creates a new compressor instance with a compression factor [0-12]. */
 		Compressor(int CompressionFactor = 6);
 		~Compressor();
@@ -52,8 +51,7 @@ namespace Compression
 		Result CompressZLib(ContiguousByteBufferView Input);
 		Result CompressZLib(const void * Input, size_t Size);
 
-	private:
-
+		private:
 		template <auto Algorithm>
 		Result Compress(const void * Input, size_t Size);
 
@@ -63,8 +61,7 @@ namespace Compression
 	/** Contains routines for data extraction. */
 	class Extractor
 	{
-	public:
-
+		public:
 		/** Creates a new extractor instance. */
 		Extractor();
 		~Extractor();
@@ -73,11 +70,12 @@ namespace Compression
 		Result ExtractZLib(ContiguousByteBufferView Input);
 		Result ExtractZLib(ContiguousByteBufferView Input, size_t UncompressedSize);
 
-	private:
-
-		template <auto Algorithm> Result Extract(ContiguousByteBufferView Input);
-		template <auto Algorithm> Result Extract(ContiguousByteBufferView Input, size_t UncompressedSize);
+		private:
+		template <auto Algorithm>
+		Result Extract(ContiguousByteBufferView Input);
+		template <auto Algorithm>
+		Result Extract(ContiguousByteBufferView Input, size_t UncompressedSize);
 
 		libdeflate_decompressor * m_Handle;
 	};
-}
+}  // namespace Compression

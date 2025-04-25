@@ -23,13 +23,13 @@ class cMojangAPI;
 
 class cRankManager
 {
-public:
+	public:
 	/** Acquire this lock to perform mass changes.
 	Improves performance by wrapping everything into a transaction.
 	Makes sure that no other thread is accessing the DB. */
 	class cMassChangeLock
 	{
-	public:
+		public:
 		cMassChangeLock(cRankManager & a_RankManager) :
 			m_Lock(a_RankManager.m_CS),
 			m_Transaction(a_RankManager.m_DB)
@@ -41,7 +41,7 @@ public:
 			m_Transaction.commit();
 		}
 
-	protected:
+		protected:
 		cCSLock m_Lock;
 		SQLite::Transaction m_Transaction;
 	};
@@ -259,8 +259,7 @@ public:
 	/** Updates the playername that is saved with this uuid. Returns false if a error occurred */
 	bool UpdatePlayerName(const cUUID & a_PlayerUUID, const AString & a_NewPlayerName);
 
-protected:
-
+	protected:
 	/** The database storage for all the data. Protected by m_CS. */
 	SQLite::Database m_DB;
 
@@ -289,8 +288,4 @@ protected:
 	/** If the specified table doesn't contain the specified column, it is added to the table.
 	The column type is used only when creating the column, it is not used when checking for existence. */
 	void CreateColumnIfNotExists(const char * a_TableName, const char * a_ColumnName, const char * a_ColumnType = "");
-} ;
-
-
-
-
+};

@@ -4,23 +4,24 @@
 
 class cLogger
 {
-public:
-
+	public:
 	class cListener
 	{
 		public:
 		virtual void Log(std::string_view a_Message, eLogLevel a_LogLevel) = 0;
 
-		virtual ~cListener(){}
+		virtual ~cListener() {}
 	};
 
 	class cAttachment
 	{
 		public:
-
-		cAttachment() : m_listener(nullptr) {}
-		cAttachment(cAttachment && a_other)
-			: m_listener(a_other.m_listener)
+		cAttachment() :
+			m_listener(nullptr)
+		{
+		}
+		cAttachment(cAttachment && a_other) :
+			m_listener(a_other.m_listener)
 		{
 			a_other.m_listener = nullptr;
 		}
@@ -33,7 +34,7 @@ public:
 			}
 		}
 
-		cAttachment & operator=(cAttachment && a_other)
+		cAttachment & operator= (cAttachment && a_other)
 		{
 			m_listener = a_other.m_listener;
 			a_other.m_listener = nullptr;
@@ -41,12 +42,14 @@ public:
 		}
 
 		private:
-
 		cListener * m_listener;
 
 		friend class cLogger;
 
-		cAttachment(cListener * a_listener) : m_listener(a_listener) {}
+		cAttachment(cListener * a_listener) :
+			m_listener(a_listener)
+		{
+		}
 	};
 
 	/** Log a message formatted with a printf style formatting string. */
@@ -65,8 +68,7 @@ public:
 	// Must be called before calling GetInstance in a multithreaded context
 	static void InitiateMultithreading();
 
-private:
-
+	private:
 	cCriticalSection m_CriticalSection;
 	std::vector<std::unique_ptr<cListener>> m_LogListeners;
 

@@ -168,7 +168,7 @@ const cBrewingRecipes::cRecipe * cBrewingRecipes::GetRecipeFrom(const cItem & a_
 		// Search for the drinkable potion, the ingredients are the same
 		// short SplashItemDamage = 0;  // a_Input.m_ItemDamage - 8192;
 
-		auto FoundRecipe = std::find_if(m_Recipes.cbegin(), m_Recipes.cend(), [&](const std::unique_ptr<cRecipe>& a_Recipe)
+		auto FoundRecipe = std::find_if(m_Recipes.cbegin(), m_Recipes.cend(), [&](const std::unique_ptr<cRecipe> & a_Recipe)
 		{
 			return (
 				// (a_Recipe->Input.m_ItemDamage == SplashItemDamage) &&
@@ -234,7 +234,3 @@ bool cBrewingRecipes::IsFuel(const cItem & a_Item) const
 {
 	return (a_Item.m_ItemType == Item::BlazePowder);
 }
-
-
-
-

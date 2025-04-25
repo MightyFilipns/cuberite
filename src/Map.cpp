@@ -16,7 +16,7 @@
 
 
 
-cMap::cMap(unsigned int a_ID, cWorld * a_World):
+cMap::cMap(unsigned int a_ID, cWorld * a_World) :
 	m_ID(a_ID),
 	m_Width(cChunkDef::Width * 8),
 	m_Height(cChunkDef::Width * 8),
@@ -34,7 +34,7 @@ cMap::cMap(unsigned int a_ID, cWorld * a_World):
 
 
 
-cMap::cMap(unsigned int a_ID, int a_CenterX, int a_CenterZ, cWorld * a_World, unsigned int a_Scale):
+cMap::cMap(unsigned int a_ID, int a_CenterX, int a_CenterZ, cWorld * a_World, unsigned int a_Scale) :
 	m_ID(a_ID),
 	m_Width(cChunkDef::Width * 8),
 	m_Height(cChunkDef::Width * 8),
@@ -73,8 +73,8 @@ void cMap::UpdateRadius(int a_PixelX, int a_PixelZ, unsigned int a_Radius)
 	unsigned int StartX = static_cast<unsigned int>(Clamp(a_PixelX - PixelRadius, 0, static_cast<int>(m_Width)));
 	unsigned int StartZ = static_cast<unsigned int>(Clamp(a_PixelZ - PixelRadius, 0, static_cast<int>(m_Height)));
 
-	unsigned int EndX   = static_cast<unsigned int>(Clamp(a_PixelX + PixelRadius, 0, static_cast<int>(m_Width)));
-	unsigned int EndZ   = static_cast<unsigned int>(Clamp(a_PixelZ + PixelRadius, 0, static_cast<int>(m_Height)));
+	unsigned int EndX = static_cast<unsigned int>(Clamp(a_PixelX + PixelRadius, 0, static_cast<int>(m_Width)));
+	unsigned int EndZ = static_cast<unsigned int>(Clamp(a_PixelZ + PixelRadius, 0, static_cast<int>(m_Height)));
 
 	for (unsigned int X = StartX; X < EndX; ++X)
 	{
@@ -99,7 +99,7 @@ void cMap::UpdateRadius(cPlayer & a_Player, unsigned int a_Radius)
 {
 	int PixelWidth = static_cast<int>(GetPixelWidth());
 
-	int PixelX = static_cast<int>(a_Player.GetPosX() - m_CenterX) / PixelWidth + static_cast<int>(m_Width  / 2);
+	int PixelX = static_cast<int>(a_Player.GetPosX() - m_CenterX) / PixelWidth + static_cast<int>(m_Width / 2);
 	int PixelZ = static_cast<int>(a_Player.GetPosZ() - m_CenterZ) / PixelWidth + static_cast<int>(m_Height / 2);
 
 	UpdateRadius(PixelX, PixelZ, a_Radius);
@@ -111,7 +111,7 @@ void cMap::UpdateRadius(cPlayer & a_Player, unsigned int a_Radius)
 
 bool cMap::UpdatePixel(unsigned int a_X, unsigned int a_Z)
 {
-	int BlockX = m_CenterX + static_cast<int>((a_X - m_Width  / 2) * GetPixelWidth());
+	int BlockX = m_CenterX + static_cast<int>((a_X - m_Width / 2) * GetPixelWidth());
 	int BlockZ = m_CenterZ + static_cast<int>((a_Z - m_Height / 2) * GetPixelWidth());
 
 	int ChunkX, ChunkZ;
@@ -124,43 +124,42 @@ bool cMap::UpdatePixel(unsigned int a_X, unsigned int a_Z)
 
 	ColorID PixelData;
 	m_World->DoWithChunk(ChunkX, ChunkZ, [&](cChunk & a_Chunk)
+	{
+		if (GetDimension() == dimNether)
 		{
-			if (GetDimension() == dimNether)
-			{
-				// TODO 2014-02-22 xdot: Nether maps
+			// TODO 2014-02-22 xdot: Nether maps
 
-				return false;
-			}
-
-			static const std::array<unsigned char, 4> BrightnessID = { { 3, 0, 1, 2 } };  // Darkest to lightest
-
-			auto Height = a_Chunk.GetHeight(RelX, RelZ);
-			auto ChunkHeight = cChunkDef::Height;
-			auto TargetBlock = a_Chunk.GetBlock({RelX, Height, RelZ});
-			auto ColourID = cBlockHandler::For(TargetBlock.Type()).GetMapBaseColourID();
-
-			if (TargetBlock.Type() == BlockType::Water)
-			{
-				ChunkHeight /= 4;
-				while (((--Height) != -1) && (a_Chunk.GetBlock(RelX, Height, RelZ).Type() == BlockType::Water))
-				{
-					continue;
-				}
-			}
-			else if (ColourID == 0)
-			{
-				while (((--Height) != -1) && ((ColourID = cBlockHandler::For(a_Chunk.GetBlock(RelX, Height, RelZ).Type()).GetMapBaseColourID()) == 0))
-				{
-					continue;
-				}
-			}
-
-			// Multiply base color ID by 4 and add brightness ID
-			const int BrightnessIDSize = static_cast<int>(BrightnessID.size());
-			PixelData = ColourID * 4 + BrightnessID[static_cast<size_t>(Clamp<int>((BrightnessIDSize * Height) / ChunkHeight, 0, BrightnessIDSize - 1))];
 			return false;
 		}
-	);
+
+		static const std::array<unsigned char, 4> BrightnessID = { { 3, 0, 1, 2 } };  // Darkest to lightest
+
+		auto Height = a_Chunk.GetHeight(RelX, RelZ);
+		auto ChunkHeight = cChunkDef::Height;
+		auto TargetBlock = a_Chunk.GetBlock({ RelX, Height, RelZ });
+		auto ColourID = cBlockHandler::For(TargetBlock.Type()).GetMapBaseColourID();
+
+		if (TargetBlock.Type() == BlockType::Water)
+		{
+			ChunkHeight /= 4;
+			while (((--Height) != -1) && (a_Chunk.GetBlock(RelX, Height, RelZ).Type() == BlockType::Water))
+			{
+				continue;
+			}
+		}
+		else if (ColourID == 0)
+		{
+			while (((--Height) != -1) && ((ColourID = cBlockHandler::For(a_Chunk.GetBlock(RelX, Height, RelZ).Type()).GetMapBaseColourID()) == 0))
+			{
+				continue;
+			}
+		}
+
+		// Multiply base color ID by 4 and add brightness ID
+		const int BrightnessIDSize = static_cast<int>(BrightnessID.size());
+		PixelData = ColourID * 4 + BrightnessID[static_cast<size_t>(Clamp<int>((BrightnessIDSize * Height) / ChunkHeight, 0, BrightnessIDSize - 1))];
+		return false;
+	});
 
 	SetPixel(a_X, a_Z, PixelData);
 
@@ -320,7 +319,7 @@ const cMapDecorator cMap::CreateDecorator(const cEntity * a_TrackedEntity)
 		}
 	}
 
-	return {Type, static_cast<unsigned>(2 * PixelX + 1), static_cast<unsigned>(2 * PixelZ + 1), Rot};
+	return { Type, static_cast<unsigned>(2 * PixelX + 1), static_cast<unsigned>(2 * PixelZ + 1), Rot };
 }
 
 
@@ -331,8 +330,3 @@ unsigned int cMap::GetPixelWidth(void) const
 {
 	return static_cast<unsigned int>(pow(2.0, static_cast<double>(m_Scale)));
 }
-
-
-
-
-

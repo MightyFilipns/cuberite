@@ -53,25 +53,25 @@ enum class eParticleModeSetting
 enum eBlockFace : char
 {
 	BLOCK_FACE_NONE = -1,  // Interacting with no block face - swinging the item in the air
-	BLOCK_FACE_XM   =  4,  // Interacting with the X- face of the block
-	BLOCK_FACE_XP   =  5,  // Interacting with the X+ face of the block
-	BLOCK_FACE_YM   =  0,  // Interacting with the Y- face of the block
-	BLOCK_FACE_YP   =  1,  // Interacting with the Y+ face of the block
-	BLOCK_FACE_ZM   =  2,  // Interacting with the Z- face of the block
-	BLOCK_FACE_ZP   =  3,  // Interacting with the Z+ face of the block
+	BLOCK_FACE_XM = 4,  // Interacting with the X- face of the block
+	BLOCK_FACE_XP = 5,  // Interacting with the X+ face of the block
+	BLOCK_FACE_YM = 0,  // Interacting with the Y- face of the block
+	BLOCK_FACE_YP = 1,  // Interacting with the Y+ face of the block
+	BLOCK_FACE_ZM = 2,  // Interacting with the Z- face of the block
+	BLOCK_FACE_ZP = 3,  // Interacting with the Z+ face of the block
 
 	// Synonyms using the (deprecated) world directions:
 	BLOCK_FACE_BOTTOM = BLOCK_FACE_YM,  // Interacting with the bottom   face of the block
-	BLOCK_FACE_TOP    = BLOCK_FACE_YP,  // Interacting with the top      face of the block
-	BLOCK_FACE_NORTH  = BLOCK_FACE_ZM,  // Interacting with the northern face of the block
-	BLOCK_FACE_SOUTH  = BLOCK_FACE_ZP,  // Interacting with the southern face of the block
-	BLOCK_FACE_WEST   = BLOCK_FACE_XM,  // Interacting with the western  face of the block
-	BLOCK_FACE_EAST   = BLOCK_FACE_XP,  // Interacting with the eastern  face of the block
+	BLOCK_FACE_TOP = BLOCK_FACE_YP,  // Interacting with the top      face of the block
+	BLOCK_FACE_NORTH = BLOCK_FACE_ZM,  // Interacting with the northern face of the block
+	BLOCK_FACE_SOUTH = BLOCK_FACE_ZP,  // Interacting with the southern face of the block
+	BLOCK_FACE_WEST = BLOCK_FACE_XM,  // Interacting with the western  face of the block
+	BLOCK_FACE_EAST = BLOCK_FACE_XP,  // Interacting with the eastern  face of the block
 
 	// Bounds, used for range-checking:
 	BLOCK_FACE_MIN = -1,
-	BLOCK_FACE_MAX =  5,
-} ;
+	BLOCK_FACE_MAX = 5,
+};
 
 
 // Bindings gen does not like this code for some reason, otherwise it should work.
@@ -100,14 +100,14 @@ public:
 /** PlayerDigging status constants */
 enum
 {
-	DIG_STATUS_STARTED           = 0,
-	DIG_STATUS_CANCELLED         = 1,
-	DIG_STATUS_FINISHED          = 2,
-	DIG_STATUS_DROP_STACK        = 3,
-	DIG_STATUS_DROP_HELD         = 4,
-	DIG_STATUS_SHOOT_EAT         = 5,
+	DIG_STATUS_STARTED = 0,
+	DIG_STATUS_CANCELLED = 1,
+	DIG_STATUS_FINISHED = 2,
+	DIG_STATUS_DROP_STACK = 3,
+	DIG_STATUS_DROP_HELD = 4,
+	DIG_STATUS_SHOOT_EAT = 5,
 	DIG_STATUS_SWAP_ITEM_IN_HAND = 6,
-} ;
+};
 
 
 
@@ -151,7 +151,7 @@ enum eClickAction
 	caUnknown = 255,
 
 	// Keep this list in sync with ClickActionToString() function below!
-} ;
+};
 
 
 
@@ -159,23 +159,23 @@ enum eClickAction
 
 enum eGameMode
 {
-	eGameMode_NotSet    = -1,
-	eGameMode_Survival  = 0,
-	eGameMode_Creative  = 1,
+	eGameMode_NotSet = -1,
+	eGameMode_Survival = 0,
+	eGameMode_Creative = 1,
 	eGameMode_Adventure = 2,
 	eGameMode_Spectator = 3,
 
 	// Easier-to-use synonyms:
-	gmNotSet    = eGameMode_NotSet,
-	gmSurvival  = eGameMode_Survival,
-	gmCreative  = eGameMode_Creative,
+	gmNotSet = eGameMode_NotSet,
+	gmSurvival = eGameMode_Survival,
+	gmCreative = eGameMode_Creative,
 	gmAdventure = eGameMode_Adventure,
 	gmSpectator = eGameMode_Spectator,
 
 	// These two are used to check GameMode for validity when converting from integers.
 	gmMax,  // Gets automatically assigned
 	gmMin = 0,
-} ;
+};
 
 
 
@@ -183,10 +183,10 @@ enum eGameMode
 
 enum eChatType
 {
-	ctChatBox        = 0,
-	ctSystem         = 1,
+	ctChatBox = 0,
+	ctSystem = 1,
 	ctAboveActionBar = 2,
-} ;
+};
 
 
 
@@ -194,16 +194,16 @@ enum eChatType
 
 enum eWeather
 {
-	eWeather_Sunny        = 0,
-	eWeather_Rain         = 1,
+	eWeather_Sunny = 0,
+	eWeather_Rain = 1,
 	eWeather_ThunderStorm = 2,
 
 	// Easier-to-use synonyms:
-	wSunny        = eWeather_Sunny,
-	wRain         = eWeather_Rain,
+	wSunny = eWeather_Sunny,
+	wRain = eWeather_Rain,
 	wThunderstorm = eWeather_ThunderStorm,
-	wStorm        = wThunderstorm,
-} ;
+	wStorm = wThunderstorm,
+};
 
 
 
@@ -211,12 +211,12 @@ enum eWeather
 
 enum eMobHeadType  // TODO: remove this no longer used
 {
-	SKULL_TYPE_SKELETON    = 0,
-	SKULL_TYPE_WITHER      = 1,
-	SKULL_TYPE_ZOMBIE      = 2,
-	SKULL_TYPE_PLAYER      = 3,
-	SKULL_TYPE_CREEPER     = 4,
-	SKULL_TYPE_DRAGON      = 5,
+	SKULL_TYPE_SKELETON = 0,
+	SKULL_TYPE_WITHER = 1,
+	SKULL_TYPE_ZOMBIE = 2,
+	SKULL_TYPE_PLAYER = 3,
+	SKULL_TYPE_CREEPER = 4,
+	SKULL_TYPE_DRAGON = 5,
 };
 
 
@@ -241,7 +241,7 @@ enum eMobHeadRotation
 	SKULL_ROTATION_WEST_NORTH_WEST = 13,
 	SKULL_ROTATION_NORTH_WEST = 14,
 	SKULL_ROTATION_NORTH_NORTH_WEST = 15,
-} ;
+};
 
 
 
@@ -265,11 +265,11 @@ enum eSkinPart
 /** Dimension of a world */
 enum eDimension
 {
-	dimNether    = -1,
+	dimNether = -1,
 	dimOverworld = 0,
-	dimEnd       = 1,
-	dimNotSet    = 255,  // For things that need an "indeterminate" state, such as cProtocol's LastSentDimension
-} ;
+	dimEnd = 1,
+	dimNotSet = 255,  // For things that need an "indeterminate" state, such as cProtocol's LastSentDimension
+};
 
 
 
@@ -279,51 +279,51 @@ enum eDimension
 enum eDamageType
 {
 	// Canonical names for the types (as documented in the plugin wiki):
-	dtAttack,           // Being attacked by a mob
-	dtRangedAttack,     // Being attacked by a projectile, possibly from a mob
-	dtLightning,        // Hit by a lightning strike
-	dtFalling,          // Falling down; dealt when hitting the ground
-	dtDrowning,         // Drowning in water / lava
-	dtSuffocating,      // Suffocating inside a block
-	dtStarving,         // Hunger
-	dtCactusContact,    // Contact with a cactus block
-	dtMagmaContact,     // Contact with a magma block
-	dtLavaContact,      // Contact with a lava block
-	dtPoisoning,        // Having the poison effect
-	dtWithering,        // Having the wither effect
-	dtOnFire,           // Being on fire
-	dtFireContact,      // Standing inside a fire block
-	dtInVoid,           // Falling into the Void (Y < 0)
+	dtAttack,  // Being attacked by a mob
+	dtRangedAttack,  // Being attacked by a projectile, possibly from a mob
+	dtLightning,  // Hit by a lightning strike
+	dtFalling,  // Falling down; dealt when hitting the ground
+	dtDrowning,  // Drowning in water / lava
+	dtSuffocating,  // Suffocating inside a block
+	dtStarving,  // Hunger
+	dtCactusContact,  // Contact with a cactus block
+	dtMagmaContact,  // Contact with a magma block
+	dtLavaContact,  // Contact with a lava block
+	dtPoisoning,  // Having the poison effect
+	dtWithering,  // Having the wither effect
+	dtOnFire,  // Being on fire
+	dtFireContact,  // Standing inside a fire block
+	dtInVoid,  // Falling into the Void (Y < 0)
 	dtPotionOfHarming,
-	dtEnderPearl,       // Thrown an ender pearl, teleported by it
-	dtAdmin,            // Damage applied by an admin command
-	dtExplosion,        // Damage applied by an explosion
-	dtEnvironment,      // Damage dealt to mobs from environment: enderman in rain, snow golem in desert
+	dtEnderPearl,  // Thrown an ender pearl, teleported by it
+	dtAdmin,  // Damage applied by an admin command
+	dtExplosion,  // Damage applied by an explosion
+	dtEnvironment,  // Damage dealt to mobs from environment: enderman in rain, snow golem in desert
 
 	// Some common synonyms:
-	dtPawnAttack   = dtAttack,
+	dtPawnAttack = dtAttack,
 	dtEntityAttack = dtAttack,
-	dtMob          = dtAttack,
-	dtMobAttack    = dtAttack,
-	dtArrowAttack  = dtRangedAttack,
-	dtArrow        = dtRangedAttack,
-	dtProjectile   = dtRangedAttack,
-	dtFall         = dtFalling,
-	dtDrown        = dtDrowning,
-	dtSuffocation  = dtSuffocating,
-	dtStarvation   = dtStarving,
-	dtHunger       = dtStarving,
-	dtCactus       = dtCactusContact,
-	dtCactuses     = dtCactusContact,
-	dtCacti        = dtCactusContact,
-	dtMagma        = dtMagmaContact,
-	dtLava         = dtLavaContact,
-	dtPoison       = dtPoisoning,
-	dtWither       = dtWithering,
-	dtBurning      = dtOnFire,
-	dtInFire       = dtFireContact,
-	dtPlugin       = dtAdmin,
-} ;
+	dtMob = dtAttack,
+	dtMobAttack = dtAttack,
+	dtArrowAttack = dtRangedAttack,
+	dtArrow = dtRangedAttack,
+	dtProjectile = dtRangedAttack,
+	dtFall = dtFalling,
+	dtDrown = dtDrowning,
+	dtSuffocation = dtSuffocating,
+	dtStarvation = dtStarving,
+	dtHunger = dtStarving,
+	dtCactus = dtCactusContact,
+	dtCactuses = dtCactusContact,
+	dtCacti = dtCactusContact,
+	dtMagma = dtMagmaContact,
+	dtLava = dtLavaContact,
+	dtPoison = dtPoisoning,
+	dtWither = dtWithering,
+	dtBurning = dtOnFire,
+	dtInFire = dtFireContact,
+	dtPlugin = dtAdmin,
+};
 
 
 
@@ -354,7 +354,7 @@ enum eExplosionSource
 	esWitherBirth,
 	esWitherSkull,
 	esMax,
-} ;
+};
 
 
 
@@ -365,7 +365,7 @@ enum eShrapnelLevel
 	slNone,
 	slGravityAffectedOnly,
 	slAll
-} ;
+};
 
 
 
@@ -378,7 +378,7 @@ enum eSpreadSource
 	ssMushroomSpread,
 	ssMycelSpread,
 	ssVineSpread,
-} ;
+};
 
 
 
@@ -389,23 +389,23 @@ enum eMessageType
 	// https://forum.cuberite.org/thread-1212.html
 	// MessageType...
 
-	mtCustom,          // Send raw data without any processing
-	mtFailure,         // Something could not be done (i.e. command not executed due to insufficient privilege)
-	mtInformation,     // Informational message (i.e. command usage)
-	mtSuccess,         // Something executed successfully
-	mtWarning,         // Something concerning (i.e. reload) is about to happen
-	mtFatal,           // Something catastrophic occured (i.e. plugin crash)
-	mtDeath,           // Denotes death of player
+	mtCustom,  // Send raw data without any processing
+	mtFailure,  // Something could not be done (i.e. command not executed due to insufficient privilege)
+	mtInformation,  // Informational message (i.e. command usage)
+	mtSuccess,  // Something executed successfully
+	mtWarning,  // Something concerning (i.e. reload) is about to happen
+	mtFatal,  // Something catastrophic occured (i.e. plugin crash)
+	mtDeath,  // Denotes death of player
 	mtPrivateMessage,  // Player to player messaging identifier
-	mtJoin,            // A player has joined the server
-	mtLeave,           // A player has left the server
-	mtMaxPlusOne,      // The first invalid type, used for checking on LuaAPI boundaries
+	mtJoin,  // A player has joined the server
+	mtLeave,  // A player has left the server
+	mtMaxPlusOne,  // The first invalid type, used for checking on LuaAPI boundaries
 
 	// Common aliases:
-	mtFail  = mtFailure,
+	mtFail = mtFailure,
 	mtError = mtFailure,
-	mtInfo  = mtInformation,
-	mtPM    = mtPrivateMessage,
+	mtInfo = mtInformation,
+	mtPM = mtPrivateMessage,
 };
 
 
@@ -679,7 +679,7 @@ eBlockFace RotateBlockFaceCCW(eBlockFace a_BlockFace);
 eBlockFace RotateBlockFaceCW(eBlockFace a_BlockFace);
 
 /** Returns a blockface opposite to the one specified. */
-eBlockFace ReverseBlockFace(eBlockFace  a_BlockFace);
+eBlockFace ReverseBlockFace(eBlockFace a_BlockFace);
 
 /** Returns the textual representation of the BlockFace constant. */
 AString BlockFaceToString(eBlockFace a_BlockFace);
@@ -808,6 +808,6 @@ namespace ItemCategory
 	bool IsHorseArmor(Item a_ItemType);
 
 	bool IsVillagerFood(Item a_ItemType);
-}
+}  // namespace ItemCategory
 
 // tolua_end

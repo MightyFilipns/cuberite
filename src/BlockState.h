@@ -10,7 +10,10 @@ struct BlockState
 {
 	using DataType = uint_least16_t;
 
-	constexpr BlockState() : ID(0) {}
+	constexpr BlockState() :
+		ID(0)
+	{
+	}
 
 	constexpr BlockState(uint_least16_t StateID) :
 		ID(StateID)
@@ -22,17 +25,17 @@ struct BlockState
 	/** Gets the block type of this block state. */
 	BlockType Type() const;
 
-	bool operator == (BlockState Block) const
+	bool operator== (BlockState Block) const
 	{
 		return ID == Block.ID;
 	}
 
-	bool operator != (BlockState Block) const
+	bool operator!= (BlockState Block) const
 	{
 		return ID != Block.ID;
 	}
 
-	bool operator < (BlockState Block) const
+	bool operator< (BlockState Block) const
 	{
 		return ID < Block.ID;
 	}
@@ -44,9 +47,10 @@ struct BlockState
 };
 
 
-template<> class fmt::formatter<BlockState> : public fmt::formatter<std::string_view>
+template <>
+class fmt::formatter<BlockState> : public fmt::formatter<std::string_view>
 {
-public:
+	public:
 	template <typename FormatContext>
 	auto format(const BlockState & a_Block, FormatContext & a_Ctx) const
 	{
@@ -54,13 +58,13 @@ public:
 	}
 };
 
-template<> class fmt::formatter<BlockType> : public fmt::formatter<std::string_view>
+template <>
+class fmt::formatter<BlockType> : public fmt::formatter<std::string_view>
 {
-public:
+	public:
 	template <typename FormatContext>
 	auto format(const BlockType & a_Block, FormatContext & a_Ctx) const
 	{
 		return fmt::format_to(a_Ctx.out(), "{}", NamespaceSerializer::From(a_Block));
 	}
 };
-

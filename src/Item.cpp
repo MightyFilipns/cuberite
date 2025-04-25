@@ -13,7 +13,7 @@
 
 
 
-cItem::cItem():
+cItem::cItem() :
 	m_ItemType(Item::Air),
 	m_ItemCount(0),
 	m_FireworkItem(),
@@ -31,7 +31,7 @@ cItem::cItem(
 	const DataComponents::DataComponentMap & a_DataComponents,
 	const AString & a_Enchantments,
 	const AStringVector & a_LoreTable
-):
+) :
 	m_ItemType(a_ItemType),
 	m_ItemCount(a_ItemCount),
 	m_Enchantments(a_Enchantments),
@@ -300,61 +300,61 @@ unsigned cItem::GetEnchantability()
 		case Item::WoodenPickaxe:
 		case Item::WoodenShovel:
 		case Item::WoodenAxe:
-		case Item::WoodenHoe: return 15;
+		case Item::WoodenHoe:           return 15;
 
 		case Item::LeatherHelmet:
 		case Item::LeatherChestplate:
 		case Item::LeatherLeggings:
-		case Item::LeatherBoots: return 15;
+		case Item::LeatherBoots:        return 15;
 
 		case Item::StoneSword:
 		case Item::StonePickaxe:
 		case Item::StoneShovel:
 		case Item::StoneAxe:
-		case Item::StoneHoe: return 5;
+		case Item::StoneHoe:            return 5;
 
 		case Item::IronHelmet:
 		case Item::IronChestplate:
 		case Item::IronLeggings:
-		case Item::IronBoots: return 9;
+		case Item::IronBoots:           return 9;
 
 		case Item::IronSword:
 		case Item::IronPickaxe:
 		case Item::IronShovel:
 		case Item::IronAxe:
-		case Item::IronHoe: return 14;
+		case Item::IronHoe:             return 14;
 
 		case Item::ChainmailHelmet:
 		case Item::ChainmailChestplate:
 		case Item::ChainmailLeggings:
-		case Item::ChainmailBoots: return 12;
+		case Item::ChainmailBoots:      return 12;
 
 		case Item::DiamondHelmet:
 		case Item::DiamondChestplate:
 		case Item::DiamondLeggings:
-		case Item::DiamondBoots: return 10;
+		case Item::DiamondBoots:        return 10;
 
 		case Item::DiamondSword:
 		case Item::DiamondPickaxe:
 		case Item::DiamondShovel:
 		case Item::DiamondAxe:
-		case Item::DiamondHoe: return 10;
+		case Item::DiamondHoe:          return 10;
 
 		case Item::GoldenHelmet:
 		case Item::GoldenChestplate:
 		case Item::GoldenLeggings:
-		case Item::GoldenBoots: return 25;
+		case Item::GoldenBoots:         return 25;
 
 		case Item::GoldenSword:
 		case Item::GoldenPickaxe:
 		case Item::GoldenShovel:
 		case Item::GoldenAxe:
-		case Item::GoldenHoe: return 22;
+		case Item::GoldenHoe:           return 22;
 
 		case Item::FishingRod:
 		case Item::Bow:
-		case Item::Book: return 1;
-		default: return 0;
+		case Item::Book:                return 1;
+		default:                        return 0;
 	}
 }
 
@@ -488,8 +488,7 @@ bool cItem::CanHaveEnchantment(int a_EnchantmentID)
 	// as of July 2017 (Minecraft 1.12).
 
 	// Hand tool enchantments
-	static const std::set<int> SwordEnchantments =
-	{
+	static const std::set<int> SwordEnchantments = {
 		cEnchantments::enchBaneOfArthropods,
 		cEnchantments::enchFireAspect,
 		cEnchantments::enchKnockback,
@@ -498,8 +497,7 @@ bool cItem::CanHaveEnchantment(int a_EnchantmentID)
 		cEnchantments::enchSmite,
 		cEnchantments::enchUnbreaking
 	};
-	static const std::set<int> AxeEnchantments =
-	{
+	static const std::set<int> AxeEnchantments = {
 		cEnchantments::enchBaneOfArthropods,
 		cEnchantments::enchEfficiency,
 		cEnchantments::enchFortune,
@@ -508,32 +506,27 @@ bool cItem::CanHaveEnchantment(int a_EnchantmentID)
 		cEnchantments::enchSmite,
 		cEnchantments::enchUnbreaking
 	};
-	static const std::set<int> ToolEnchantments =
-	{
+	static const std::set<int> ToolEnchantments = {
 		cEnchantments::enchEfficiency,
 		cEnchantments::enchFortune,
 		cEnchantments::enchSilkTouch,
 		cEnchantments::enchUnbreaking
 	};
-	static const std::set<int> ShearEnchantments =
-	{
+	static const std::set<int> ShearEnchantments = {
 		cEnchantments::enchEfficiency,
 		cEnchantments::enchUnbreaking
 	};
-	static const std::set<int> BowEnchantments =
-	{
+	static const std::set<int> BowEnchantments = {
 		cEnchantments::enchFlame,
 		cEnchantments::enchInfinity,
 		cEnchantments::enchPower,
 		cEnchantments::enchPunch
 	};
-	static const std::set<int> FishingEnchantments =
-	{
+	static const std::set<int> FishingEnchantments = {
 		cEnchantments::enchLuckOfTheSea,
 		cEnchantments::enchLure
 	};
-	static const std::set<int> MiscEnchantments =
-	{
+	static const std::set<int> MiscEnchantments = {
 		cEnchantments::enchUnbreaking
 	};
 
@@ -567,8 +560,7 @@ bool cItem::CanHaveEnchantment(int a_EnchantmentID)
 	}
 
 	// Armor enchantments
-	static const std::set<int> ArmorEnchantments =
-	{
+	static const std::set<int> ArmorEnchantments = {
 		cEnchantments::enchBlastProtection,
 		cEnchantments::enchFireProtection,
 		cEnchantments::enchProjectileProtection,
@@ -576,13 +568,11 @@ bool cItem::CanHaveEnchantment(int a_EnchantmentID)
 		cEnchantments::enchThorns,
 		cEnchantments::enchUnbreaking
 	};
-	static const std::set<int> HatOnlyEnchantments =
-	{
+	static const std::set<int> HatOnlyEnchantments = {
 		cEnchantments::enchAquaAffinity,
 		cEnchantments::enchRespiration
 	};
-	static const std::set<int> BootOnlyEnchantments =
-	{
+	static const std::set<int> BootOnlyEnchantments = {
 		cEnchantments::enchDepthStrider,
 		cEnchantments::enchFeatherFalling
 	};

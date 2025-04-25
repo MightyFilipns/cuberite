@@ -16,15 +16,14 @@ namespace
 	struct SectionIndices
 	{
 		size_t Section = 0;  // Index into m_Sections
-		size_t Index = 0;    // Index into a single sChunkSection
+		size_t Index = 0;  // Index into a single sChunkSection
 	};
 
 	inline SectionIndices IndicesFromRelPos(const Vector3i a_RelPos)
 	{
 		ASSERT(cChunkDef::IsValidRelPos(a_RelPos));
 
-		return
-		{
+		return {
 			static_cast<size_t>(a_RelPos.y / cChunkDef::SectionHeight),
 			cChunkDef::MakeIndex(a_RelPos.x, a_RelPos.y % cChunkDef::SectionHeight, a_RelPos.z)
 		};
@@ -40,18 +39,18 @@ namespace
 	{
 		if (IsCompressed(ElementCount))
 		{
-// 			return DefaultValue & 0xF;  // TODO (12xx12) Readdd this
+			// 			return DefaultValue & 0xF;  // TODO (12xx12) Readdd this
 		}
 
 		return DefaultValue;
 	}
-}  // namespace (anonymous)
+}  // namespace
 
 
 
 
 
-template<class ElementType, size_t ElementCount>
+template <class ElementType, size_t ElementCount>
 void ChunkDataStore<ElementType, ElementCount>::Assign(const ChunkDataStore<ElementType, ElementCount> & a_Other)
 {
 	for (size_t Y = 0; Y != cChunkDef::NumSections; Y++)
@@ -69,7 +68,7 @@ void ChunkDataStore<ElementType, ElementCount>::Assign(const ChunkDataStore<Elem
 
 
 
-template<class ElementType, size_t ElementCount>
+template <class ElementType, size_t ElementCount>
 ElementType ChunkDataStore<ElementType, ElementCount>::Get(const Vector3i a_Position) const
 {
 	const auto Indices = IndicesFromRelPos(a_Position);
@@ -94,7 +93,7 @@ ElementType ChunkDataStore<ElementType, ElementCount>::Get(const Vector3i a_Posi
 
 
 
-template<class ElementType, size_t ElementCount>
+template <class ElementType, size_t ElementCount>
 typename ChunkDataStore<ElementType, ElementCount>::Type * ChunkDataStore<ElementType, ElementCount>::GetSection(const size_t a_Y) const
 {
 	return Store[a_Y].get();
@@ -104,7 +103,7 @@ typename ChunkDataStore<ElementType, ElementCount>::Type * ChunkDataStore<Elemen
 
 
 
-template<class ElementType, size_t ElementCount>
+template <class ElementType, size_t ElementCount>
 void ChunkDataStore<ElementType, ElementCount>::Set(const Vector3i a_Position, const ElementType a_Value)
 {
 	const auto Indices = IndicesFromRelPos(a_Position);
@@ -135,8 +134,8 @@ void ChunkDataStore<ElementType, ElementCount>::Set(const Vector3i a_Position, c
 
 
 
-template<class ElementType, size_t ElementCount>
-void ChunkDataStore<ElementType, ElementCount>::SetSection(const ElementType (& a_Source)[ElementCount], const size_t a_Y)
+template <class ElementType, size_t ElementCount>
+void ChunkDataStore<ElementType, ElementCount>::SetSection(const ElementType (&a_Source)[ElementCount], const size_t a_Y)
 {
 	auto & Section = Store[a_Y];
 	const auto SourceEnd = std::end(a_Source);
@@ -145,7 +144,8 @@ void ChunkDataStore<ElementType, ElementCount>::SetSection(const ElementType (& 
 	{
 		std::copy(a_Source, SourceEnd, Section->begin());
 	}
-	else if (std::any_of(a_Source, SourceEnd, [&](const auto Value) { return Value != DefaultValue; }))
+	else if (std::any_of(a_Source, SourceEnd, [&](const auto Value)
+	{ return Value != DefaultValue; }))
 	{
 		Section = std::make_unique_for_overwrite<Type>();
 		std::copy(a_Source, SourceEnd, Section->begin());
@@ -156,12 +156,12 @@ void ChunkDataStore<ElementType, ElementCount>::SetSection(const ElementType (& 
 
 
 
-template<class ElementType, size_t ElementCount>
-void ChunkDataStore<ElementType, ElementCount>::SetAll(const ElementType (& a_Source)[cChunkDef::NumSections * ElementCount])
+template <class ElementType, size_t ElementCount>
+void ChunkDataStore<ElementType, ElementCount>::SetAll(const ElementType (&a_Source)[cChunkDef::NumSections * ElementCount])
 {
 	for (size_t Y = 0; Y != cChunkDef::NumSections; Y++)
 	{
-		SetSection(*reinterpret_cast<const ElementType (*)[ElementCount]>(a_Source + Y * ElementCount), Y);
+		SetSection(*reinterpret_cast<const ElementType(*)[ElementCount]>(a_Source + Y * ElementCount), Y);
 	}
 }
 
@@ -228,4 +228,3 @@ void ChunkLightData::SetSection(const SectionType & a_BlockLightSource, const Se
 
 template struct ChunkDataStore<BlockState, ChunkBlockData::SectionBlockCount>;
 template struct ChunkDataStore<LIGHTTYPE, ChunkLightData::SectionLightCount>;
-

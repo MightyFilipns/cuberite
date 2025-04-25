@@ -14,8 +14,7 @@
 
 
 /** Chunk data callback that takes the chunk data and puts them into cLightingThread's m_BlockTypes[] / m_HeightMap[]: */
-class cReader :
-	public cChunkDataCallback
+class cReader : public cChunkDataCallback
 {
 	virtual void ChunkData(const ChunkBlockData & a_BlockData, const ChunkLightData &) override
 	{
@@ -51,8 +50,11 @@ class cReader :
 	virtual void HeightMap(const cChunkDef::HeightMap & a_Heightmap) override
 	{
 		// Copy the entire heightmap, distribute it into the 3x3 chunk blob:
-		typedef struct {HEIGHTTYPE m_Row[16]; } ROW;
-		const ROW * InputRows  = reinterpret_cast<const ROW *>(a_Heightmap.data());
+		typedef struct
+		{
+			HEIGHTTYPE m_Row[16];
+		} ROW;
+		const ROW * InputRows = reinterpret_cast<const ROW *>(a_Heightmap.data());
 		ROW * OutputRows = reinterpret_cast<ROW *>(m_HeightMap);
 		int InputIdx = 0;
 		int OutputIdx = m_ReadingChunkX + m_ReadingChunkZ * cChunkDef::Width * 3;
@@ -74,7 +76,7 @@ class cReader :
 		m_MaxHeight = MaxHeight;
 	}
 
-public:
+	public:
 	int m_ReadingChunkX;  // 0, 1 or 2; x-offset of the chunk we're reading from the BlockTypes start
 	int m_ReadingChunkZ;  // 0, 1 or 2; z-offset of the chunk we're reading from the BlockTypes start
 	HEIGHTTYPE m_MaxHeight;  // Maximum value in this chunk's heightmap
@@ -90,7 +92,7 @@ public:
 	{
 		std::fill_n(m_Blocks, cChunkDef::NumBlocks * 9, Block::Air::Air());
 	}
-} ;
+};
 
 
 
@@ -99,7 +101,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 // cLightingThread:
 
-cLightingThread::cLightingThread(cWorld & a_World):
+cLightingThread::cLightingThread(cWorld & a_World) :
 	Super("Lighting Executor"),
 	m_World(a_World),
 	m_MaxHeight(0),
@@ -238,7 +240,7 @@ void cLightingThread::LightChunk(cLightingChunkStay & a_Item)
 	{
 		if (a_Item.m_CallbackAfter != nullptr)
 		{
-			a_Item.m_CallbackAfter->Call({a_Item.m_ChunkX, a_Item.m_ChunkZ}, true);
+			a_Item.m_CallbackAfter->Call({ a_Item.m_ChunkX, a_Item.m_ChunkZ }, true);
 		}
 		return;
 	}
@@ -319,7 +321,7 @@ void cLightingThread::LightChunk(cLightingChunkStay & a_Item)
 
 	if (a_Item.m_CallbackAfter != nullptr)
 	{
-		a_Item.m_CallbackAfter->Call({a_Item.m_ChunkX, a_Item.m_ChunkZ}, true);
+		a_Item.m_CallbackAfter->Call({ a_Item.m_ChunkX, a_Item.m_ChunkZ }, true);
 	}
 }
 
@@ -337,12 +339,12 @@ void cLightingThread::ReadChunks(int a_ChunkX, int a_ChunkZ)
 		for (int x = 0; x < 3; x++)
 		{
 			Reader.m_ReadingChunkX = x;
-			VERIFY(m_World.GetChunkData({a_ChunkX + x - 1, a_ChunkZ + z - 1}, Reader));
+			VERIFY(m_World.GetChunkData({ a_ChunkX + x - 1, a_ChunkZ + z - 1 }, Reader));
 		}  // for z
 	}  // for x
 
 	memset(m_BlockLight, 0, sizeof(m_BlockLight));
-	memset(m_SkyLight,   0, sizeof(m_SkyLight));
+	memset(m_SkyLight, 0, sizeof(m_SkyLight));
 	m_MaxHeight = Reader.m_MaxHeight;
 }
 
@@ -472,8 +474,12 @@ void cLightingThread::CalcLight(LIGHTTYPE * a_Light)
 
 void cLightingThread::CalcLightStep(
 	LIGHTTYPE * a_Light,
-	size_t a_NumSeedsIn,    unsigned char * a_IsSeedIn,  unsigned int * a_SeedIdxIn,
-	size_t & a_NumSeedsOut, unsigned char * a_IsSeedOut, unsigned int * a_SeedIdxOut
+	size_t a_NumSeedsIn,
+	unsigned char * a_IsSeedIn,
+	unsigned int * a_SeedIdxIn,
+	size_t & a_NumSeedsOut,
+	unsigned char * a_IsSeedOut,
+	unsigned int * a_SeedIdxOut
 )
 {
 	UNUSED(a_IsSeedIn);
@@ -544,8 +550,11 @@ void cLightingThread::CompressLight(LIGHTTYPE * a_LightArray, LIGHTTYPE * a_Chun
 
 void cLightingThread::PropagateLight(
 	LIGHTTYPE * a_Light,
-	unsigned int a_SrcIdx, unsigned int a_DstIdx,
-	size_t & a_NumSeedsOut, unsigned char * a_IsSeedOut, unsigned int * a_SeedIdxOut
+	unsigned int a_SrcIdx,
+	unsigned int a_DstIdx,
+	size_t & a_NumSeedsOut,
+	unsigned char * a_IsSeedOut,
+	unsigned int * a_SeedIdxOut
 )
 {
 	ASSERT(a_SrcIdx < ARRAYCOUNT(m_SkyLight));
@@ -596,9 +605,9 @@ cLightingThread::cLightingChunkStay::cLightingChunkStay(cLightingThread & a_Ligh
 	Add(a_ChunkX + 1, a_ChunkZ + 1);
 	Add(a_ChunkX + 1, a_ChunkZ);
 	Add(a_ChunkX + 1, a_ChunkZ - 1);
-	Add(a_ChunkX,     a_ChunkZ + 1);
-	Add(a_ChunkX,     a_ChunkZ);
-	Add(a_ChunkX,     a_ChunkZ - 1);
+	Add(a_ChunkX, a_ChunkZ + 1);
+	Add(a_ChunkX, a_ChunkZ);
+	Add(a_ChunkX, a_ChunkZ - 1);
 	Add(a_ChunkX - 1, a_ChunkZ + 1);
 	Add(a_ChunkX - 1, a_ChunkZ);
 	Add(a_ChunkX - 1, a_ChunkZ - 1);
@@ -624,7 +633,3 @@ void cLightingThread::cLightingChunkStay::OnDisabled(void)
 {
 	// Nothing needed in this callback
 }
-
-
-
-

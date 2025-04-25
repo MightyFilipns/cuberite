@@ -14,19 +14,19 @@
 #include "OSSupport/Network.h"
 
 #ifdef _MSC_VER
-	#pragma warning(push)
-	#pragma warning(disable:4127)
-	#pragma warning(disable:4244)
-	#pragma warning(disable:4231)
-	#pragma warning(disable:4189)
-	#pragma warning(disable:4702)
+#pragma warning(push)
+#pragma warning(disable : 4127)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4231)
+#pragma warning(disable : 4189)
+#pragma warning(disable : 4702)
 #endif
 
 #include <functional>
 #include "mbedTLS++/RsaPrivateKey.h"
 
 #ifdef _MSC_VER
-	#pragma warning(pop)
+#pragma warning(pop)
 #endif
 
 
@@ -55,7 +55,7 @@ namespace Json
 // tolua_begin
 class cServer
 {
-public:
+	public:
 	// tolua_end
 
 	virtual ~cServer() {}
@@ -63,7 +63,7 @@ public:
 
 	// tolua_begin
 
-	const AString & GetDescription(void) const {return m_Description; }
+	const AString & GetDescription(void) const { return m_Description; }
 
 	const AString & GetShutdownMessage(void) const { return m_ShutdownMessage; }
 
@@ -166,29 +166,26 @@ public:
 	/** Get the Forge mods (map of ModName -> ModVersionString) registered for a given protocol. */
 	const AStringMap & GetRegisteredForgeMods(const UInt32 a_Protocol);
 
-private:
-
+	private:
 	friend class cRoot;  // so cRoot can create and destroy cServer
 	friend class cServerListenCallbacks;  // Accessing OnConnectionAccepted()
 
 
 
 	/** The server tick thread takes care of the players who aren't yet spawned in a world */
-	class cTickThread:
-		public cIsThread
+	class cTickThread : public cIsThread
 	{
 		using Super = cIsThread;
 
-	public:
-
+		public:
 		cTickThread(cServer & a_Server);
 
-	protected:
+		protected:
 		cServer & m_Server;
 
 		// cIsThread overrides:
 		virtual void Execute(void) override;
-	} ;
+	};
 
 
 
@@ -307,7 +304,3 @@ private:
 
 
 };  // tolua_export
-
-
-
-

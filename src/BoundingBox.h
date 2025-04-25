@@ -22,7 +22,7 @@ For intersection purposes, though, if the intersection is "sharp" in any coord (
 the boxes are considered non-intersecting. */
 class cBoundingBox
 {
-public:
+	public:
 	cBoundingBox(double a_MinX, double a_MaxX, double a_MinY, double a_MaxY, double a_MinZ, double a_MaxZ);
 	cBoundingBox(Vector3d a_Min, Vector3d a_Max);
 	cBoundingBox(Vector3d a_Pos, double a_Radius, double a_Height);
@@ -32,9 +32,9 @@ public:
 	cBoundingBox(Vector3d a_Pos, double a_Radius, double a_Height, double a_VerticalOffset);
 	cBoundingBox(Vector3d a_Pos, double a_CubeLength);
 
-	#ifdef TOLUA_EXPOSITION  // tolua isn't aware of implicitly generated copy constructors
-		cBoundingBox(const cBoundingBox & a_Orig);
-	#endif
+#ifdef TOLUA_EXPOSITION  // tolua isn't aware of implicitly generated copy constructors
+	cBoundingBox(const cBoundingBox & a_Orig);
+#endif
 
 	/** Moves the entire boundingbox by the specified offset */
 	void Move(double a_OffX, double a_OffY, double a_OffZ);
@@ -102,12 +102,8 @@ public:
 
 	// tolua_end
 
-protected:
+	protected:
 	Vector3d m_Min;
 	Vector3d m_Max;
 
-} ;  // tolua_export
-
-
-
-
+};  // tolua_export

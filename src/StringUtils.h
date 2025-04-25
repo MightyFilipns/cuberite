@@ -10,7 +10,7 @@
 
 typedef std::string AString;
 typedef std::vector<AString> AStringVector;
-typedef std::list<AString>   AStringList;
+typedef std::list<AString> AStringList;
 
 /** A string dictionary, used for key-value pairs. */
 typedef std::map<AString, AString> AStringMap;
@@ -224,7 +224,3 @@ T GetStringMapInteger(const AStringMap & a_Map, const AString & a_Key, T a_Defau
 
 
 // If you have any other string helper functions, declare them here
-
-
-
-

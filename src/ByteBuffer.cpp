@@ -25,10 +25,10 @@ namespace VarInt
 {
 	constexpr unsigned char SEGMENT_BITS = 0x7F;
 	constexpr unsigned char CONTINUE_BIT = 0x80;
-	constexpr std::size_t MOVE_BITS  = 7;
-	constexpr std::size_t BYTE_COUNT = 5;        // A 32-bit integer can be encoded by at most 5 bytes
+	constexpr std::size_t MOVE_BITS = 7;
+	constexpr std::size_t BYTE_COUNT = 5;  // A 32-bit integer can be encoded by at most 5 bytes
 	constexpr std::size_t BYTE_COUNT_LONG = 10;  // A 64-bit integer can be encoded by at most 10 bytes
-}
+}  // namespace VarInt
 
 
 
@@ -38,15 +38,15 @@ namespace Position
 {
 	// If the bit indicated in the mask is 0, the the matching offset is applied.
 	constexpr int BIT_MASK_IS_NEGATIVE_XZ = 0x02000000;
-	constexpr int BIT_MASK_IS_NEGATIVE_Y  = 0x0800;
+	constexpr int BIT_MASK_IS_NEGATIVE_Y = 0x0800;
 
 	constexpr int NEGATIVE_OFFSET_XZ = 0x04000000;
-	constexpr int NEGATIVE_OFFSET_Y  = 0x01000;
+	constexpr int NEGATIVE_OFFSET_Y = 0x01000;
 
 	// Bit masks when reading the requested bits
 	constexpr UInt32 BIT_MASK_XZ = 0x03ffffff;  // 26 bits
-	constexpr UInt32 BIT_MASK_Y  = 0x0fff;      // 12 bits
-}
+	constexpr UInt32 BIT_MASK_Y = 0x0fff;  // 12 bits
+}  // namespace Position
 
 
 
@@ -56,7 +56,7 @@ namespace XYZPosition
 {
 	constexpr std::size_t BIT_COUNT_X = 38;
 	constexpr std::size_t BIT_COUNT_Y = 26;
-}
+}  // namespace XYZPosition
 
 
 
@@ -66,15 +66,19 @@ namespace XZYPosition
 {
 	constexpr std::size_t BIT_COUNT_X = 38;
 	constexpr std::size_t BIT_COUNT_Z = 12;
-}
+}  // namespace XZYPosition
 
 
 
 // If a string sent over the protocol is larger than this, a warning is emitted to the console
 #define MAX_STRING_SIZE (512 KiB)
 
-#define NEEDBYTES(Num) if (!CanReadBytes(Num))  return false  // Check if at least Num bytes can be read from  the buffer, return false if not
-#define PUTBYTES(Num)  if (!CanWriteBytes(Num)) return false  // Check if at least Num bytes can be written to the buffer, return false if not
+#define NEEDBYTES(Num)      \
+	if (!CanReadBytes(Num)) \
+	return false  // Check if at least Num bytes can be read from  the buffer, return false if not
+#define PUTBYTES(Num)        \
+	if (!CanWriteBytes(Num)) \
+	return false  // Check if at least Num bytes can be written to the buffer, return false if not
 
 
 
@@ -82,44 +86,44 @@ namespace XZYPosition
 
 #ifdef DEBUG_SINGLE_THREAD_ACCESS
 
-	/** Simple RAII class that is used for checking that no two threads are using an object simultanously.
-	It requires the monitored object to provide the storage for a thread ID.
-	It uses that storage to check if the thread ID of consecutive calls is the same all the time. */
-	class cSingleThreadAccessChecker
-	{
+/** Simple RAII class that is used for checking that no two threads are using an object simultanously.
+It requires the monitored object to provide the storage for a thread ID.
+It uses that storage to check if the thread ID of consecutive calls is the same all the time. */
+class cSingleThreadAccessChecker
+{
 	public:
-		cSingleThreadAccessChecker(std::thread::id * a_ThreadID) :
-			m_ThreadID(a_ThreadID)
-		{
-			ASSERT(
-				(*a_ThreadID == std::this_thread::get_id()) ||  // Either the object is used by current thread...
-				(*a_ThreadID == m_EmptyThreadID)                // ... or by no thread at all
-			);
+	cSingleThreadAccessChecker(std::thread::id * a_ThreadID) :
+		m_ThreadID(a_ThreadID)
+	{
+		ASSERT(
+			(*a_ThreadID == std::this_thread::get_id()) ||  // Either the object is used by current thread...
+			(*a_ThreadID == m_EmptyThreadID)  // ... or by no thread at all
+		);
 
-			// Mark as being used by this thread:
-			*m_ThreadID = std::this_thread::get_id();
-		}
+		// Mark as being used by this thread:
+		*m_ThreadID = std::this_thread::get_id();
+	}
 
-		~cSingleThreadAccessChecker()
-		{
-			// Mark as not being used by any thread:
-			*m_ThreadID = std::thread::id();
-		}
+	~cSingleThreadAccessChecker()
+	{
+		// Mark as not being used by any thread:
+		*m_ThreadID = std::thread::id();
+	}
 
 	protected:
-		/** Points to the storage used for ID of the thread using the object. */
-		std::thread::id * m_ThreadID;
+	/** Points to the storage used for ID of the thread using the object. */
+	std::thread::id * m_ThreadID;
 
-		/** The value of an unassigned thread ID, used to speed up checking. */
-		static std::thread::id m_EmptyThreadID;
-	};
+	/** The value of an unassigned thread ID, used to speed up checking. */
+	static std::thread::id m_EmptyThreadID;
+};
 
-	std::thread::id cSingleThreadAccessChecker::m_EmptyThreadID;
+std::thread::id cSingleThreadAccessChecker::m_EmptyThreadID;
 
-	#define CHECK_THREAD cSingleThreadAccessChecker Checker(&m_ThreadID);
+#define CHECK_THREAD cSingleThreadAccessChecker Checker(&m_ThreadID);
 
 #else
-	#define CHECK_THREAD
+#define CHECK_THREAD
 #endif
 
 
@@ -157,10 +161,10 @@ bool cByteBuffer::Write(const void * a_Bytes, size_t a_Count)
 
 	// Store the current free space for a check after writing:
 	auto CurFreeSpace = GetFreeSpace();
-	#ifndef NDEBUG
-		auto CurReadableSpace = GetReadableSpace();
-		size_t WrittenBytes = 0;
-	#endif
+#ifndef NDEBUG
+	auto CurReadableSpace = GetReadableSpace();
+	size_t WrittenBytes = 0;
+#endif
 
 	if (CurFreeSpace < a_Count)
 	{
@@ -177,9 +181,9 @@ bool cByteBuffer::Write(const void * a_Bytes, size_t a_Count)
 			memcpy(m_Buffer.get() + m_WritePos, Bytes, TillEnd);
 			Bytes += TillEnd;
 			a_Count -= TillEnd;
-			#ifndef NDEBUG
-				WrittenBytes = TillEnd;
-			#endif
+#ifndef NDEBUG
+			WrittenBytes = TillEnd;
+#endif
 		}
 		m_WritePos = 0;
 	}
@@ -189,9 +193,9 @@ bool cByteBuffer::Write(const void * a_Bytes, size_t a_Count)
 	{
 		memcpy(m_Buffer.get() + m_WritePos, Bytes, a_Count);
 		m_WritePos += a_Count;
-		#ifndef NDEBUG
-			WrittenBytes += a_Count;
-		#endif
+#ifndef NDEBUG
+		WrittenBytes += a_Count;
+#endif
 	}
 
 	ASSERT(GetFreeSpace() == CurFreeSpace - WrittenBytes);
@@ -470,7 +474,8 @@ bool cByteBuffer::ReadVarInt32(UInt32 & a_Value)
 		ReadBuf(&CurrentByte, 1);
 		Value |= ((static_cast<UInt32>(CurrentByte & VarInt::SEGMENT_BITS)) << Shift);
 		Shift += VarInt::MOVE_BITS;
-	} while ((CurrentByte & VarInt::CONTINUE_BIT) != 0);
+	}
+	while ((CurrentByte & VarInt::CONTINUE_BIT) != 0);
 	a_Value = Value;
 	return true;
 }
@@ -492,7 +497,8 @@ bool cByteBuffer::ReadVarInt64(UInt64 & a_Value)
 		ReadBuf(&b, 1);
 		Value = Value | ((static_cast<UInt64>(b & VarInt::SEGMENT_BITS)) << Shift);
 		Shift += 7;
-	} while ((b & VarInt::CONTINUE_BIT) != 0);
+	}
+	while ((b & VarInt::CONTINUE_BIT) != 0);
 	a_Value = Value;
 	return true;
 }
@@ -536,10 +542,10 @@ bool cByteBuffer::ReadLEInt(int & a_Value)
 	NEEDBYTES(4);
 	ReadBuf(&a_Value, 4);
 
-	#ifdef IS_BIG_ENDIAN
-		// Convert:
-		a_Value = ((a_Value >> 24) & 0xff) | ((a_Value >> 16) & 0xff00) | ((a_Value >> 8) & 0xff0000) | (a_Value & 0xff000000);
-	#endif
+#ifdef IS_BIG_ENDIAN
+	// Convert:
+	a_Value = ((a_Value >> 24) & 0xff) | ((a_Value >> 16) & 0xff00) | ((a_Value >> 8) & 0xff0000) | (a_Value & 0xff000000);
+#endif
 
 	return true;
 }
@@ -560,11 +566,11 @@ bool cByteBuffer::ReadXYZPosition64(int & a_BlockX, int & a_BlockY, int & a_Bloc
 	// Convert the 64 received bits into 3 coords:
 	UInt32 BlockXRaw = (Value >> XYZPosition::BIT_COUNT_X) & Position::BIT_MASK_XZ;
 	UInt32 BlockYRaw = (Value >> XYZPosition::BIT_COUNT_Y) & Position::BIT_MASK_Y;
-	UInt32 BlockZRaw = (Value                              & Position::BIT_MASK_XZ);
+	UInt32 BlockZRaw = (Value & Position::BIT_MASK_XZ);
 
 	// If the highest bit in the number's range is set, convert the number into negative:
 	a_BlockX = ((BlockXRaw & Position::BIT_MASK_IS_NEGATIVE_XZ) == 0) ? static_cast<int>(BlockXRaw) : -(Position::NEGATIVE_OFFSET_XZ - static_cast<int>(BlockXRaw));
-	a_BlockY = ((BlockYRaw & Position::BIT_MASK_IS_NEGATIVE_Y)  == 0) ? static_cast<int>(BlockYRaw) : -(Position::NEGATIVE_OFFSET_Y  - static_cast<int>(BlockYRaw));
+	a_BlockY = ((BlockYRaw & Position::BIT_MASK_IS_NEGATIVE_Y) == 0) ? static_cast<int>(BlockYRaw) : -(Position::NEGATIVE_OFFSET_Y - static_cast<int>(BlockYRaw));
 	a_BlockZ = ((BlockZRaw & Position::BIT_MASK_IS_NEGATIVE_XZ) == 0) ? static_cast<int>(BlockZRaw) : -(Position::NEGATIVE_OFFSET_XZ - static_cast<int>(BlockZRaw));
 	return true;
 }
@@ -594,11 +600,11 @@ bool cByteBuffer::ReadXZYPosition64(int & a_BlockX, int & a_BlockY, int & a_Bloc
 	// Convert the 64 received bits into 3 coords:
 	UInt32 BlockXRaw = (Value >> XZYPosition::BIT_COUNT_X) & Position::BIT_MASK_XZ;
 	UInt32 BlockZRaw = (Value >> XZYPosition::BIT_COUNT_Z) & Position::BIT_MASK_XZ;
-	UInt32 BlockYRaw = (Value                              & Position::BIT_MASK_Y);
+	UInt32 BlockYRaw = (Value & Position::BIT_MASK_Y);
 
 	// If the highest bit in the number's range is set, convert the number into negative:
 	a_BlockX = ((BlockXRaw & Position::BIT_MASK_IS_NEGATIVE_XZ) == 0) ? static_cast<int>(BlockXRaw) : (static_cast<int>(BlockXRaw) - Position::NEGATIVE_OFFSET_XZ);
-	a_BlockY = ((BlockYRaw & Position::BIT_MASK_IS_NEGATIVE_Y)  == 0) ? static_cast<int>(BlockYRaw) : (static_cast<int>(BlockYRaw) - Position::NEGATIVE_OFFSET_Y);
+	a_BlockY = ((BlockYRaw & Position::BIT_MASK_IS_NEGATIVE_Y) == 0) ? static_cast<int>(BlockYRaw) : (static_cast<int>(BlockYRaw) - Position::NEGATIVE_OFFSET_Y);
 	a_BlockZ = ((BlockZRaw & Position::BIT_MASK_IS_NEGATIVE_XZ) == 0) ? static_cast<int>(BlockZRaw) : (static_cast<int>(BlockZRaw) - Position::NEGATIVE_OFFSET_XZ);
 	return true;
 }
@@ -800,7 +806,8 @@ bool cByteBuffer::WriteVarInt32(UInt32 a_Value)
 		Buffer[Pos] = ((a_Value & VarInt::SEGMENT_BITS) | ((a_Value > VarInt::SEGMENT_BITS) ? VarInt::CONTINUE_BIT : 0x00));
 		a_Value >>= VarInt::MOVE_BITS;
 		Pos++;
-	} while (a_Value > 0);
+	}
+	while (a_Value > 0);
 
 	return WriteBuf(Buffer.data(), Pos);
 }
@@ -823,7 +830,8 @@ bool cByteBuffer::WriteVarInt64(UInt64 a_Value)
 		Buffer[Pos] = (a_Value & VarInt::SEGMENT_BITS) | ((a_Value > VarInt::SEGMENT_BITS) ? VarInt::CONTINUE_BIT : 0x00);
 		a_Value = a_Value >> VarInt::MOVE_BITS;
 		Pos++;
-	} while (a_Value > 0);
+	}
+	while (a_Value > 0);
 
 	return WriteBuf(Buffer.data(), Pos);
 }
@@ -854,8 +862,8 @@ bool cByteBuffer::WriteXYZPosition64(Int32 a_BlockX, Int32 a_BlockY, Int32 a_Blo
 	CheckValid();
 	return WriteBEUInt64(
 		((static_cast<UInt64>(a_BlockX) & Position::BIT_MASK_XZ) << XYZPosition::BIT_COUNT_X) |
-		((static_cast<UInt64>(a_BlockY) & Position::BIT_MASK_Y)  << XYZPosition::BIT_COUNT_Y) |
-		(static_cast<UInt64>(a_BlockZ)  & Position::BIT_MASK_XZ)
+		((static_cast<UInt64>(a_BlockY) & Position::BIT_MASK_Y) << XYZPosition::BIT_COUNT_Y) |
+		(static_cast<UInt64>(a_BlockZ) & Position::BIT_MASK_XZ)
 	);
 }
 
@@ -870,7 +878,7 @@ bool cByteBuffer::WriteXZYPosition64(Int32 a_BlockX, Int32 a_BlockY, Int32 a_Blo
 	return WriteBEUInt64(
 		((static_cast<UInt64>(a_BlockX) & Position::BIT_MASK_XZ) << XZYPosition::BIT_COUNT_X) |
 		((static_cast<UInt64>(a_BlockZ) & Position::BIT_MASK_XZ) << XZYPosition::BIT_COUNT_Z) |
-		(static_cast<UInt64>(a_BlockY)  & Position::BIT_MASK_Y)
+		(static_cast<UInt64>(a_BlockY) & Position::BIT_MASK_Y)
 	);
 }
 
@@ -1133,7 +1141,8 @@ size_t cByteBuffer::GetVarIntSize(UInt32 a_Value)
 		// If the value cannot be expressed in 7 bits, it needs to take up another byte
 		Count++;
 		a_Value >>= VarInt::MOVE_BITS;
-	} while (a_Value != 0);
+	}
+	while (a_Value != 0);
 
 	return Count;
 }

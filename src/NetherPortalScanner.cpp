@@ -51,8 +51,7 @@ void cNetherPortalScanner::OnChunkAvailable(int a_ChunkX, int a_ChunkZ)
 {
 	class PortalSearchCallback : public cChunkDataCallback
 	{
-	public:
-
+		public:
 		PortalSearchCallback(const int a_ChunkX, const int a_ChunkZ, bool & a_FoundPortal, Vector3i & a_PortalLoc, const Vector3d a_Position, const int a_MaxY) :
 			m_ChunkX(a_ChunkX),
 			m_ChunkZ(a_ChunkZ),
@@ -63,8 +62,7 @@ void cNetherPortalScanner::OnChunkAvailable(int a_ChunkX, int a_ChunkZ)
 		{
 		}
 
-	private:
-
+		private:
 		virtual void ChunkData(const ChunkBlockData & a_BlockData, const ChunkLightData &) override
 		{
 			for (size_t Y = 0; Y < cChunkDef::NumSections; ++Y)
@@ -343,19 +341,18 @@ void cNetherPortalScanner::OnDisabled(void)
 	// And since this is called from the destination world's thread queue a task on the source world
 	m_SourceWorld.QueueTask(
 		[EntityID, &DestinationWorld, DestinationPosition](cWorld & a_World)
+	{
+		a_World.DoWithEntityByID(
+			EntityID,
+			[&DestinationWorld, &DestinationPosition](cEntity & a_Entity)
 		{
-			a_World.DoWithEntityByID(
-				EntityID,
-				[&DestinationWorld, &DestinationPosition](cEntity & a_Entity)
-				{
-					FLOGD("Placing player at {0}", DestinationPosition);
-					a_Entity.MoveToWorld(DestinationWorld, DestinationPosition, true, false);
-					return true;
-				}
-			);
+			FLOGD("Placing player at {0}", DestinationPosition);
+			a_Entity.MoveToWorld(DestinationWorld, DestinationPosition, true, false);
+			return true;
 		}
+		);
+	}
 	);
 
 	delete this;
 }
-

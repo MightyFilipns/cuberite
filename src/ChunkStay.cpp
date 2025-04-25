@@ -129,7 +129,3 @@ bool cChunkStay::ChunkAvailable(int a_ChunkX, int a_ChunkZ)
 	}
 	return false;
 }
-
-
-
-

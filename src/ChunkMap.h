@@ -28,9 +28,9 @@ class cDeadlockDetect;
 
 struct SetChunkData;
 
-using cChunkCallback        = cFunctionRef<bool(cChunk       &)>;
-using cEntityCallback       = cFunctionRef<bool(cEntity      &)>;
-using cBlockEntityCallback  = cFunctionRef<bool(cBlockEntity &)>;
+using cChunkCallback = cFunctionRef<bool(cChunk &)>;
+using cEntityCallback = cFunctionRef<bool(cEntity &)>;
+using cBlockEntityCallback = cFunctionRef<bool(cBlockEntity &)>;
 
 
 
@@ -38,8 +38,7 @@ using cBlockEntityCallback  = cFunctionRef<bool(cBlockEntity &)>;
 
 class cChunkMap
 {
-public:
-
+	public:
 	cChunkMap(cWorld * a_World);
 
 	/** Sends the block entity, if it is at the coords specified, to a_Client */
@@ -67,9 +66,9 @@ public:
 		WakeUpSimulators(Vector3i(a_BlockX, a_BlockY, a_BlockZ));
 	}
 
-	void MarkChunkDirty     (int a_ChunkX, int a_ChunkZ);
-	void MarkChunkSaving    (int a_ChunkX, int a_ChunkZ);
-	void MarkChunkSaved     (int a_ChunkX, int a_ChunkZ);
+	void MarkChunkDirty(int a_ChunkX, int a_ChunkZ);
+	void MarkChunkSaving(int a_ChunkX, int a_ChunkZ);
+	void MarkChunkSaved(int a_ChunkX, int a_ChunkZ);
 
 	/** Sets the chunk data as either loaded from the storage or generated.
 	BlockLight and BlockSkyLight are optional, if not present, chunk will be marked as unlighted.
@@ -79,7 +78,8 @@ public:
 	void SetChunkData(SetChunkData && a_SetChunkData);
 
 	void ChunkLighted(
-		int a_ChunkX, int a_ChunkZ,
+		int a_ChunkX,
+		int a_ChunkZ,
 		const cChunkDef::LightNibbles & a_BlockLight,
 		const cChunkDef::LightNibbles & a_SkyLight
 	);
@@ -95,8 +95,8 @@ public:
 	bool IsWeatherWetAt(int a_BlockX, int a_BlockZ) const;
 	bool IsWeatherWetAt(Vector3i a_Position) const;
 
-	bool IsChunkValid       (int a_ChunkX, int a_ChunkZ) const;
-	bool HasChunkAnyClients (int a_ChunkX, int a_ChunkZ) const;
+	bool IsChunkValid(int a_ChunkX, int a_ChunkZ) const;
+	bool HasChunkAnyClients(int a_ChunkX, int a_ChunkZ) const;
 
 	std::optional<int> GetHeight(int a_BlockX, int a_BlockZ);  // Returns nullopt if chunk not loaded / generated
 
@@ -109,17 +109,17 @@ public:
 	/** Makes the specified entity collect all the pickups around them. */
 	void CollectPickupsByEntity(cEntity & a_Entity);
 
-	BlockState GetBlock          (Vector3i a_BlockPos) const;
-	bool       GetBlock          (Vector3i a_BlockPos, BlockState & a_Block) const;
-	LIGHTTYPE  GetBlockSkyLight  (Vector3i a_BlockPos) const;
-	LIGHTTYPE  GetBlockBlockLight(Vector3i a_BlockPos) const;
+	BlockState GetBlock(Vector3i a_BlockPos) const;
+	bool GetBlock(Vector3i a_BlockPos, BlockState & a_Block) const;
+	LIGHTTYPE GetBlockSkyLight(Vector3i a_BlockPos) const;
+	LIGHTTYPE GetBlockBlockLight(Vector3i a_BlockPos) const;
 
 	/** Sets the meta for the specified block, while keeping the blocktype.
 	Ignored if the chunk is invalid. */
 	// void SetBlockMeta(Vector3i a_BlockPos, NIBBLETYPE a_BlockMeta);
 
-	void SetBlock     (Vector3i a_BlockPos, BlockState a_Block);
-	bool GetBlockInfo (Vector3i, BlockState & a_Block, LIGHTTYPE & a_SkyLight, LIGHTTYPE & a_BlockLight) const;
+	void SetBlock(Vector3i a_BlockPos, BlockState a_Block);
+	bool GetBlockInfo(Vector3i, BlockState & a_Block, LIGHTTYPE & a_SkyLight, LIGHTTYPE & a_BlockLight) const;
 
 	/** Special function used for growing trees, replaces only blocks that tree may overwrite */
 	void ReplaceTreeBlocks(const sSetBlockVector & a_Blocks);
@@ -287,8 +287,7 @@ public:
 	/** Removes this chunkmap's CS from the DeadlockDetect's tracked CSs. */
 	void UntrackInDeadlockDetect(cDeadlockDetect & a_DeadlockDetect);
 
-private:
-
+	private:
 	// Chunks query their neighbors using FindChunk(), while being ticked
 	friend class cChunk;
 
@@ -330,5 +329,4 @@ private:
 	/** Removes the specified cChunkStay descendant from the internal list of ChunkStays.
 	To be used only by cChunkStay; others should use cChunkStay::Disable() instead */
 	void DelChunkStay(cChunkStay & a_ChunkStay);
-
 };

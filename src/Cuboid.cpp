@@ -232,7 +232,3 @@ void cCuboid::Engulf(Vector3i a_Point)
 		p2.z = a_Point.z;
 	}
 }
-
-
-
-

@@ -25,15 +25,14 @@ namespace
 	void ForClientsInWorld(cWorld & a_World, const cClientHandle * a_Exclude, Func a_Func)
 	{
 		a_World.ForEachPlayer([&](cPlayer & a_Player)
+		{
+			cClientHandle * Client = a_Player.GetClientHandle();
+			if ((Client != a_Exclude) && (Client != nullptr) && Client->IsLoggedIn() && !Client->IsDestroyed())
 			{
-				cClientHandle * Client = a_Player.GetClientHandle();
-				if ((Client != a_Exclude) && (Client != nullptr) && Client->IsLoggedIn() && !Client->IsDestroyed())
-				{
-					a_Func(*Client);
-				}
-				return false;
+				a_Func(*Client);
 			}
-		);
+			return false;
+		});
 	}
 
 
@@ -45,19 +44,17 @@ namespace
 	template <typename Func>
 	void ForClientsWithChunk(const cChunkCoords a_ChunkCoords, cWorld & a_World, const cClientHandle * a_Exclude, Func a_Func)
 	{
-		a_World.DoWithChunk(a_ChunkCoords.m_ChunkX, a_ChunkCoords.m_ChunkZ,
-			[&](cChunk & a_Chunk)
+		a_World.DoWithChunk(a_ChunkCoords.m_ChunkX, a_ChunkCoords.m_ChunkZ, [&](cChunk & a_Chunk)
+		{
+			for (auto * Client : a_Chunk.GetAllClients())
 			{
-				for (auto * Client : a_Chunk.GetAllClients())
+				if (Client != a_Exclude)
 				{
-					if (Client != a_Exclude)
-					{
-						a_Func(*Client);
-					}
+					a_Func(*Client);
 				}
-				return true;
 			}
-		);
+			return true;
+		});
 	}
 
 
@@ -100,7 +97,7 @@ namespace
 			ForClientsWithChunk({ a_Entity.GetChunkX(), a_Entity.GetChunkZ() }, a_World, a_Exclude, std::move(a_Func));
 		}
 	}
-}  // namespace (anonymous)
+}  // namespace
 
 
 
@@ -109,10 +106,9 @@ namespace
 void cWorld::BroadcastAttachEntity(const cEntity & a_Entity, const cEntity & a_Vehicle)
 {
 	ForClientsWithEntity(a_Entity, *this, nullptr, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendAttachEntity(a_Entity, a_Vehicle);
-		}
-	);
+	{
+		a_Client.SendAttachEntity(a_Entity, a_Vehicle);
+	});
 }
 
 
@@ -122,10 +118,9 @@ void cWorld::BroadcastAttachEntity(const cEntity & a_Entity, const cEntity & a_V
 void cWorld::BroadcastBlockAction(Vector3i a_BlockPos, Byte a_Byte1, Byte a_Byte2, BlockState a_BlockType, const cClientHandle * a_Exclude)
 {
 	ForClientsWithChunkAtPos(a_BlockPos, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendBlockAction(a_BlockPos, static_cast<char>(a_Byte1), static_cast<char>(a_Byte2), a_BlockType);
-		}
-	);
+	{
+		a_Client.SendBlockAction(a_BlockPos, static_cast<char>(a_Byte1), static_cast<char>(a_Byte2), a_BlockType);
+	});
 }
 
 
@@ -135,10 +130,9 @@ void cWorld::BroadcastBlockAction(Vector3i a_BlockPos, Byte a_Byte1, Byte a_Byte
 void cWorld::BroadcastBlockBreakAnimation(UInt32 a_EntityID, Vector3i a_BlockPos, Int8 a_Stage, const cClientHandle * a_Exclude)
 {
 	ForClientsWithChunkAtPos(a_BlockPos, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendBlockBreakAnim(a_EntityID, a_BlockPos, a_Stage);
-		}
-	);
+	{
+		a_Client.SendBlockBreakAnim(a_EntityID, a_BlockPos, a_Stage);
+	});
 }
 
 
@@ -148,23 +142,22 @@ void cWorld::BroadcastBlockBreakAnimation(UInt32 a_EntityID, Vector3i a_BlockPos
 void cWorld::BroadcastBlockEntity(Vector3i a_BlockPos, const cClientHandle * a_Exclude)
 {
 	DoWithChunkAt(a_BlockPos, [&](cChunk & a_Chunk)
+	{
+		cBlockEntity * Entity = a_Chunk.GetBlockEntity(a_BlockPos);
+		if (Entity == nullptr)
 		{
-			cBlockEntity * Entity = a_Chunk.GetBlockEntity(a_BlockPos);
-			if (Entity == nullptr)
-			{
-				return false;
-			}
-
-			for (auto * Client : a_Chunk.GetAllClients())
-			{
-				if (Client != a_Exclude)
-				{
-					Entity->SendTo(*Client);
-				}
-			}
-			return true;
+			return false;
 		}
-	);
+
+		for (auto * Client : a_Chunk.GetAllClients())
+		{
+			if (Client != a_Exclude)
+			{
+				Entity->SendTo(*Client);
+			}
+		}
+		return true;
+	});
 }
 
 
@@ -174,10 +167,9 @@ void cWorld::BroadcastBlockEntity(Vector3i a_BlockPos, const cClientHandle * a_E
 void cWorld::BroadcastBossBarUpdateHealth(const cEntity & a_Entity, UInt32 a_UniqueID, float a_FractionFilled)
 {
 	ForClientsWithEntity(a_Entity, *this, nullptr, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendBossBarUpdateHealth(a_UniqueID, a_FractionFilled);
-		}
-	);
+	{
+		a_Client.SendBossBarUpdateHealth(a_UniqueID, a_FractionFilled);
+	});
 }
 
 
@@ -192,10 +184,9 @@ void cWorld::BroadcastChat(const AString & a_Message, const cClientHandle * a_Ex
 	}
 
 	ForClientsInWorld(*this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendChat(a_Message, a_ChatPrefix);
-		}
-	);
+	{
+		a_Client.SendChat(a_Message, a_ChatPrefix);
+	});
 }
 
 
@@ -205,10 +196,9 @@ void cWorld::BroadcastChat(const AString & a_Message, const cClientHandle * a_Ex
 void cWorld::BroadcastChat(const cCompositeChat & a_Message, const cClientHandle * a_Exclude)
 {
 	ForClientsInWorld(*this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendChat(a_Message);
-		}
-	);
+	{
+		a_Client.SendChat(a_Message);
+	});
 }
 
 
@@ -218,10 +208,9 @@ void cWorld::BroadcastChat(const cCompositeChat & a_Message, const cClientHandle
 void cWorld::BroadcastCollectEntity(const cEntity & a_Collected, const cEntity & a_Collector, unsigned a_Count, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Collected, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendCollectEntity(a_Collected, a_Collector, a_Count);
-		}
-	);
+	{
+		a_Client.SendCollectEntity(a_Collected, a_Collector, a_Count);
+	});
 }
 
 
@@ -231,10 +220,9 @@ void cWorld::BroadcastCollectEntity(const cEntity & a_Collected, const cEntity &
 void cWorld::BroadcastDestroyEntity(const cEntity & a_Entity, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Entity, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendDestroyEntity(a_Entity);
-		}
-	);
+	{
+		a_Client.SendDestroyEntity(a_Entity);
+	});
 }
 
 
@@ -244,10 +232,9 @@ void cWorld::BroadcastDestroyEntity(const cEntity & a_Entity, const cClientHandl
 void cWorld::BroadcastDetachEntity(const cEntity & a_Entity, const cEntity & a_PreviousVehicle)
 {
 	ForClientsWithEntity(a_Entity, *this, nullptr, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendDetachEntity(a_Entity, a_PreviousVehicle);
-		}
-	);
+	{
+		a_Client.SendDetachEntity(a_Entity, a_PreviousVehicle);
+	});
 }
 
 
@@ -257,10 +244,9 @@ void cWorld::BroadcastDetachEntity(const cEntity & a_Entity, const cEntity & a_P
 void cWorld::BroadcastDisplayObjective(const AString & a_Objective, cScoreboard::eDisplaySlot a_Display)
 {
 	ForClientsInWorld(*this, nullptr, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendDisplayObjective(a_Objective, a_Display);
-		}
-	);
+	{
+		a_Client.SendDisplayObjective(a_Objective, a_Display);
+	});
 }
 
 
@@ -270,10 +256,9 @@ void cWorld::BroadcastDisplayObjective(const AString & a_Objective, cScoreboard:
 void cWorld::BroadcastEntityEffect(const cEntity & a_Entity, int a_EffectID, int a_Amplifier, int a_Duration, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Entity, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendEntityEffect(a_Entity, a_EffectID, a_Amplifier, a_Duration);
-		}
-	);
+	{
+		a_Client.SendEntityEffect(a_Entity, a_EffectID, a_Amplifier, a_Duration);
+	});
 }
 
 
@@ -283,10 +268,9 @@ void cWorld::BroadcastEntityEffect(const cEntity & a_Entity, int a_EffectID, int
 void cWorld::BroadcastEntityEquipment(const cEntity & a_Entity, short a_SlotNum, const cItem & a_Item, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Entity, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendEntityEquipment(a_Entity, a_SlotNum, a_Item);
-		}
-	);
+	{
+		a_Client.SendEntityEquipment(a_Entity, a_SlotNum, a_Item);
+	});
 }
 
 
@@ -296,10 +280,9 @@ void cWorld::BroadcastEntityEquipment(const cEntity & a_Entity, short a_SlotNum,
 void cWorld::BroadcastEntityHeadLook(const cEntity & a_Entity, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Entity, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendEntityHeadLook(a_Entity);
-		}
-	);
+	{
+		a_Client.SendEntityHeadLook(a_Entity);
+	});
 }
 
 
@@ -309,10 +292,9 @@ void cWorld::BroadcastEntityHeadLook(const cEntity & a_Entity, const cClientHand
 void cWorld::BroadcastEntityLook(const cEntity & a_Entity, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Entity, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendEntityLook(a_Entity);
-		}
-	);
+	{
+		a_Client.SendEntityLook(a_Entity);
+	});
 }
 
 
@@ -322,10 +304,9 @@ void cWorld::BroadcastEntityLook(const cEntity & a_Entity, const cClientHandle *
 void cWorld::BroadcastEntityMetadata(const cEntity & a_Entity, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Entity, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendEntityMetadata(a_Entity);
-		}
-	);
+	{
+		a_Client.SendEntityMetadata(a_Entity);
+	});
 }
 
 
@@ -335,10 +316,9 @@ void cWorld::BroadcastEntityMetadata(const cEntity & a_Entity, const cClientHand
 void cWorld::BroadcastEntityPosition(const cEntity & a_Entity, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Entity, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendEntityPosition(a_Entity);
-		}
-	);
+	{
+		a_Client.SendEntityPosition(a_Entity);
+	});
 }
 
 
@@ -348,10 +328,9 @@ void cWorld::BroadcastEntityPosition(const cEntity & a_Entity, const cClientHand
 void cWorld::BroadcastEntityProperties(const cEntity & a_Entity)
 {
 	ForClientsWithEntity(a_Entity, *this, nullptr, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendEntityProperties(a_Entity);
-		}
-	);
+	{
+		a_Client.SendEntityProperties(a_Entity);
+	});
 }
 
 
@@ -361,10 +340,9 @@ void cWorld::BroadcastEntityProperties(const cEntity & a_Entity)
 void cWorld::BroadcastEntityVelocity(const cEntity & a_Entity, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Entity, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendEntityVelocity(a_Entity);
-		}
-	);
+	{
+		a_Client.SendEntityVelocity(a_Entity);
+	});
 }
 
 
@@ -374,10 +352,9 @@ void cWorld::BroadcastEntityVelocity(const cEntity & a_Entity, const cClientHand
 void cWorld::BroadcastEntityAnimation(const cEntity & a_Entity, EntityAnimation a_Animation, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Entity, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendEntityAnimation(a_Entity, a_Animation);
-		}
-	);
+	{
+		a_Client.SendEntityAnimation(a_Entity, a_Animation);
+	});
 }
 
 
@@ -387,10 +364,9 @@ void cWorld::BroadcastEntityAnimation(const cEntity & a_Entity, EntityAnimation 
 void cWorld::BroadcastLeashEntity(const cEntity & a_Entity, const cEntity & a_EntityLeashedTo)
 {
 	ForClientsWithEntity(a_Entity, *this, nullptr, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendLeashEntity(a_Entity, a_EntityLeashedTo);
-		}
-	);
+	{
+		a_Client.SendLeashEntity(a_Entity, a_EntityLeashedTo);
+	});
 }
 
 
@@ -400,10 +376,9 @@ void cWorld::BroadcastLeashEntity(const cEntity & a_Entity, const cEntity & a_En
 void cWorld::BroadcastParticleEffect(const AString & a_ParticleName, const Vector3f a_Src, const Vector3f a_Offset, float a_ParticleData, int a_ParticleAmount, const cClientHandle * a_Exclude)
 {
 	ForClientsWithChunkAtPos(a_Src, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendParticleEffect(a_ParticleName, a_Src, a_Offset, a_ParticleData, a_ParticleAmount);
-		}
-	);
+	{
+		a_Client.SendParticleEffect(a_ParticleName, a_Src, a_Offset, a_ParticleData, a_ParticleAmount);
+	});
 }
 
 
@@ -413,10 +388,9 @@ void cWorld::BroadcastParticleEffect(const AString & a_ParticleName, const Vecto
 void cWorld::BroadcastParticleEffect(const AString & a_ParticleName, const Vector3f a_Src, const Vector3f a_Offset, float a_ParticleData, int a_ParticleAmount, std::array<int, 2> a_Data, const cClientHandle * a_Exclude)
 {
 	ForClientsWithChunkAtPos(a_Src, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendParticleEffect(a_ParticleName, a_Src, a_Offset, a_ParticleData, a_ParticleAmount, a_Data);
-		}
-	);
+	{
+		a_Client.SendParticleEffect(a_ParticleName, a_Src, a_Offset, a_ParticleData, a_ParticleAmount, a_Data);
+	});
 }
 
 
@@ -426,10 +400,9 @@ void cWorld::BroadcastParticleEffect(const AString & a_ParticleName, const Vecto
 void cWorld::BroadcastPlayerListAddPlayer(const cPlayer & a_Player, const cClientHandle * a_Exclude)
 {
 	ForClientsInWorld(*this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendPlayerListAddPlayer(a_Player);
-		}
-	);
+	{
+		a_Client.SendPlayerListAddPlayer(a_Player);
+	});
 }
 
 
@@ -439,10 +412,9 @@ void cWorld::BroadcastPlayerListAddPlayer(const cPlayer & a_Player, const cClien
 void cWorld::BroadcastPlayerListHeaderFooter(const cCompositeChat & a_Header, const cCompositeChat & a_Footer)
 {
 	ForClientsInWorld(*this, nullptr, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendPlayerListHeaderFooter(a_Header, a_Footer);
-		}
-	);
+	{
+		a_Client.SendPlayerListHeaderFooter(a_Header, a_Footer);
+	});
 }
 
 
@@ -452,10 +424,9 @@ void cWorld::BroadcastPlayerListHeaderFooter(const cCompositeChat & a_Header, co
 void cWorld::BroadcastPlayerListRemovePlayer(const cPlayer & a_Player, const cClientHandle * a_Exclude)
 {
 	ForClientsInWorld(*this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendPlayerListRemovePlayer(a_Player);
-		}
-	);
+	{
+		a_Client.SendPlayerListRemovePlayer(a_Player);
+	});
 }
 
 
@@ -465,10 +436,9 @@ void cWorld::BroadcastPlayerListRemovePlayer(const cPlayer & a_Player, const cCl
 void cWorld::BroadcastPlayerListUpdateDisplayName(const cPlayer & a_Player, const AString & a_CustomName, const cClientHandle * a_Exclude)
 {
 	ForClientsInWorld(*this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendPlayerListUpdateDisplayName(a_Player, a_CustomName);
-		}
-	);
+	{
+		a_Client.SendPlayerListUpdateDisplayName(a_Player, a_CustomName);
+	});
 }
 
 
@@ -478,10 +448,9 @@ void cWorld::BroadcastPlayerListUpdateDisplayName(const cPlayer & a_Player, cons
 void cWorld::BroadcastPlayerListUpdateGameMode(const cPlayer & a_Player, const cClientHandle * a_Exclude)
 {
 	ForClientsInWorld(*this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendPlayerListUpdateGameMode(a_Player);
-		}
-	);
+	{
+		a_Client.SendPlayerListUpdateGameMode(a_Player);
+	});
 }
 
 
@@ -491,10 +460,9 @@ void cWorld::BroadcastPlayerListUpdateGameMode(const cPlayer & a_Player, const c
 void cWorld::BroadcastPlayerListUpdatePing()
 {
 	ForClientsInWorld(*this, nullptr, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendPlayerListUpdatePing();
-		}
-	);
+	{
+		a_Client.SendPlayerListUpdatePing();
+	});
 }
 
 
@@ -504,10 +472,9 @@ void cWorld::BroadcastPlayerListUpdatePing()
 void cWorld::BroadcastRemoveEntityEffect(const cEntity & a_Entity, int a_EffectID, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Entity, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendRemoveEntityEffect(a_Entity, a_EffectID);
-		}
-	);
+	{
+		a_Client.SendRemoveEntityEffect(a_Entity, a_EffectID);
+	});
 }
 
 
@@ -517,10 +484,9 @@ void cWorld::BroadcastRemoveEntityEffect(const cEntity & a_Entity, int a_EffectI
 void cWorld::BroadcastScoreboardObjective(const AString & a_Name, const AString & a_DisplayName, Byte a_Mode)
 {
 	ForClientsInWorld(*this, nullptr, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendScoreboardObjective(a_Name, a_DisplayName, a_Mode);
-		}
-	);
+	{
+		a_Client.SendScoreboardObjective(a_Name, a_DisplayName, a_Mode);
+	});
 }
 
 
@@ -530,10 +496,9 @@ void cWorld::BroadcastScoreboardObjective(const AString & a_Name, const AString 
 void cWorld::BroadcastScoreUpdate(const AString & a_Objective, const AString & a_PlayerName, cObjective::Score a_Score, Byte a_Mode)
 {
 	ForClientsInWorld(*this, nullptr, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendScoreUpdate(a_Objective, a_PlayerName, a_Score, a_Mode);
-		}
-	);
+	{
+		a_Client.SendScoreUpdate(a_Objective, a_PlayerName, a_Score, a_Mode);
+	});
 }
 
 
@@ -543,10 +508,9 @@ void cWorld::BroadcastScoreUpdate(const AString & a_Objective, const AString & a
 void cWorld::BroadcastSoundEffect(const AString & a_SoundName, Vector3d a_Position, float a_Volume, float a_Pitch, const cClientHandle * a_Exclude)
 {
 	ForClientsWithChunkAtPos(a_Position, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendSoundEffect(a_SoundName, a_Position, a_Volume, a_Pitch);
-		}
-	);
+	{
+		a_Client.SendSoundEffect(a_SoundName, a_Position, a_Volume, a_Pitch);
+	});
 }
 
 
@@ -556,10 +520,9 @@ void cWorld::BroadcastSoundEffect(const AString & a_SoundName, Vector3d a_Positi
 void cWorld::BroadcastSoundParticleEffect(const EffectID a_EffectID, Vector3i a_SrcPos, int a_Data, const cClientHandle * a_Exclude)
 {
 	ForClientsWithChunkAtPos(a_SrcPos, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendSoundParticleEffect(a_EffectID, a_SrcPos, a_Data);
-		}
-	);
+	{
+		a_Client.SendSoundParticleEffect(a_EffectID, a_SrcPos, a_Data);
+	});
 }
 
 
@@ -569,10 +532,9 @@ void cWorld::BroadcastSoundParticleEffect(const EffectID a_EffectID, Vector3i a_
 void cWorld::BroadcastSpawnEntity(cEntity & a_Entity, const cClientHandle * a_Exclude)
 {
 	ForClientsWithEntity(a_Entity, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Entity.SpawnOn(a_Client);
-		}
-	);
+	{
+		a_Entity.SpawnOn(a_Client);
+	});
 }
 
 
@@ -582,10 +544,9 @@ void cWorld::BroadcastSpawnEntity(cEntity & a_Entity, const cClientHandle * a_Ex
 void cWorld::BroadcastThunderbolt(Vector3i a_BlockPos, const cClientHandle * a_Exclude)
 {
 	ForClientsWithChunkAtPos(a_BlockPos, *this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendThunderbolt(a_BlockPos);
-		}
-	);
+	{
+		a_Client.SendThunderbolt(a_BlockPos);
+	});
 }
 
 
@@ -595,10 +556,9 @@ void cWorld::BroadcastThunderbolt(Vector3i a_BlockPos, const cClientHandle * a_E
 void cWorld::BroadcastTimeUpdate(const cClientHandle * a_Exclude)
 {
 	ForClientsInWorld(*this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendTimeUpdate(GetWorldAge(), GetWorldDate(), IsDaylightCycleEnabled());
-		}
-	);
+	{
+		a_Client.SendTimeUpdate(GetWorldAge(), GetWorldDate(), IsDaylightCycleEnabled());
+	});
 }
 
 
@@ -608,10 +568,9 @@ void cWorld::BroadcastTimeUpdate(const cClientHandle * a_Exclude)
 void cWorld::BroadcastUnleashEntity(const cEntity & a_Entity)
 {
 	ForClientsWithEntity(a_Entity, *this, nullptr, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendUnleashEntity(a_Entity);
-		}
-	);
+	{
+		a_Client.SendUnleashEntity(a_Entity);
+	});
 }
 
 
@@ -621,10 +580,9 @@ void cWorld::BroadcastUnleashEntity(const cEntity & a_Entity)
 void cWorld::BroadcastWeather(eWeather a_Weather, const cClientHandle * a_Exclude)
 {
 	ForClientsInWorld(*this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendWeather(a_Weather);
-		}
-	);
+	{
+		a_Client.SendWeather(a_Weather);
+	});
 }
 
 
@@ -634,8 +592,7 @@ void cWorld::BroadcastWeather(eWeather a_Weather, const cClientHandle * a_Exclud
 void cWorld::BroadcastGameStateChange(eGameStateReason a_Reason, float a_Value, const cClientHandle * a_Exclude)
 {
 	ForClientsInWorld(*this, a_Exclude, [&](cClientHandle & a_Client)
-		{
-			a_Client.SendGameStateChange(a_Reason, a_Value);
-		}
-	);
+	{
+		a_Client.SendGameStateChange(a_Reason, a_Value);
+	});
 }

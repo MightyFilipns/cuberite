@@ -30,23 +30,20 @@ namespace Detail
 	using IsChar = typename std::is_same<typename std::make_signed<Char>::type, signed char>::type;
 
 	template <class IntType>
-	struct cUniformImpl :
-		public std::conditional<
-			IsChar<IntType>::value,
-			typename std::conditional<  // Match signed-ness of IntType
-				std::is_signed<IntType>::value,
-				std::uniform_int_distribution<short>,
-				std::uniform_int_distribution<unsigned short>
-			>::type,
-			std::uniform_int_distribution<IntType>
-		>
+	struct cUniformImpl : public std::conditional<
+							  IsChar<IntType>::value,
+							  typename std::conditional<  // Match signed-ness of IntType
+								  std::is_signed<IntType>::value,
+								  std::uniform_int_distribution<short>,
+								  std::uniform_int_distribution<unsigned short>>::type,
+							  std::uniform_int_distribution<IntType>>
 	{
 	};
 
 	/** uniform_int_distribution<char> is undefined so this aliases a valid type. */
 	template <class IntType>
 	using cUniform = typename cUniformImpl<IntType>::type;
-}
+}  // namespace Detail
 
 
 
@@ -56,9 +53,9 @@ namespace Detail
 template <class RandomEngine>
 class cRandomWrapper
 {
-public:
+	public:
 	/** Initialize with a low quality seed. */
-	cRandomWrapper():
+	cRandomWrapper() :
 		m_Engine(Detail::GetRandomSeed())
 	{
 	}
@@ -66,7 +63,7 @@ public:
 
 	/** Initialize with a SeedSequence. */
 	template <class SeedSeq>
-	cRandomWrapper(SeedSeq & a_SeedSeq):
+	cRandomWrapper(SeedSeq & a_SeedSeq) :
 		m_Engine(a_SeedSeq)
 	{
 	}
@@ -170,8 +167,7 @@ public:
 		return m_Engine;
 	}
 
-private:
-
+	private:
 	RandomEngine m_Engine;
 };
 

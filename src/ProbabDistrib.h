@@ -28,10 +28,10 @@ Usage:
 
 class cProbabDistrib
 {
-public:
+	public:
 	class cPoint
 	{
-	public:
+		public:
 		int m_Value;
 		int m_Probability;
 
@@ -40,7 +40,7 @@ public:
 			m_Probability(a_Probability)
 		{
 		}
-	} ;
+	};
 
 	typedef std::vector<cPoint> cPoints;
 
@@ -61,8 +61,7 @@ public:
 
 	int GetSum(void) const { return m_Sum; }
 
-protected:
-
+	protected:
 	int m_MaxValue;
 
 	/** Cumulative probability of the values, sorted, for fast bsearch lookup */
@@ -70,8 +69,4 @@ protected:
 
 	/** Sum of all the probabilities across all values in the domain; -1 if not set */
 	int m_Sum;
-} ;
-
-
-
-
+};

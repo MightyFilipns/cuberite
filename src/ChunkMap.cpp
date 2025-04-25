@@ -42,9 +42,13 @@ cChunk & cChunkMap::ConstructChunk(int a_ChunkX, int a_ChunkZ)
 {
 	// If not exists insert. Then, return the chunk at these coordinates:
 	return m_Chunks.try_emplace(
-		{ a_ChunkX, a_ChunkZ },
-		a_ChunkX, a_ChunkZ, this, m_World
-	).first->second;
+					   { a_ChunkX, a_ChunkZ },
+					   a_ChunkX,
+					   a_ChunkZ,
+					   this,
+					   m_World
+	)
+		.first->second;
 }
 
 
@@ -199,7 +203,7 @@ void cChunkMap::MarkChunkSaving(int a_ChunkX, int a_ChunkZ)
 
 
 
-void cChunkMap::MarkChunkSaved (int a_ChunkX, int a_ChunkZ)
+void cChunkMap::MarkChunkSaved(int a_ChunkX, int a_ChunkZ)
 {
 	cCSLock Lock(m_CSChunks);
 	const auto Chunk = FindChunk(a_ChunkX, a_ChunkZ);
@@ -251,7 +255,8 @@ void cChunkMap::SetChunkData(struct SetChunkData && a_SetChunkData)
 
 
 void cChunkMap::ChunkLighted(
-	int a_ChunkX, int a_ChunkZ,
+	int a_ChunkX,
+	int a_ChunkZ,
 	const cChunkDef::LightNibbles & a_BlockLight,
 	const cChunkDef::LightNibbles & a_SkyLight
 )
@@ -439,7 +444,7 @@ void cChunkMap::CollectPickupsByEntity(cEntity & a_Entity)
 		}
 		else if (Entity.IsProjectile() && a_Entity.IsPlayer())
 		{
-			static_cast<cProjectileEntity &>(Entity).CollectedBy(static_cast<cPlayer&>(a_Entity));
+			static_cast<cProjectileEntity &>(Entity).CollectedBy(static_cast<cPlayer &>(a_Entity));
 		}
 
 		// The entities will MarkDirty when they Destroy themselves
@@ -540,7 +545,7 @@ bool cChunkMap::GetBlock(Vector3i a_BlockPos, BlockState & a_Block) const
 	if (!cChunkDef::IsValidHeight(a_BlockPos))
 	{
 		// Initialise the params to fulfil our contract.
-		a_Block= 0;
+		a_Block = 0;
 		return false;
 	}
 
@@ -556,7 +561,7 @@ bool cChunkMap::GetBlock(Vector3i a_BlockPos, BlockState & a_Block) const
 	}
 
 	// Initialise the params to fulfil our contract.
-	a_Block= 0;
+	a_Block = 0;
 	return false;
 }
 
@@ -597,26 +602,26 @@ void cChunkMap::ReplaceTreeBlocks(const sSetBlockVector & a_Blocks)
 		Vector3i RelPos(TreeBlock.m_RelX, TreeBlock.m_RelY, TreeBlock.m_RelZ);
 		switch (Chunk->GetBlock(RelPos).Type())
 		{
-			CASE_TREE_OVERWRITTEN_BLOCKS:
+		CASE_TREE_OVERWRITTEN_BLOCKS:
+		{
+			Chunk->SetBlock(RelPos, TreeBlock.m_Block);
+			break;
+		}
+		case BlockType::AcaciaLeaves:
+		case BlockType::BirchLeaves:
+		case BlockType::DarkOakLeaves:
+		case BlockType::JungleLeaves:
+		case BlockType::OakLeaves:
+		case BlockType::SpruceLeaves:
+		{
+
+			if (cBlockLogHandler::IsBlockLog(TreeBlock.m_Block))
 			{
 				Chunk->SetBlock(RelPos, TreeBlock.m_Block);
-				break;
 			}
-			case BlockType::AcaciaLeaves:
-			case BlockType::BirchLeaves:
-			case BlockType::DarkOakLeaves:
-			case BlockType::JungleLeaves:
-			case BlockType::OakLeaves:
-			case BlockType::SpruceLeaves:
-			{
-
-				if (cBlockLogHandler::IsBlockLog(TreeBlock.m_Block))
-				{
-					Chunk->SetBlock(RelPos, TreeBlock.m_Block);
-				}
-				break;
-			}
-			default: break;
+			break;
+		}
+		default: break;
 		}
 	}  // for itr - a_Blocks[]
 }
@@ -877,9 +882,7 @@ void cChunkMap::AddEntity(OwnedEntity a_Entity)
 	cCSLock Lock(m_CSChunks);
 	if (FindChunk(a_Entity->GetChunkX(), a_Entity->GetChunkZ()) == nullptr)
 	{
-		LOGWARNING("%s: Entity at %p (%s, ID %d) spawning in a non-existent chunk.",
-			__FUNCTION__, static_cast<void *>(a_Entity.get()), a_Entity->GetClass(), a_Entity->GetUniqueID()
-		);
+		LOGWARNING("%s: Entity at %p (%s, ID %d) spawning in a non-existent chunk.", __FUNCTION__, static_cast<void *>(a_Entity.get()), a_Entity->GetClass(), a_Entity->GetUniqueID());
 	}
 
 	const auto EntityPtr = a_Entity.get();
@@ -1075,7 +1078,7 @@ void cChunkMap::PrepareChunk(int a_ChunkX, int a_ChunkZ, std::unique_ptr<cChunkC
 	// The chunk is present and lit, just call the callback, report as success:
 	if (a_Callback != nullptr)
 	{
-		a_Callback->Call({a_ChunkX, a_ChunkZ}, true);
+		a_Callback->Call({ a_ChunkX, a_ChunkZ }, true);
 	}
 }
 

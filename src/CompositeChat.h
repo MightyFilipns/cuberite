@@ -32,7 +32,7 @@ If the protocol version doesn't support all the features, it degrades gracefully
 */
 class cCompositeChat
 {
-public:
+	public:
 	// tolua_end
 
 
@@ -41,60 +41,53 @@ public:
 		AString Text;
 		AString Style;
 		AString AdditionalStyleData;
-	} ;
+	};
 
 
 
-	struct TextPart:
-		public BasePart
+	struct TextPart : public BasePart
 	{
-	} ;
+	};
 
 
 
-	struct ClientTranslatedPart:
-		public BasePart
+	struct ClientTranslatedPart : public BasePart
 	{
 		AStringVector Parameters;
-	} ;
+	};
 
 
 
-	struct UrlPart:
-		public BasePart
+	struct UrlPart : public BasePart
 	{
 		AString Url;
-	} ;
+	};
 
 
 
-	struct CommandPart:
-		public BasePart
+	struct CommandPart : public BasePart
 	{
 		AString Command;
-	} ;
+	};
 
 
 
-	struct RunCommandPart:
-		public CommandPart
+	struct RunCommandPart : public CommandPart
 	{
-	} ;
+	};
 
 
 
-	struct SuggestCommandPart:
-		public CommandPart
+	struct SuggestCommandPart : public CommandPart
 	{
-	} ;
+	};
 
 
 
-	struct ShowAchievementPart:
-		public BasePart
+	struct ShowAchievementPart : public BasePart
 	{
 		AString PlayerName;
-	} ;
+	};
 
 
 
@@ -185,8 +178,7 @@ public:
 	/** Adds the chat part's style (represented by the part's stylestring) into the Json object. */
 	void AddChatPartStyle(Json::Value & a_Value, const AString & a_PartStyle) const;
 
-protected:
-
+	protected:
 	/** All the parts that */
 	std::vector<std::variant<TextPart, ClientTranslatedPart, UrlPart, RunCommandPart, SuggestCommandPart, ShowAchievementPart>> m_Parts;
 
@@ -196,4 +188,4 @@ protected:
 	/** Additional data pertaining to message type, for example, the name of a mtPrivateMsg sender */
 	AString m_AdditionalMessageTypeData;
 
-} ;  // tolua_export
+};  // tolua_export

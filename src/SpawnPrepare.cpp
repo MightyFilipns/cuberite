@@ -8,17 +8,16 @@
 
 
 
-class cSpawnPrepareCallback :
-	public cChunkCoordCallback
+class cSpawnPrepareCallback : public cChunkCoordCallback
 {
-public:
+	public:
 	cSpawnPrepareCallback(std::shared_ptr<cSpawnPrepare> a_SpawnPrepare) :
 		m_SpawnPrepare(std::move(a_SpawnPrepare))
 	{
 		ASSERT(m_SpawnPrepare != nullptr);
 	}
-protected:
 
+	protected:
 	std::shared_ptr<cSpawnPrepare> m_SpawnPrepare;
 
 	virtual void Call(cChunkCoords a_Coords, bool a_IsSuccess) override
@@ -31,7 +30,7 @@ protected:
 
 
 
-cSpawnPrepare::cSpawnPrepare(cWorld & a_World, int a_SpawnChunkX, int a_SpawnChunkZ, int a_PrepareDistance, int a_FirstIdx, sMakeSharedTag):
+cSpawnPrepare::cSpawnPrepare(cWorld & a_World, int a_SpawnChunkX, int a_SpawnChunkZ, int a_PrepareDistance, int a_FirstIdx, sMakeSharedTag) :
 	m_World(a_World),
 	m_SpawnChunkX(a_SpawnChunkX),
 	m_SpawnChunkZ(a_SpawnChunkZ),
@@ -54,7 +53,7 @@ void cSpawnPrepare::PrepareChunks(cWorld & a_World, int a_SpawnChunkX, int a_Spa
 	// Queue the initial chunks:
 	int MaxIdx = a_PrepareDistance * a_PrepareDistance;
 	int maxQueue = std::min(MaxIdx - 1, 100);  // Number of chunks to queue at once
-	auto prep = std::make_shared<cSpawnPrepare>(a_World, a_SpawnChunkX, a_SpawnChunkZ, a_PrepareDistance, maxQueue, sMakeSharedTag{});
+	auto prep = std::make_shared<cSpawnPrepare>(a_World, a_SpawnChunkX, a_SpawnChunkZ, a_PrepareDistance, maxQueue, sMakeSharedTag {});
 	for (int i = 0; i < maxQueue; i++)
 	{
 		int chunkX, chunkZ;
@@ -118,10 +117,13 @@ void cSpawnPrepare::PreparedChunkCallback(int a_ChunkX, int a_ChunkZ)
 		float PercentDone = static_cast<float>(m_NumPrepared * 100) / m_MaxIdx;
 		float ChunkSpeed = static_cast<float>((m_NumPrepared - m_LastReportChunkCount) * 1000) / std::chrono::duration_cast<std::chrono::milliseconds>(Now - m_LastReportTime).count();
 		LOG("Preparing spawn (%s): %.02f%% (%d/%d; %.02f chunks / sec)",
-			m_World.GetName().c_str(), PercentDone, m_NumPrepared.load(std::memory_order_seq_cst), m_MaxIdx, ChunkSpeed
+			m_World.GetName().c_str(),
+			PercentDone,
+			m_NumPrepared.load(std::memory_order_seq_cst),
+			m_MaxIdx,
+			ChunkSpeed
 		);
 		m_LastReportTime = Now;
 		m_LastReportChunkCount = m_NumPrepared;
 	}
 }
-

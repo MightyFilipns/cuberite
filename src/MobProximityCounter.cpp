@@ -33,7 +33,6 @@ void cMobProximityCounter::CollectMob(cEntity & a_Monster, cChunk & a_Chunk, dou
 	}
 
 	m_EligibleForSpawnChunks.insert(&a_Chunk);
-
 }
 
 
@@ -59,7 +58,7 @@ cMobProximityCounter::sIterablePair cMobProximityCounter::getMobWithinThosesDist
 	toReturn.m_Begin = m_DistanceToMonster.end();
 	toReturn.m_End = m_DistanceToMonster.end();
 
-	a_DistanceMin *= a_DistanceMin;// this is because is use square distance
+	a_DistanceMin *= a_DistanceMin;  // this is because is use square distance
 	a_DistanceMax *= a_DistanceMax;
 
 	if (m_DistanceToMonster.empty())
@@ -87,7 +86,7 @@ cMobProximityCounter::sIterablePair cMobProximityCounter::getMobWithinThosesDist
 			}
 			else
 			{
-				toReturn.m_Count ++;
+				toReturn.m_Count++;
 			}
 		}
 	}

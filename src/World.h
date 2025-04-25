@@ -48,21 +48,20 @@ struct SetChunkData;
 
 
 class cWorld  // tolua_export
-	final:
-	public cForEachChunkProvider,
-	public cWorldInterface,
-	public cBroadcastInterface
+	final : public cForEachChunkProvider,
+			public cWorldInterface,
+			public cBroadcastInterface
 // tolua_begin
 {
-public:
+	public:
 	// tolua_end
 
 	/** A simple RAII locker for the chunkmap - locks the chunkmap in its constructor, unlocks it in the destructor */
-	class cLock:
-		public cCSLock
+	class cLock : public cCSLock
 	{
 		using Super = cCSLock;
-	public:
+
+		public:
 		cLock(const cWorld & a_World);
 	};
 
@@ -71,9 +70,12 @@ public:
 	@param a_WorldNames is a list of all world names, used to validate linked worlds
 	*/
 	cWorld(
-		const AString & a_WorldName, const AString & a_DataPath,
-		cDeadlockDetect & a_DeadlockDetect, const AStringVector & a_WorldNames,
-		eDimension a_Dimension = dimOverworld, const AString & a_LinkedOverworldName = {}
+		const AString & a_WorldName,
+		const AString & a_DataPath,
+		cDeadlockDetect & a_DeadlockDetect,
+		const AStringVector & a_WorldNames,
+		eDimension a_Dimension = dimOverworld,
+		const AString & a_LinkedOverworldName = {}
 	);
 
 	virtual ~cWorld() override;
@@ -152,56 +154,56 @@ public:
 	// Broadcast respective packets to all clients of the chunk where the event is taking place
 	// Implemented in Broadcaster.cpp
 	// (Please keep these alpha-sorted)
-	virtual void BroadcastAttachEntity       (const cEntity & a_Entity, const cEntity & a_Vehicle) override;
-	virtual void BroadcastBlockAction        (Vector3i a_BlockPos, Byte a_Byte1, Byte a_Byte2, BlockState a_BlockType, const cClientHandle * a_Exclude = nullptr) override;  // Exported in ManualBindings_World.cpp
+	virtual void BroadcastAttachEntity(const cEntity & a_Entity, const cEntity & a_Vehicle) override;
+	virtual void BroadcastBlockAction(Vector3i a_BlockPos, Byte a_Byte1, Byte a_Byte2, BlockState a_BlockType, const cClientHandle * a_Exclude = nullptr) override;  // Exported in ManualBindings_World.cpp
 	virtual void BroadcastBlockBreakAnimation(UInt32 a_EntityID, Vector3i a_BlockPos, Int8 a_Stage, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastBlockEntity        (Vector3i a_BlockPos, const cClientHandle * a_Exclude = nullptr) override;  ///< If there is a block entity at the specified coods, sends it to all clients except a_Exclude
+	virtual void BroadcastBlockEntity(Vector3i a_BlockPos, const cClientHandle * a_Exclude = nullptr) override;  ///< If there is a block entity at the specified coods, sends it to all clients except a_Exclude
 	virtual void BroadcastBossBarUpdateHealth(const cEntity & a_Entity, UInt32 a_UniqueID, float a_FractionFilled) override;
 
 	// tolua_begin
-	virtual void BroadcastChat       (const AString & a_Message, const cClientHandle * a_Exclude = nullptr, eMessageType a_ChatPrefix = mtCustom) override;
-	virtual void BroadcastChatInfo   (const AString & a_Message, const cClientHandle * a_Exclude = nullptr) override { BroadcastChat(a_Message, a_Exclude, mtInformation); }
+	virtual void BroadcastChat(const AString & a_Message, const cClientHandle * a_Exclude = nullptr, eMessageType a_ChatPrefix = mtCustom) override;
+	virtual void BroadcastChatInfo(const AString & a_Message, const cClientHandle * a_Exclude = nullptr) override { BroadcastChat(a_Message, a_Exclude, mtInformation); }
 	virtual void BroadcastChatFailure(const AString & a_Message, const cClientHandle * a_Exclude = nullptr) override { BroadcastChat(a_Message, a_Exclude, mtFailure); }
 	virtual void BroadcastChatSuccess(const AString & a_Message, const cClientHandle * a_Exclude = nullptr) override { BroadcastChat(a_Message, a_Exclude, mtSuccess); }
 	virtual void BroadcastChatWarning(const AString & a_Message, const cClientHandle * a_Exclude = nullptr) override { BroadcastChat(a_Message, a_Exclude, mtWarning); }
-	virtual void BroadcastChatFatal  (const AString & a_Message, const cClientHandle * a_Exclude = nullptr) override { BroadcastChat(a_Message, a_Exclude, mtFailure); }
-	virtual void BroadcastChatDeath  (const AString & a_Message, const cClientHandle * a_Exclude = nullptr) override { BroadcastChat(a_Message, a_Exclude, mtDeath); }
-	virtual void BroadcastChat       (const cCompositeChat & a_Message, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastChatFatal(const AString & a_Message, const cClientHandle * a_Exclude = nullptr) override { BroadcastChat(a_Message, a_Exclude, mtFailure); }
+	virtual void BroadcastChatDeath(const AString & a_Message, const cClientHandle * a_Exclude = nullptr) override { BroadcastChat(a_Message, a_Exclude, mtDeath); }
+	virtual void BroadcastChat(const cCompositeChat & a_Message, const cClientHandle * a_Exclude = nullptr) override;
 	// tolua_end
 
-	virtual void BroadcastCollectEntity              (const cEntity & a_Collected, const cEntity & a_Collector, unsigned a_Count, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastDestroyEntity              (const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastDetachEntity               (const cEntity & a_Entity, const cEntity & a_PreviousVehicle) override;
-	virtual void BroadcastEntityEffect               (const cEntity & a_Entity, int a_EffectID, int a_Amplifier, int a_Duration, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastEntityEquipment            (const cEntity & a_Entity, short a_SlotNum, const cItem & a_Item, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastEntityHeadLook             (const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastEntityLook                 (const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastEntityMetadata             (const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastEntityPosition             (const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
-	void         BroadcastEntityProperties           (const cEntity & a_Entity);
-	virtual void BroadcastEntityVelocity             (const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastEntityAnimation            (const cEntity & a_Entity, EntityAnimation a_Animation, const cClientHandle * a_Exclude = nullptr) override;  // tolua_export
-	virtual void BroadcastGameStateChange            (eGameStateReason a_Reason, float a_Value = 0, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastLeashEntity                (const cEntity & a_Entity, const cEntity & a_EntityLeashedTo) override;
-	virtual void BroadcastParticleEffect             (const AString & a_ParticleName, Vector3f a_Src, Vector3f a_Offset, float a_ParticleData, int a_ParticleAmount, const cClientHandle * a_Exclude = nullptr) override;  // Exported in ManualBindings_World.cpp
-	virtual void BroadcastParticleEffect             (const AString & a_ParticleName, Vector3f a_Src, Vector3f a_Offset, float a_ParticleData, int a_ParticleAmount, std::array<int, 2> a_Data, const cClientHandle * a_Exclude = nullptr) override;  // Exported in ManualBindings_World.cpp
-	virtual void BroadcastPlayerListAddPlayer        (const cPlayer & a_Player, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastPlayerListHeaderFooter     (const cCompositeChat & a_Header, const cCompositeChat & a_Footer) override;  // tolua_export
-	virtual void BroadcastPlayerListRemovePlayer     (const cPlayer & a_Player, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastCollectEntity(const cEntity & a_Collected, const cEntity & a_Collector, unsigned a_Count, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastDestroyEntity(const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastDetachEntity(const cEntity & a_Entity, const cEntity & a_PreviousVehicle) override;
+	virtual void BroadcastEntityEffect(const cEntity & a_Entity, int a_EffectID, int a_Amplifier, int a_Duration, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastEntityEquipment(const cEntity & a_Entity, short a_SlotNum, const cItem & a_Item, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastEntityHeadLook(const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastEntityLook(const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastEntityMetadata(const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastEntityPosition(const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
+	void BroadcastEntityProperties(const cEntity & a_Entity);
+	virtual void BroadcastEntityVelocity(const cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastEntityAnimation(const cEntity & a_Entity, EntityAnimation a_Animation, const cClientHandle * a_Exclude = nullptr) override;  // tolua_export
+	virtual void BroadcastGameStateChange(eGameStateReason a_Reason, float a_Value = 0, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastLeashEntity(const cEntity & a_Entity, const cEntity & a_EntityLeashedTo) override;
+	virtual void BroadcastParticleEffect(const AString & a_ParticleName, Vector3f a_Src, Vector3f a_Offset, float a_ParticleData, int a_ParticleAmount, const cClientHandle * a_Exclude = nullptr) override;  // Exported in ManualBindings_World.cpp
+	virtual void BroadcastParticleEffect(const AString & a_ParticleName, Vector3f a_Src, Vector3f a_Offset, float a_ParticleData, int a_ParticleAmount, std::array<int, 2> a_Data, const cClientHandle * a_Exclude = nullptr) override;  // Exported in ManualBindings_World.cpp
+	virtual void BroadcastPlayerListAddPlayer(const cPlayer & a_Player, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastPlayerListHeaderFooter(const cCompositeChat & a_Header, const cCompositeChat & a_Footer) override;  // tolua_export
+	virtual void BroadcastPlayerListRemovePlayer(const cPlayer & a_Player, const cClientHandle * a_Exclude = nullptr) override;
 	virtual void BroadcastPlayerListUpdateDisplayName(const cPlayer & a_Player, const AString & a_CustomName, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastPlayerListUpdateGameMode   (const cPlayer & a_Player, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastPlayerListUpdatePing       () override;
-	virtual void BroadcastRemoveEntityEffect         (const cEntity & a_Entity, int a_EffectID, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastScoreboardObjective        (const AString & a_Name, const AString & a_DisplayName, Byte a_Mode) override;
-	virtual void BroadcastScoreUpdate                (const AString & a_Objective, const AString & a_Player, cObjective::Score a_Score, Byte a_Mode) override;
-	virtual void BroadcastDisplayObjective           (const AString & a_Objective, cScoreboard::eDisplaySlot a_Display) override;
-	virtual void BroadcastSoundEffect                (const AString & a_SoundName, Vector3d a_Position, float a_Volume, float a_Pitch, const cClientHandle * a_Exclude = nullptr) override;  // Exported in ManualBindings_World.cpp
-	virtual void BroadcastSoundParticleEffect        (const EffectID a_EffectID, Vector3i a_SrcPos, int a_Data, const cClientHandle * a_Exclude = nullptr) override;  // Exported in ManualBindings_World.cpp
-	virtual void BroadcastSpawnEntity                (cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastThunderbolt                (Vector3i a_BlockPos, const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastTimeUpdate                 (const cClientHandle * a_Exclude = nullptr) override;
-	virtual void BroadcastUnleashEntity              (const cEntity & a_Entity) override;
-	virtual void BroadcastWeather                    (eWeather a_Weather, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastPlayerListUpdateGameMode(const cPlayer & a_Player, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastPlayerListUpdatePing() override;
+	virtual void BroadcastRemoveEntityEffect(const cEntity & a_Entity, int a_EffectID, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastScoreboardObjective(const AString & a_Name, const AString & a_DisplayName, Byte a_Mode) override;
+	virtual void BroadcastScoreUpdate(const AString & a_Objective, const AString & a_Player, cObjective::Score a_Score, Byte a_Mode) override;
+	virtual void BroadcastDisplayObjective(const AString & a_Objective, cScoreboard::eDisplaySlot a_Display) override;
+	virtual void BroadcastSoundEffect(const AString & a_SoundName, Vector3d a_Position, float a_Volume, float a_Pitch, const cClientHandle * a_Exclude = nullptr) override;  // Exported in ManualBindings_World.cpp
+	virtual void BroadcastSoundParticleEffect(const EffectID a_EffectID, Vector3i a_SrcPos, int a_Data, const cClientHandle * a_Exclude = nullptr) override;  // Exported in ManualBindings_World.cpp
+	virtual void BroadcastSpawnEntity(cEntity & a_Entity, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastThunderbolt(Vector3i a_BlockPos, const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastTimeUpdate(const cClientHandle * a_Exclude = nullptr) override;
+	virtual void BroadcastUnleashEntity(const cEntity & a_Entity) override;
+	virtual void BroadcastWeather(eWeather a_Weather, const cClientHandle * a_Exclude = nullptr) override;
 
 	virtual cBroadcastInterface & GetBroadcastManager(void) override
 	{
@@ -211,16 +213,17 @@ public:
 	/** If there is a block entity at the specified coords, sends it to the client specified */
 	void SendBlockEntity(int a_BlockX, int a_BlockY, int a_BlockZ, cClientHandle & a_Client);
 
-	void MarkChunkDirty (int a_ChunkX, int a_ChunkZ);
+	void MarkChunkDirty(int a_ChunkX, int a_ChunkZ);
 	void MarkChunkSaving(int a_ChunkX, int a_ChunkZ);
-	void MarkChunkSaved (int a_ChunkX, int a_ChunkZ);
+	void MarkChunkSaved(int a_ChunkX, int a_ChunkZ);
 
 	/** Puts the chunk data into a queue to be set into the chunkmap in the tick thread.
 	Modifies the a_SetChunkData - moves the entities contained in it into the queue. */
 	void QueueSetChunkData(SetChunkData && a_SetChunkData);
 
 	void ChunkLighted(
-		int a_ChunkX, int a_ChunkZ,
+		int a_ChunkX,
+		int a_ChunkZ,
 		const cChunkDef::LightNibbles & a_BlockLight,
 		const cChunkDef::LightNibbles & a_SkyLight
 	);
@@ -327,10 +330,10 @@ public:
 	}
 
 	/** Is the trapdoor open? Returns false if there is no trapdoor at the specified coords. */
-	bool IsTrapdoorOpen(int a_BlockX, int a_BlockY, int a_BlockZ);                                      // tolua_export
+	bool IsTrapdoorOpen(int a_BlockX, int a_BlockY, int a_BlockZ);  // tolua_export
 
 	/** Set the state of a trapdoor. Returns true if the trapdoor was updated, false if there was no trapdoor at those coords. */
-	bool SetTrapdoorOpen(int a_BlockX, int a_BlockY, int a_BlockZ, bool a_Open);                        // tolua_export
+	bool SetTrapdoorOpen(int a_BlockX, int a_BlockY, int a_BlockZ, bool a_Open);  // tolua_export
 
 	/** Regenerate the given chunk. */
 	void RegenerateChunk(int a_ChunkX, int a_ChunkZ);  // tolua_export
@@ -408,7 +411,7 @@ public:
 	May compress pickups if too many entities. */
 	virtual void SpawnItemPickups(const cItems & a_Pickups, double a_BlockX, double a_BlockY, double a_BlockZ, double a_FlyAwaySpeed = 1.0, bool a_IsPlayerCreated = false) override
 	{
-		return SpawnItemPickups(a_Pickups, Vector3d{a_BlockX, a_BlockY, a_BlockZ}, a_FlyAwaySpeed, a_IsPlayerCreated);
+		return SpawnItemPickups(a_Pickups, Vector3d { a_BlockX, a_BlockY, a_BlockZ }, a_FlyAwaySpeed, a_IsPlayerCreated);
 	}
 
 	/** Spawns item pickups for each item in the list. May compress pickups if too many entities. All pickups get the speed specified. */
@@ -418,7 +421,7 @@ public:
 	Spawns item pickups for each item in the list. May compress pickups if too many entities. All pickups get the speed specified. */
 	virtual void SpawnItemPickups(const cItems & a_Pickups, double a_BlockX, double a_BlockY, double a_BlockZ, double a_SpeedX, double a_SpeedY, double a_SpeedZ, bool a_IsPlayerCreated = false) override
 	{
-		return SpawnItemPickups(a_Pickups, {a_BlockX, a_BlockY, a_BlockZ}, {a_SpeedX, a_SpeedY, a_SpeedZ}, a_IsPlayerCreated);
+		return SpawnItemPickups(a_Pickups, { a_BlockX, a_BlockY, a_BlockZ }, { a_SpeedX, a_SpeedY, a_SpeedZ }, a_IsPlayerCreated);
 	}
 
 	/** Spawns a single pickup containing the specified item. */
@@ -428,7 +431,7 @@ public:
 	Spawns a single pickup containing the specified item. */
 	virtual UInt32 SpawnItemPickup(double a_PosX, double a_PosY, double a_PosZ, const cItem & a_Item, float a_SpeedX = 0.f, float a_SpeedY = 0.f, float a_SpeedZ = 0.f, int a_LifetimeTicks = 6000, bool a_CanCombine = true) override
 	{
-		return SpawnItemPickup({a_PosX, a_PosY, a_PosZ}, a_Item, {a_SpeedX, a_SpeedY, a_SpeedZ}, a_LifetimeTicks, a_CanCombine);
+		return SpawnItemPickup({ a_PosX, a_PosY, a_PosZ }, a_Item, { a_SpeedX, a_SpeedY, a_SpeedZ }, a_LifetimeTicks, a_CanCombine);
 	}
 
 	/** Spawns an falling block entity at the given position.
@@ -448,7 +451,7 @@ public:
 	Returns the UniqueID of the spawned falling block, or cEntity::INVALID_ID on failure. */
 	UInt32 SpawnFallingBlock(int a_X, int a_Y, int a_Z, BlockState a_Block)
 	{
-		return SpawnFallingBlock(Vector3i{a_X, a_Y, a_Z}, a_Block);
+		return SpawnFallingBlock(Vector3i { a_X, a_Y, a_Z }, a_Block);
 	}
 
 	/** Spawns an minecart at the given coordinates.
@@ -460,14 +463,14 @@ public:
 	Returns the UniqueID of the spawned minecart, or cEntity::INVALID_ID on failure. */
 	UInt32 SpawnMinecart(double a_X, double a_Y, double a_Z, Item a_MinecartType, const cItem & a_Content = cItem(), int a_BlockHeight = 1)
 	{
-		return SpawnMinecart({a_X, a_Y, a_Z}, a_MinecartType, a_Content, a_BlockHeight);
+		return SpawnMinecart({ a_X, a_Y, a_Z }, a_MinecartType, a_Content, a_BlockHeight);
 	}
 
 	// DEPRECATED, use the vector-parametered version instead.
 	UInt32 SpawnBoat(double a_X, double a_Y, double a_Z, cBoat::eMaterial a_Material)
 	{
 		LOGWARNING("cWorld::SpawnBoat(double, double, double) is deprecated, use cWorld::SpawnBoat(Vector3d) instead.");
-		return SpawnBoat({a_X, a_Y, a_Z}, a_Material);
+		return SpawnBoat({ a_X, a_Y, a_Z }, a_Material);
 	}
 
 	/** Spawns a boat at the given coordinates.
@@ -483,7 +486,7 @@ public:
 	Returns the UniqueID of the spawned experience orb, or cEntity::INVALID_ID on failure. */
 	virtual UInt32 SpawnExperienceOrb(double a_X, double a_Y, double a_Z, int a_Reward) override
 	{
-		return SpawnExperienceOrb({a_X, a_Y, a_Z}, a_Reward);
+		return SpawnExperienceOrb({ a_X, a_Y, a_Z }, a_Reward);
 	}
 
 	// tolua_end
@@ -497,7 +500,7 @@ public:
 	Returns an vector of UniqueID of all the orbs. */
 	std::vector<UInt32> SpawnSplitExperienceOrbs(double a_X, double a_Y, double a_Z, int a_Reward)
 	{
-		return SpawnSplitExperienceOrbs({a_X, a_Y, a_Z}, a_Reward);
+		return SpawnSplitExperienceOrbs({ a_X, a_Y, a_Z }, a_Reward);
 	}
 
 	// tolua_begin
@@ -506,7 +509,7 @@ public:
 	UInt32 SpawnPrimedTNT(double a_X, double a_Y, double a_Z, int a_FuseTimeInSec = 80, double a_InitialVelocityCoeff = 1, bool a_ShouldPlayFuseSound = true)
 	{
 		LOGWARNING("cWorld::SpawnPrimedTNT(double, double, double) is deprecated, use cWorld::SpawnPrimedTNT(Vector3d) instead.");
-		return SpawnPrimedTNT({a_X, a_Y, a_Z}, a_FuseTimeInSec, a_InitialVelocityCoeff, a_ShouldPlayFuseSound);
+		return SpawnPrimedTNT({ a_X, a_Y, a_Z }, a_FuseTimeInSec, a_InitialVelocityCoeff, a_ShouldPlayFuseSound);
 	}
 
 	/** Spawns a new primed TNT entity at the specified block coords and specified fuse duration.
@@ -544,7 +547,7 @@ public:
 	Returns true on success, false if the chunk is not loaded. */
 	bool DigBlock(int a_X, int a_Y, int a_Z, cEntity * a_Digger = nullptr)
 	{
-		return DigBlock({a_X, a_Y, a_Z}, a_Digger);
+		return DigBlock({ a_X, a_Y, a_Z }, a_Digger);
 	}
 
 	/** Digs the specified block, and spawns the appropriate pickups for it.
@@ -574,7 +577,7 @@ public:
 	int GetSpawnZ(void) const { return m_SpawnZ; }
 	Vector3i GetSpawnPos() const
 	{
-		return {m_SpawnX, m_SpawnY, m_SpawnZ};
+		return { m_SpawnX, m_SpawnY, m_SpawnZ };
 	}
 
 	/** Wakes up the simulators for the specified block */
@@ -588,7 +591,7 @@ public:
 	inline cSimulatorManager * GetSimulatorManager(void) { return m_SimulatorManager.get(); }
 
 	inline cFluidSimulator * GetWaterSimulator(void) { return m_WaterSimulator; }
-	inline cFluidSimulator * GetLavaSimulator (void) { return m_LavaSimulator; }
+	inline cFluidSimulator * GetLavaSimulator(void) { return m_LavaSimulator; }
 	inline cRedstoneSimulator * GetRedstoneSimulator(void) { return m_RedstoneSimulator; }
 
 	/** Calls the callback for each block entity in the specified chunk; returns true if all block entities processed, false if the callback aborted by returning true */
@@ -604,7 +607,7 @@ public:
 	virtual bool DoWithBlockEntityAt(Vector3i a_Position, cBlockEntityCallback a_Callback) override;  // Exported in ManualBindings.cpp
 
 	/** Retrieves the test on the sign at the specified coords; returns false if there's no sign at those coords, true if found */
-	bool GetSignLines (int a_BlockX, int a_BlockY, int a_BlockZ, AString & a_Line1, AString & a_Line2, AString & a_Line3, AString & a_Line4);  // Exported in ManualBindings.cpp
+	bool GetSignLines(int a_BlockX, int a_BlockY, int a_BlockZ, AString & a_Line1, AString & a_Line2, AString & a_Line3, AString & a_Line4);  // Exported in ManualBindings.cpp
 
 	/** a_Player is using block entity at [x, y, z], handle that: */
 	void UseBlockEntity(cPlayer * a_Player, int a_BlockX, int a_BlockY, int a_BlockZ) { m_ChunkMap.UseBlockEntity(a_Player, a_BlockX, a_BlockY, a_BlockZ); }  // tolua_export
@@ -685,7 +688,7 @@ public:
 	const AString & GetDataPath(void) const { return m_DataPath; }
 
 	/** Returns the name of the world.ini file used by this world */
-	const AString & GetIniFileName(void) const {return m_IniFileName; }
+	const AString & GetIniFileName(void) const { return m_IniFileName; }
 
 	/** Returns the associated scoreboard instance. */
 	cScoreboard & GetScoreBoard(void) { return m_Scoreboard; }
@@ -754,10 +757,10 @@ public:
 	void GetChunkStats(int & a_NumValid, int & a_NumDirty, int & a_NumInLightingQueue);
 
 	// Various queues length queries (cannot be const, they lock their CS):
-	inline size_t GetGeneratorQueueLength  (void) { return m_Generator.GetQueueLength();   }    // tolua_export
-	inline size_t GetLightingQueueLength   (void) { return m_Lighting.GetQueueLength();    }    // tolua_export
-	inline size_t GetStorageLoadQueueLength(void) { return m_Storage.GetLoadQueueLength(); }    // tolua_export
-	inline size_t GetStorageSaveQueueLength(void) { return m_Storage.GetSaveQueueLength(); }    // tolua_export
+	inline size_t GetGeneratorQueueLength(void) { return m_Generator.GetQueueLength(); }  // tolua_export
+	inline size_t GetLightingQueueLength(void) { return m_Lighting.GetQueueLength(); }  // tolua_export
+	inline size_t GetStorageLoadQueueLength(void) { return m_Storage.GetLoadQueueLength(); }  // tolua_export
+	inline size_t GetStorageSaveQueueLength(void) { return m_Storage.GetSaveQueueLength(); }  // tolua_export
 
 	cLightingThread & GetLightingThread(void) { return m_Lighting; }
 
@@ -839,15 +842,15 @@ public:
 	// tolua_end
 
 	cChunkGeneratorThread & GetGenerator(void) { return m_Generator; }
-	cWorldStorage &   GetStorage  (void) { return m_Storage; }
-	cChunkMap *       GetChunkMap (void) { return &m_ChunkMap; }
+	cWorldStorage & GetStorage(void) { return m_Storage; }
+	cChunkMap * GetChunkMap(void) { return &m_ChunkMap; }
 
 	/** Causes the specified block to be ticked on the next Tick() call.
 	Only one block coord per chunk may be set, a second call overwrites the first call */
 	void SetNextBlockToTick(const Vector3i a_BlockPos);  // tolua_export
 
 	int GetMaxSugarcaneHeight(void) const { return m_MaxSugarcaneHeight; }  // tolua_export
-	int GetMaxCactusHeight   (void) const { return m_MaxCactusHeight; }     // tolua_export
+	int GetMaxCactusHeight(void) const { return m_MaxCactusHeight; }  // tolua_export
 
 	bool IsBlockDirectlyWatered(int a_BlockX, int a_BlockY, int a_BlockZ);  // tolua_export
 
@@ -885,46 +888,42 @@ public:
 
 	/** Returns true if slimes should spawn in the chunk. */
 	bool IsSlimeChunk(int a_ChunkX, int a_ChunkZ) const;  // tolua_export
-private:
-
-	class cTickThread:
-		public cIsThread
+	private:
+	class cTickThread : public cIsThread
 	{
 		using Super = cIsThread;
 
-	public:
-
+		public:
 		cTickThread(cWorld & a_World);
 
-	protected:
+		protected:
 		cWorld & m_World;
 
 		// cIsThread overrides:
 		virtual void Execute(void) override;
-	} ;
+	};
 
 
 
 	/** Implementation of the callbacks that the ChunkGenerator uses to store new chunks and interface to plugins */
-	class cChunkGeneratorCallbacks :
-		public cChunkGeneratorThread::cChunkSink,
-		public cChunkGeneratorThread::cPluginInterface
+	class cChunkGeneratorCallbacks : public cChunkGeneratorThread::cChunkSink,
+									 public cChunkGeneratorThread::cPluginInterface
 	{
 		cWorld * m_World;
 
 		// cChunkSink overrides:
-		virtual void OnChunkGenerated  (cChunkDesc & a_ChunkDesc) override;
-		virtual bool IsChunkValid      (cChunkCoords a_Coords) override;
+		virtual void OnChunkGenerated(cChunkDesc & a_ChunkDesc) override;
+		virtual bool IsChunkValid(cChunkCoords a_Coords) override;
 		virtual bool HasChunkAnyClients(cChunkCoords a_Coords) override;
-		virtual bool IsChunkQueued     (cChunkCoords a_Coords) override;
+		virtual bool IsChunkQueued(cChunkCoords a_Coords) override;
 
 		// cPluginInterface overrides:
 		virtual void CallHookChunkGenerating(cChunkDesc & a_ChunkDesc) override;
-		virtual void CallHookChunkGenerated (cChunkDesc & a_ChunkDesc) override;
+		virtual void CallHookChunkGenerated(cChunkDesc & a_ChunkDesc) override;
 
-	public:
+		public:
 		cChunkGeneratorCallbacks(cWorld & a_World);
-	} ;
+	};
 
 
 	/** The maximum number of allowed unused dirty chunks for this world.
@@ -968,7 +967,7 @@ private:
 	bool m_BroadcastDeathMessages;
 	bool m_BroadcastAchievementMessages;
 
-	bool   m_IsDaylightCycleEnabled;
+	bool m_IsDaylightCycleEnabled;
 
 	/** The age of the world.
 	Monotonic, always increasing each game tick, persistent across server restart.
@@ -1001,11 +1000,11 @@ private:
 	std::vector<BlockTickQueueItem *> m_BlockTickQueue;
 	std::vector<BlockTickQueueItem *> m_BlockTickQueueCopy;  // Second is for safely removing the objects from the queue
 
-	std::unique_ptr<cSimulatorManager>   m_SimulatorManager;
-	std::unique_ptr<cSandSimulator>      m_SandSimulator;
-	cFluidSimulator *                    m_WaterSimulator;
-	cFluidSimulator *                    m_LavaSimulator;
-	std::unique_ptr<cFireSimulator>      m_FireSimulator;
+	std::unique_ptr<cSimulatorManager> m_SimulatorManager;
+	std::unique_ptr<cSandSimulator> m_SandSimulator;
+	cFluidSimulator * m_WaterSimulator;
+	cFluidSimulator * m_LavaSimulator;
+	std::unique_ptr<cFireSimulator> m_FireSimulator;
 	cRedstoneSimulator * m_RedstoneSimulator;
 
 	// Protect with chunk map CS
@@ -1023,12 +1022,12 @@ private:
 	eWeather m_Weather;
 	int m_WeatherInterval;
 	int m_MaxSunnyTicks, m_MinSunnyTicks;
-	int m_MaxRainTicks,  m_MinRainTicks;
+	int m_MaxRainTicks, m_MinRainTicks;
 	int m_MaxThunderStormTicks, m_MinThunderStormTicks;
 	float m_RainGradient, m_ThunderGradient;
 
-	int  m_MaxCactusHeight;
-	int  m_MaxSugarcaneHeight;
+	int m_MaxCactusHeight;
+	int m_MaxSugarcaneHeight;
 	/* TODO: Enable when functionality exists again
 	bool m_IsBeetrootsBonemealable;
 	bool m_IsCactusBonemealable;
@@ -1071,15 +1070,15 @@ private:
 	/** The thread responsible for generating chunks. */
 	cChunkGeneratorThread m_Generator;
 
-	cScoreboard      m_Scoreboard;
-	cMapManager      m_MapManager;
+	cScoreboard m_Scoreboard;
+	cMapManager m_MapManager;
 
 	/** The callbacks that the ChunkGenerator uses to store new chunks and interface to plugins */
 	cChunkGeneratorCallbacks m_GeneratorCallbacks;
 
-	cChunkSender     m_ChunkSender;
-	cLightingThread  m_Lighting;
-	cTickThread      m_TickThread;
+	cChunkSender m_ChunkSender;
+	cLightingThread m_Lighting;
+	cTickThread m_TickThread;
 
 	/** Guards the m_Tasks */
 	cCriticalSection m_CSTasks;
@@ -1135,7 +1134,7 @@ private:
 	/** Check if player starting point is acceptable */
 	bool CheckPlayerSpawnPoint(int a_PosX, int a_PosY, int a_PosZ)
 	{
-		return CheckPlayerSpawnPoint({a_PosX, a_PosY, a_PosZ});
+		return CheckPlayerSpawnPoint({ a_PosX, a_PosY, a_PosZ });
 	}
 	bool CheckPlayerSpawnPoint(Vector3i a_Pos);
 

@@ -25,23 +25,22 @@ class cSettingsRepositoryInterface;
 
 class cRCONServer
 {
-public:
+	public:
 	cRCONServer(cServer & a_Server);
 	virtual ~cRCONServer();
 
 	void Initialize(cSettingsRepositoryInterface & a_Settings);
 
-protected:
+	protected:
 	friend class cRCONCommandOutput;
 	friend class cRCONListenCallbacks;
 
-	class cConnection :
-		public cTCPLink::cCallbacks
+	class cConnection : public cTCPLink::cCallbacks
 	{
-	public:
+		public:
 		cConnection(cRCONServer & a_RCONServer, const AString & a_IPAddress);
 
-	protected:
+		protected:
 		friend class cRCONCommandOutput;
 
 		/** Set to true if the client has successfully authenticated */
@@ -77,7 +76,7 @@ protected:
 
 		/** Sends a RCON packet back to the client */
 		void SendResponse(UInt32 a_RequestID, UInt32 a_PacketType, UInt32 a_PayloadLength, const char * a_Payload);
-	} ;
+	};
 
 
 	/** The server object that will process the commands received */
@@ -88,9 +87,4 @@ protected:
 
 	/** Password for authentication */
 	AString m_Password;
-} ;
-
-
-
-
-
+};

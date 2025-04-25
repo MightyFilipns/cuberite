@@ -21,7 +21,10 @@ struct ChunkDataStore
 {
 	using Type = std::array<ElementType, ElementCount>;
 
-	ChunkDataStore(ElementType a_DefaultValue) : DefaultValue(a_DefaultValue) {}
+	ChunkDataStore(ElementType a_DefaultValue) :
+		DefaultValue(a_DefaultValue)
+	{
+	}
 
 	/** Copy assign from another ChunkDataStore. */
 	void Assign(const ChunkDataStore<ElementType, ElementCount> & a_Other);
@@ -40,11 +43,11 @@ struct ChunkDataStore
 
 	/** Copies the data from the specified flat section array into the internal representation.
 	Allocates a section if needed for the operation. */
-	void SetSection(const ElementType (& a_Source)[ElementCount], size_t a_Y);
+	void SetSection(const ElementType (&a_Source)[ElementCount], size_t a_Y);
 
 	/** Copies the data from the specified flat array into the internal representation.
 	Allocates sections that are needed for the operation. */
-	void SetAll(const ElementType (& a_Source)[cChunkDef::NumSections * ElementCount]);
+	void SetAll(const ElementType (&a_Source)[cChunkDef::NumSections * ElementCount]);
 
 	/** Contains all the sections this ChunkDataStore manages. */
 	std::unique_ptr<Type> Store[cChunkDef::NumSections];
@@ -57,9 +60,11 @@ struct ChunkDataStore
 
 class ChunkBlockData
 {
-public:
-
-	ChunkBlockData() : m_Blocks(DefaultValue) {}
+	public:
+	ChunkBlockData() :
+		m_Blocks(DefaultValue)
+	{
+	}
 
 	static constexpr size_t SectionBlockCount = cChunkDef::SectionHeight * cChunkDef::Width * cChunkDef::Width;
 
@@ -67,12 +72,10 @@ public:
 
 	using SectionType = BlockState[SectionBlockCount];
 
-private:
-
+	private:
 	ChunkDataStore<BlockState, SectionBlockCount> m_Blocks;
 
-public:
-
+	public:
 	using BlockArray = decltype(m_Blocks)::Type;
 
 	void Assign(const ChunkBlockData & a_Other);
@@ -93,9 +96,11 @@ public:
 
 class ChunkLightData
 {
-public:
-
-	ChunkLightData() : m_BlockLights(DefaultBlockLightValue), m_SkyLights(DefaultBlockLightValue) {}
+	public:
+	ChunkLightData() :
+		m_BlockLights(DefaultBlockLightValue), m_SkyLights(DefaultBlockLightValue)
+	{
+	}
 
 	static constexpr size_t SectionLightCount = (cChunkDef::SectionHeight * cChunkDef::Width * cChunkDef::Width) / 2;
 
@@ -104,13 +109,11 @@ public:
 
 	using SectionType = LIGHTTYPE[SectionLightCount];
 
-private:
-
+	private:
 	ChunkDataStore<LIGHTTYPE, SectionLightCount> m_BlockLights;
 	ChunkDataStore<LIGHTTYPE, SectionLightCount> m_SkyLights;
 
-public:
-
+	public:
 	using LightArray = decltype(m_BlockLights)::Type;
 
 	void Assign(const ChunkLightData & a_Other);
@@ -132,20 +135,21 @@ public:
 /** Invokes the callback functor for every chunk section containing at least one present block or light section data.
 This is used to collect all data for all sections.
 In macro form to work around a Visual Studio 2017 ICE bug. */
-#define ChunkDef_ForEachSection(BlockData, LightData, Callback) \
-	do \
-	{ \
-		for (size_t Y = 0; Y < cChunkDef::NumSections; ++Y) \
-		{ \
-			const auto Blocks = BlockData.GetSection(Y); \
-			const auto BlockLights = LightData.GetBlockLightSection(Y); \
-			const auto SkyLights = LightData.GetSkyLightSection(Y); \
+#define ChunkDef_ForEachSection(BlockData, LightData, Callback)                            \
+	do                                                                                     \
+	{                                                                                      \
+		for (size_t Y = 0; Y < cChunkDef::NumSections; ++Y)                                \
+		{                                                                                  \
+			const auto Blocks = BlockData.GetSection(Y);                                   \
+			const auto BlockLights = LightData.GetBlockLightSection(Y);                    \
+			const auto SkyLights = LightData.GetSkyLightSection(Y);                        \
 			if ((Blocks != nullptr) || (BlockLights != nullptr) || (SkyLights != nullptr)) \
-			{ \
-				Callback \
-			} \
-		} \
-	} while (false)
+			{                                                                              \
+				Callback                                                                   \
+			}                                                                              \
+		}                                                                                  \
+	}                                                                                      \
+	while (false)
 
 
 

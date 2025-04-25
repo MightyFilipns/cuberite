@@ -67,9 +67,7 @@ cItem & cCraftingGrid::GetItem(int x, int y) const
 	// Accessible through scripting, must verify parameters:
 	if ((x < 0) || (x >= m_Width) || (y < 0) || (y >= m_Height))
 	{
-		LOGERROR("Attempted to get an invalid item from a crafting grid: (%d, %d), grid dimensions: (%d, %d).",
-			x, y, m_Width, m_Height
-		);
+		LOGERROR("Attempted to get an invalid item from a crafting grid: (%d, %d), grid dimensions: (%d, %d).", x, y, m_Width, m_Height);
 		return m_Items[0];
 	}
 	return m_Items[x + m_Width * y];
@@ -84,9 +82,7 @@ void cCraftingGrid::SetItem(int x, int y, Item a_Item, char a_ItemCount)
 	// Accessible through scripting, must verify parameters:
 	if ((x < 0) || (x >= m_Width) || (y < 0) || (y >= m_Height))
 	{
-		LOGERROR("Attempted to set an invalid item in a crafting grid: (%d, %d), grid dimensions: (%d, %d).",
-			x, y, m_Width, m_Height
-		);
+		LOGERROR("Attempted to set an invalid item in a crafting grid: (%d, %d), grid dimensions: (%d, %d).", x, y, m_Width, m_Height);
 		return;
 	}
 
@@ -102,9 +98,7 @@ void cCraftingGrid::SetItem(int x, int y, const cItem & a_Item)
 	// Accessible through scripting, must verify parameters:
 	if ((x < 0) || (x >= m_Width) || (y < 0) || (y >= m_Height))
 	{
-		LOGERROR("Attempted to set an invalid item in a crafting grid: (%d, %d), grid dimensions: (%d, %d).",
-			x, y, m_Width, m_Height
-		);
+		LOGERROR("Attempted to set an invalid item in a crafting grid: (%d, %d), grid dimensions: (%d, %d).", x, y, m_Width, m_Height);
 		return;
 	}
 
@@ -117,10 +111,11 @@ void cCraftingGrid::SetItem(int x, int y, const cItem & a_Item)
 
 void cCraftingGrid::Clear(void)
 {
-	for (int y = 0; y < m_Height; y++) for (int x = 0; x < m_Width; x++)
-	{
-		m_Items[x + m_Width * y].Empty();
-	}
+	for (int y = 0; y < m_Height; y++)
+		for (int x = 0; x < m_Width; x++)
+		{
+			m_Items[x + m_Width * y].Empty();
+		}
 }
 
 
@@ -131,49 +126,43 @@ void cCraftingGrid::ConsumeGrid(const cCraftingGrid & a_Grid)
 {
 	if ((a_Grid.m_Width != m_Width) || (a_Grid.m_Height != m_Height))
 	{
-		LOGWARNING("Consuming a grid of different dimensions: (%d, %d) vs (%d, %d)",
-			a_Grid.m_Width, a_Grid.m_Height, m_Width, m_Height
-		);
+		LOGWARNING("Consuming a grid of different dimensions: (%d, %d) vs (%d, %d)", a_Grid.m_Width, a_Grid.m_Height, m_Width, m_Height);
 	}
-	int MinX = std::min(a_Grid.m_Width,  m_Width);
+	int MinX = std::min(a_Grid.m_Width, m_Width);
 	int MinY = std::min(a_Grid.m_Height, m_Height);
-	for (int y = 0; y <  MinY; y++) for (int x = 0; x < MinX; x++)
-	{
-		int ThatIdx = x + a_Grid.m_Width * y;
-		if (a_Grid.m_Items[ThatIdx].IsEmpty())
+	for (int y = 0; y < MinY; y++)
+		for (int x = 0; x < MinX; x++)
 		{
-			continue;
-		}
-		int ThisIdx = x + m_Width * y;
-		if (a_Grid.m_Items[ThatIdx].m_ItemType != m_Items[ThisIdx].m_ItemType)
-		{
-			LOGWARNING("Consuming incompatible grids: item at (%d, %d) is %d in grid and %d in ingredients. Item not consumed.",
-				x, y, m_Items[ThisIdx].m_ItemType, a_Grid.m_Items[ThatIdx].m_ItemType
-			);
-			continue;
-		}
-		char NumWantedItems = a_Grid.m_Items[ThatIdx].m_ItemCount;
-		if (NumWantedItems > m_Items[ThisIdx].m_ItemCount)
-		{
-			LOGWARNING("Consuming more items than there actually are in slot (%d, %d), item %d (want %d, have %d). Item zeroed out.",
-				x, y, m_Items[ThisIdx].m_ItemType,
-				NumWantedItems, m_Items[ThisIdx].m_ItemCount
-			);
-			NumWantedItems = m_Items[ThisIdx].m_ItemCount;
-		}
-		m_Items[ThisIdx].m_ItemCount -= NumWantedItems;
-		if (m_Items[ThisIdx].m_ItemCount == 0)
-		{
-			if ((m_Items[ThisIdx].m_ItemType == Item::MilkBucket) || (m_Items[ThisIdx].m_ItemType == Item::WaterBucket) || (m_Items[ThisIdx].m_ItemType == Item::LavaBucket))
+			int ThatIdx = x + a_Grid.m_Width * y;
+			if (a_Grid.m_Items[ThatIdx].IsEmpty())
 			{
-				m_Items[ThisIdx] = cItem(Item::Bucket);
+				continue;
 			}
-			else
+			int ThisIdx = x + m_Width * y;
+			if (a_Grid.m_Items[ThatIdx].m_ItemType != m_Items[ThisIdx].m_ItemType)
 			{
-				m_Items[ThisIdx].Empty();
+				LOGWARNING("Consuming incompatible grids: item at (%d, %d) is %d in grid and %d in ingredients. Item not consumed.", x, y, m_Items[ThisIdx].m_ItemType, a_Grid.m_Items[ThatIdx].m_ItemType);
+				continue;
 			}
-		}
-	}  // for x, for y
+			char NumWantedItems = a_Grid.m_Items[ThatIdx].m_ItemCount;
+			if (NumWantedItems > m_Items[ThisIdx].m_ItemCount)
+			{
+				LOGWARNING("Consuming more items than there actually are in slot (%d, %d), item %d (want %d, have %d). Item zeroed out.", x, y, m_Items[ThisIdx].m_ItemType, NumWantedItems, m_Items[ThisIdx].m_ItemCount);
+				NumWantedItems = m_Items[ThisIdx].m_ItemCount;
+			}
+			m_Items[ThisIdx].m_ItemCount -= NumWantedItems;
+			if (m_Items[ThisIdx].m_ItemCount == 0)
+			{
+				if ((m_Items[ThisIdx].m_ItemType == Item::MilkBucket) || (m_Items[ThisIdx].m_ItemType == Item::WaterBucket) || (m_Items[ThisIdx].m_ItemType == Item::LavaBucket))
+				{
+					m_Items[ThisIdx] = cItem(Item::Bucket);
+				}
+				else
+				{
+					m_Items[ThisIdx].Empty();
+				}
+			}
+		}  // for x, for y
 }
 
 
@@ -194,13 +183,12 @@ void cCraftingGrid::CopyToItems(cItem * a_Items) const
 
 void cCraftingGrid::Dump(void)
 {
-	for (int y = 0; y < m_Height; y++) for (int x = 0; x < m_Width; x++)
-	{
-		[[maybe_unused]] const int idx = x + m_Width * y;
-		LOGD("Slot (%d, %d): Type %d, count %d",
-			x, y, m_Items[idx].m_ItemType, m_Items[idx].m_ItemCount
-		);
-	}
+	for (int y = 0; y < m_Height; y++)
+		for (int x = 0; x < m_Width; x++)
+		{
+			[[maybe_unused]] const int idx = x + m_Width * y;
+			LOGD("Slot (%d, %d): Type %d, count %d", x, y, m_Items[idx].m_ItemType, m_Items[idx].m_ItemCount);
+		}
 }
 
 
@@ -251,9 +239,7 @@ void cCraftingRecipe::Dump(void)
 {
 	LOGD("Recipe ingredients:");
 	m_Ingredients.Dump();
-	LOGD("Result: Type %d, count %d",
-		m_Result.m_ItemType, m_Result.m_ItemCount
-	);
+	LOGD("Result: Type %d, count %d", m_Result.m_ItemType, m_Result.m_ItemCount);
 }
 
 
@@ -589,9 +575,9 @@ bool cCraftingRecipes::ParseIngredient(const AString & a_String, cRecipe * a_Rec
 		Slot.m_Item = Item;
 		switch (Coords[0][0])
 		{
-			case '1': Slot.x = 0;  break;
-			case '2': Slot.x = 1;  break;
-			case '3': Slot.x = 2;  break;
+			case '1': Slot.x = 0; break;
+			case '2': Slot.x = 1; break;
+			case '3': Slot.x = 2; break;
 			case '*': Slot.x = -1; break;
 			default:
 			{
@@ -600,9 +586,9 @@ bool cCraftingRecipes::ParseIngredient(const AString & a_String, cRecipe * a_Rec
 		}
 		switch (Coords[1][0])
 		{
-			case '1': Slot.y = 0;  break;
-			case '2': Slot.y = 1;  break;
-			case '3': Slot.y = 2;  break;
+			case '1': Slot.y = 0; break;
+			case '2': Slot.y = 1; break;
+			case '3': Slot.y = 2; break;
 			case '*': Slot.y = -1; break;
 			default:
 			{
@@ -652,7 +638,7 @@ void cCraftingRecipes::NormalizeIngredients(cCraftingRecipes::cRecipe * a_Recipe
 			itr->y -= MinY;
 		}
 	}  // for itr - a_Recipe->m_Ingredients[]
-	a_Recipe->m_Width  = std::max(MaxX - MinX + 1, 1);
+	a_Recipe->m_Width = std::max(MaxX - MinX + 1, 1);
 	a_Recipe->m_Height = std::max(MaxY - MinY + 1, 1);
 
 	// TODO: Compress two same ingredients with the same coords into a single ingredient with increased item count
@@ -669,17 +655,18 @@ cCraftingRecipes::cRecipe * cCraftingRecipes::FindRecipe(const cItem * a_Craftin
 
 	// Get the real bounds of the crafting grid:
 	int GridLeft = MAX_GRID_WIDTH, GridTop = MAX_GRID_HEIGHT;
-	int GridRight = 0,  GridBottom = 0;
-	for (int y = 0; y < a_GridHeight; y++) for (int x = 0; x < a_GridWidth; x++)
-	{
-		if (!a_CraftingGrid[x + y * a_GridWidth].IsEmpty())
+	int GridRight = 0, GridBottom = 0;
+	for (int y = 0; y < a_GridHeight; y++)
+		for (int x = 0; x < a_GridWidth; x++)
 		{
-			GridRight  = std::max(x, GridRight);
-			GridBottom = std::max(y, GridBottom);
-			GridLeft   = std::min(x, GridLeft);
-			GridTop    = std::min(y, GridTop);
+			if (!a_CraftingGrid[x + y * a_GridWidth].IsEmpty())
+			{
+				GridRight = std::max(x, GridRight);
+				GridBottom = std::max(y, GridBottom);
+				GridLeft = std::min(x, GridLeft);
+				GridTop = std::min(y, GridTop);
+			}
 		}
-	}
 	int GridWidth = GridRight - GridLeft + 1;
 	int GridHeight = GridBottom - GridTop + 1;
 
@@ -715,16 +702,17 @@ cCraftingRecipes::cRecipe * cCraftingRecipes::FindRecipeCropped(const cItem * a_
 		// Calculate the maximum offsets for this recipe relative to the grid size, and iterate through all combinations of offsets.
 		// Also, this calculation automatically filters out recipes that are too large for the current grid - the loop won't be entered at all.
 
-		int MaxOfsX = a_GridWidth  - (*itr)->m_Width;
+		int MaxOfsX = a_GridWidth - (*itr)->m_Width;
 		int MaxOfsY = a_GridHeight - (*itr)->m_Height;
-		for (int x = 0; x <= MaxOfsX; x++) for (int y = 0; y <= MaxOfsY; y++)
-		{
-			cRecipe * Recipe = MatchRecipe(a_CraftingGrid, a_GridWidth, a_GridHeight, a_GridStride, *itr, x, y);
-			if (Recipe != nullptr)
+		for (int x = 0; x <= MaxOfsX; x++)
+			for (int y = 0; y <= MaxOfsY; y++)
 			{
-				return Recipe;
-			}
-		}  // for y, for x
+				cRecipe * Recipe = MatchRecipe(a_CraftingGrid, a_GridWidth, a_GridHeight, a_GridStride, *itr, x, y);
+				if (Recipe != nullptr)
+				{
+					return Recipe;
+				}
+			}  // for y, for x
 	}  // for itr - m_Recipes[]
 
 	// No matching recipe found
@@ -755,7 +743,7 @@ cCraftingRecipes::cRecipe * cCraftingRecipes::MatchRecipe(const cItem * a_Crafti
 		if (
 			(itrS->x >= a_GridWidth) ||
 			(itrS->y >= a_GridHeight) ||
-			(Item.m_ItemType != a_CraftingGrid[GridID].m_ItemType) ||   // same item type?
+			(Item.m_ItemType != a_CraftingGrid[GridID].m_ItemType) ||  // same item type?
 			(Item.m_ItemCount > a_CraftingGrid[GridID].m_ItemCount)  // ||  // not enough items
 			// TODO: compare components
 		)
@@ -777,7 +765,7 @@ cCraftingRecipes::cRecipe * cCraftingRecipes::MatchRecipe(const cItem * a_Crafti
 			// Regular item, already processed
 			continue;
 		}
-		int StartX = 0, EndX = a_GridWidth  - 1;
+		int StartX = 0, EndX = a_GridWidth - 1;
 		int StartY = 0, EndY = a_GridHeight - 1;
 		if (itrS->x >= 0)
 		{
@@ -825,19 +813,20 @@ cCraftingRecipes::cRecipe * cCraftingRecipes::MatchRecipe(const cItem * a_Crafti
 	}  // for itrS - a_Recipe->m_Ingredients[]
 
 	// Check if the whole grid has matched:
-	for (int x = 0; x < a_GridWidth; x++) for (int y = 0; y < a_GridHeight; y++)
-	{
-		if (!HasMatched[x][y] && !a_CraftingGrid[x + a_GridStride * y].IsEmpty())
+	for (int x = 0; x < a_GridWidth; x++)
+		for (int y = 0; y < a_GridHeight; y++)
 		{
-			// There's an unmatched item in the grid
-			return nullptr;
-		}
-	}  // for y, for x
+			if (!HasMatched[x][y] && !a_CraftingGrid[x + a_GridStride * y].IsEmpty())
+			{
+				// There's an unmatched item in the grid
+				return nullptr;
+			}
+		}  // for y, for x
 
 	// The recipe has matched. Create a copy of the recipe and set its coords to match the crafting grid:
 	std::unique_ptr<cRecipe> Recipe = std::make_unique<cRecipe>();
 	Recipe->m_Result = a_Recipe->m_Result;
-	Recipe->m_Width  = a_Recipe->m_Width;
+	Recipe->m_Width = a_Recipe->m_Width;
 	Recipe->m_Height = a_Recipe->m_Height;
 	for (cRecipeSlots::const_iterator itrS = a_Recipe->m_Ingredients.begin(); itrS != a_Recipe->m_Ingredients.end(); ++itrS)
 	{
@@ -891,7 +880,7 @@ void cCraftingRecipes::HandleFireworks(const cItem * a_CraftingGrid, cCraftingRe
 					break;
 				}
 				case Item::Paper: break;
-				default: LOG("Unexpected item in firework rocket recipe, was the crafting file's fireworks section changed?"); break;
+				default:          LOG("Unexpected item in firework rocket recipe, was the crafting file's fireworks section changed?"); break;
 			}
 		}
 	}
@@ -934,15 +923,15 @@ void cCraftingRecipes::HandleFireworks(const cItem * a_CraftingGrid, cCraftingRe
 					// DyeColours.push_back(cFireworkItem::GetVanillaColourCodeFromDye(static_cast<unsigned char>(a_CraftingGrid[GridID].m_ItemDamage & 0x0f)));
 					break;
 				}
-				case Item::Gunpowder: break;
-				case Item::Diamond: a_Recipe->m_Result.m_FireworkItem.m_HasTrail = true; break;
+				case Item::Gunpowder:     break;
+				case Item::Diamond:       a_Recipe->m_Result.m_FireworkItem.m_HasTrail = true; break;
 				case Item::GlowstoneDust: a_Recipe->m_Result.m_FireworkItem.m_HasFlicker = true; break;
 
-				case Item::FireCharge:  a_Recipe->m_Result.m_FireworkItem.m_Type = 1; break;
-				case Item::GoldNugget:  a_Recipe->m_Result.m_FireworkItem.m_Type = 2; break;
-				case Item::Feather:     a_Recipe->m_Result.m_FireworkItem.m_Type = 4; break;
-				case Item::CreeperHead: a_Recipe->m_Result.m_FireworkItem.m_Type = 3; break;
-				default: LOG("Unexpected item in firework star recipe, was the crafting file's fireworks section changed?"); break;  // ermahgerd BARD ardmins
+				case Item::FireCharge:    a_Recipe->m_Result.m_FireworkItem.m_Type = 1; break;
+				case Item::GoldNugget:    a_Recipe->m_Result.m_FireworkItem.m_Type = 2; break;
+				case Item::Feather:       a_Recipe->m_Result.m_FireworkItem.m_Type = 4; break;
+				case Item::CreeperHead:   a_Recipe->m_Result.m_FireworkItem.m_Type = 3; break;
+				default:                  LOG("Unexpected item in firework star recipe, was the crafting file's fireworks section changed?"); break;  // ermahgerd BARD ardmins
 			}
 		}
 
@@ -1139,14 +1128,14 @@ void cCraftingRecipes::HandleDyedLeather(const cItem * a_CraftingGrid, cCrafting
 		}
 
 		// Calculate the rgb values
-		double maximum = static_cast<double>(std::max({red, green, blue}));
+		double maximum = static_cast<double>(std::max({ red, green, blue }));
 
 		double average_red = red / DyeCount;
 		double average_green = green / DyeCount;
 		double average_blue = blue / DyeCount;
 		double average_max = maximum / DyeCount;
 
-		double max_average = std::max({average_red, average_green, average_blue});
+		double max_average = std::max({ average_red, average_green, average_blue });
 
 		double gain_factor = average_max / max_average;
 

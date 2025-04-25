@@ -30,7 +30,7 @@ cBoundingBox::cBoundingBox(Vector3d a_Min, Vector3d a_Max) :
 
 
 cBoundingBox::cBoundingBox(Vector3d a_Pos, double a_Radius, double a_Height) :
-	m_Min(a_Pos.x - a_Radius, a_Pos.y,            a_Pos.z - a_Radius),
+	m_Min(a_Pos.x - a_Radius, a_Pos.y, a_Pos.z - a_Radius),
 	m_Max(a_Pos.x + a_Radius, a_Pos.y + a_Height, a_Pos.z + a_Radius)
 {
 }
@@ -106,7 +106,7 @@ bool cBoundingBox::DoesIntersect(const cBoundingBox & a_Other)
 	return (
 		((a_Other.m_Min.x <= m_Max.x) && (a_Other.m_Max.x >= m_Min.x)) &&  // X coords intersect
 		((a_Other.m_Min.y <= m_Max.y) && (a_Other.m_Max.y >= m_Min.y)) &&  // Y coords intersect
-		((a_Other.m_Min.z <= m_Max.z) && (a_Other.m_Max.z >= m_Min.z))     // Z coords intersect
+		((a_Other.m_Min.z <= m_Max.z) && (a_Other.m_Max.z >= m_Min.z))  // Z coords intersect
 	);
 }
 
@@ -287,7 +287,3 @@ bool cBoundingBox::Intersect(const cBoundingBox & a_Other, cBoundingBox & a_Inte
 	a_Intersection.m_Max.z = std::min(m_Max.z, a_Other.m_Max.z);
 	return (a_Intersection.m_Min.z < a_Intersection.m_Max.z);
 }
-
-
-
-

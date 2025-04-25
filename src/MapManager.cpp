@@ -182,8 +182,3 @@ void cMapManager::SaveMapData(void)
 		}
 	}
 }
-
-
-
-
-

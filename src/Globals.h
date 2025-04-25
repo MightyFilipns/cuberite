@@ -16,37 +16,37 @@
 
 // Compiler-dependent stuff:
 #if defined(_MSC_VER)
-	// Use non-standard defines in <cmath>
-	#define _USE_MATH_DEFINES
+// Use non-standard defines in <cmath>
+#define _USE_MATH_DEFINES
 
-	#ifndef NDEBUG
-		// Override the "new" operator to include file and line specification for debugging memory leaks
-		// Ref.: https://social.msdn.microsoft.com/Forums/en-US/ebc7dd7a-f3c6-49f1-8a60-e381052f21b6/debugging-memory-leaks?forum=vcgeneral#53f0cc89-62fe-45e8-bbf0-56b89f2a1901
-		// This causes MSVC Debug runs to produce a report upon program exit, that contains memory-leaks
-		// together with the file:line information about where the memory was allocated.
-		// Note that this doesn't work with placement-new, which needs to temporarily #undef the macro
-		// (See AllocationPool.h for an example).
-		#define _CRTDBG_MAP_ALLOC
-		#include <stdlib.h>
-		#include <crtdbg.h>
-		#define DEBUG_CLIENTBLOCK   new(_CLIENT_BLOCK, __FILE__, __LINE__)
-		#define new DEBUG_CLIENTBLOCK
-		// For some reason this works magically - each "new X" gets replaced as "new(_CLIENT_BLOCK, "file", line) X"
-		// The CRT has a definition for this operator new that stores the debugging info for leak-finding later.
-	#endif
+#ifndef NDEBUG
+// Override the "new" operator to include file and line specification for debugging memory leaks
+// Ref.: https://social.msdn.microsoft.com/Forums/en-US/ebc7dd7a-f3c6-49f1-8a60-e381052f21b6/debugging-memory-leaks?forum=vcgeneral#53f0cc89-62fe-45e8-bbf0-56b89f2a1901
+// This causes MSVC Debug runs to produce a report upon program exit, that contains memory-leaks
+// together with the file:line information about where the memory was allocated.
+// Note that this doesn't work with placement-new, which needs to temporarily #undef the macro
+// (See AllocationPool.h for an example).
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#define DEBUG_CLIENTBLOCK new (_CLIENT_BLOCK, __FILE__, __LINE__)
+#define new DEBUG_CLIENTBLOCK
+// For some reason this works magically - each "new X" gets replaced as "new(_CLIENT_BLOCK, "file", line) X"
+// The CRT has a definition for this operator new that stores the debugging info for leak-finding later.
+#endif
 
-	#define UNREACHABLE_INTRINSIC __assume(false)
+#define UNREACHABLE_INTRINSIC __assume(false)
 
 #elif defined(__GNUC__)
 
-	// TODO: Can GCC explicitly mark classes as abstract (no instances can be created)?
-	#define abstract
+// TODO: Can GCC explicitly mark classes as abstract (no instances can be created)?
+#define abstract
 
-	#define UNREACHABLE_INTRINSIC __builtin_unreachable()
+#define UNREACHABLE_INTRINSIC __builtin_unreachable()
 
 #else
 
-	#error "You are using an unsupported compiler, you might need to #define some stuff here for your compiler"
+#error "You are using an unsupported compiler, you might need to #define some stuff here for your compiler"
 
 #endif
 
@@ -57,19 +57,19 @@
 // A macro to disallow the copy constructor and operator = functions
 // This should be used in the declarations for any class that shouldn't allow copying itself
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-	TypeName(const TypeName &) = delete; \
-	TypeName & operator =(const TypeName &) = delete
+	TypeName(const TypeName &) = delete;   \
+	TypeName & operator= (const TypeName &) = delete
 
 // A macro that is used to mark unused local variables, to avoid pedantic warnings in gcc / clang / MSVC
 // Note that in MSVC it requires the full type of X to be known
-#define UNUSED_VAR(X) (void)(X)
+#define UNUSED_VAR(X) (void) (X)
 
 // A macro that is used to mark unused function parameters, to avoid pedantic warnings in gcc
 // Written so that the full type of param needn't be known
 #ifdef _MSC_VER
-	#define UNUSED(X)
+#define UNUSED(X)
 #else
-	#define UNUSED UNUSED_VAR
+#define UNUSED UNUSED_VAR
 #endif
 
 
@@ -78,29 +78,29 @@
 
 // OS-dependent stuff:
 #ifdef _WIN32
-	#define NOMINMAX  // Windows SDK defines min and max macros, messing up with our std::min and std::max usage.
-	#define WIN32_LEAN_AND_MEAN
-	#define _WIN32_WINNT 0x0501  // We want to target Windows XP with Service Pack 2 & Windows Server 2003 with Service Pack 1 and higher.
+#define NOMINMAX  // Windows SDK defines min and max macros, messing up with our std::min and std::max usage.
+#define WIN32_LEAN_AND_MEAN
+#define _WIN32_WINNT 0x0501  // We want to target Windows XP with Service Pack 2 & Windows Server 2003 with Service Pack 1 and higher.
 
-	// Use CryptoAPI primitives when targeting a version that supports encrypting with AES-CFB8 smaller than a full block at a time.
-	#define PLATFORM_CRYPTOGRAPHY (_WIN32_WINNT >= 0x0602)
+// Use CryptoAPI primitives when targeting a version that supports encrypting with AES-CFB8 smaller than a full block at a time.
+#define PLATFORM_CRYPTOGRAPHY (_WIN32_WINNT >= 0x0602)
 
-	#include <Windows.h>
-	#include <winsock2.h>
-	#include <Ws2tcpip.h>  // IPv6 stuff
+#include <Windows.h>
+#include <winsock2.h>
+#include <Ws2tcpip.h>  // IPv6 stuff
 
-	// Windows SDK defines GetFreeSpace as a constant, probably a Win16 API remnant:
-	#ifdef GetFreeSpace
-		#undef GetFreeSpace
-	#endif  // GetFreeSpace
+// Windows SDK defines GetFreeSpace as a constant, probably a Win16 API remnant:
+#ifdef GetFreeSpace
+#undef GetFreeSpace
+#endif  // GetFreeSpace
 #else
-	#define PLATFORM_CRYPTOGRAPHY 0
+#define PLATFORM_CRYPTOGRAPHY 0
 
-	#include <arpa/inet.h>
-	#include <netinet/in.h>
-	#include <netinet/tcp.h>
-	#include <sys/socket.h>
-	#include <unistd.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <sys/socket.h>
+#include <unistd.h>
 #endif
 
 
@@ -149,14 +149,14 @@
 
 // Integral types with predefined sizes:
 typedef signed long long Int64;
-typedef signed int       Int32;
-typedef signed short     Int16;
-typedef signed char      Int8;
+typedef signed int Int32;
+typedef signed short Int16;
+typedef signed char Int8;
 
 typedef unsigned long long UInt64;
-typedef unsigned int       UInt32;
-typedef unsigned short     UInt16;
-typedef unsigned char      UInt8;
+typedef unsigned int UInt32;
+typedef unsigned short UInt16;
+typedef unsigned char UInt8;
 
 typedef unsigned char Byte;
 typedef Byte ColourID;
@@ -189,12 +189,14 @@ template class SizeChecker<UInt8, 1>;
 
 #ifdef TEST_GLOBALS
 
-	// Basic logging function implementations
-	namespace Logger
-	{
+// Basic logging function implementations
+namespace Logger
+{
 
 	inline void LogFormat(
-		std::string_view a_Format, eLogLevel, fmt::format_args a_ArgList
+		std::string_view a_Format,
+		eLogLevel,
+		fmt::format_args a_ArgList
 	)
 	{
 		fmt::vprint(a_Format, a_ArgList);
@@ -203,7 +205,9 @@ template class SizeChecker<UInt8, 1>;
 	}
 
 	inline void LogPrintf(
-		std::string_view a_Format, eLogLevel, fmt::printf_args a_ArgList
+		std::string_view a_Format,
+		eLogLevel,
+		fmt::printf_args a_ArgList
 	)
 	{
 		fmt::basic_string_view<char> s(a_Format);
@@ -218,7 +222,7 @@ template class SizeChecker<UInt8, 1>;
 		fflush(stdout);
 	}
 
-	}  // namespace Logger
+}  // namespace Logger
 
 #endif
 
@@ -232,8 +236,8 @@ template class SizeChecker<UInt8, 1>;
 #define ARRAYCOUNT(X) (sizeof(X) / sizeof(*(X)))
 
 /** Allows arithmetic expressions like "32 KiB" (but consider using parenthesis around it, "(32 KiB)") */
-#define KiB * 1024
-#define MiB * 1024 * 1024
+#define KiB *1024
+#define MiB *1024 * 1024
 
 /** Faster than (int)floorf((float)x / (float)div) */
 #define FAST_FLOOR_DIV(x, div) (((x) - (((x) < 0) ? ((div) - 1) : 0)) / (div))
@@ -241,52 +245,60 @@ template class SizeChecker<UInt8, 1>;
 // Own version of ASSERT() that plays nicely with the testing framework
 #ifdef TEST_GLOBALS
 
-	class cAssertFailure
-	{
-		AString mExpression;
-		AString mFileName;
-		int mLineNumber;
+class cAssertFailure
+{
+	AString mExpression;
+	AString mFileName;
+	int mLineNumber;
 
 	public:
-		cAssertFailure(const AString & aExpression, const AString & aFileName, int aLineNumber):
-			mExpression(aExpression),
-			mFileName(aFileName),
-			mLineNumber(aLineNumber)
-		{
-		}
+	cAssertFailure(const AString & aExpression, const AString & aFileName, int aLineNumber) :
+		mExpression(aExpression),
+		mFileName(aFileName),
+		mLineNumber(aLineNumber)
+	{
+	}
 
-		const AString & expression() const { return mExpression; }
-		const AString & fileName() const { return mFileName; }
-		int lineNumber() const { return mLineNumber; }
-	};
+	const AString & expression() const { return mExpression; }
+	const AString & fileName() const { return mFileName; }
+	int lineNumber() const { return mLineNumber; }
+};
 
-	#ifdef NDEBUG
-		#define ASSERT(x)
-	#else
-		#define ASSERT(x) do { if (!(x)) { throw cAssertFailure(#x, __FILE__, __LINE__);} } while (0)
-	#endif
+#ifdef NDEBUG
+#define ASSERT(x)
+#else
+#define ASSERT(x)                                         \
+	do                                                    \
+	{                                                     \
+		if (!(x))                                         \
+		{                                                 \
+			throw cAssertFailure(#x, __FILE__, __LINE__); \
+		}                                                 \
+	}                                                     \
+	while (0)
+#endif
 
-	// Pretty much the same as ASSERT() but stays in Release builds
-	#define VERIFY(x) (!!(x) || ( LOGERROR("Verification failed: %s, file %s, line %i", #x, __FILE__, __LINE__), std::abort(), 0))
+// Pretty much the same as ASSERT() but stays in Release builds
+#define VERIFY(x) (!!(x) || (LOGERROR("Verification failed: %s, file %s, line %i", #x, __FILE__, __LINE__), std::abort(), 0))
 
 #else  // TEST_GLOBALS
 
-	#ifdef NDEBUG
-		#define ASSERT(x)
-	#else
-		#define ASSERT(x) ( !!(x) || ( LOGERROR("Assertion failed: %s, file %s, line %i", #x, __FILE__, __LINE__), std::abort(), 0))
-	#endif
+#ifdef NDEBUG
+#define ASSERT(x)
+#else
+#define ASSERT(x) (!!(x) || (LOGERROR("Assertion failed: %s, file %s, line %i", #x, __FILE__, __LINE__), std::abort(), 0))
+#endif
 
-	// Pretty much the same as ASSERT() but stays in Release builds
-	#define VERIFY(x) (!!(x) || ( LOGERROR("Verification failed: %s, file %s, line %i", #x, __FILE__, __LINE__), std::abort(), 0))
+// Pretty much the same as ASSERT() but stays in Release builds
+#define VERIFY(x) (!!(x) || (LOGERROR("Verification failed: %s, file %s, line %i", #x, __FILE__, __LINE__), std::abort(), 0))
 
 #endif  // else TEST_GLOBALS
 
 // Use to mark code that should be impossible to reach.
 #ifdef NDEBUG
-	#define UNREACHABLE(x) UNREACHABLE_INTRINSIC
+#define UNREACHABLE(x) UNREACHABLE_INTRINSIC
 #else
-	#define UNREACHABLE(x) ( FLOGERROR("Hit unreachable code: {0}, file {1}, line {2}", #x, __FILE__, __LINE__), std::abort(), 0)
+#define UNREACHABLE(x) (FLOGERROR("Hit unreachable code: {0}, file {1}, line {2}", #x, __FILE__, __LINE__), std::abort(), 0)
 #endif
 
 
@@ -326,8 +338,13 @@ std::visit(
 , YourVariant);
 You can use constant references if you want to.
 */
-template<class... Ts> struct OverloadedVariantAccess : Ts... { using Ts::operator()...; };
-template<class... Ts> OverloadedVariantAccess(Ts...)->OverloadedVariantAccess<Ts...>;
+template <class... Ts>
+struct OverloadedVariantAccess : Ts...
+{
+	using Ts::operator()...;
+};
+template <class... Ts>
+OverloadedVariantAccess(Ts...) -> OverloadedVariantAccess<Ts...>;
 
 
 
@@ -369,7 +386,7 @@ using cTickTime = std::chrono::duration<signed int, std::ratio_multiply<std::chr
 using cTickTimeLong = std::chrono::duration<signed long long int, cTickTime::period>;
 
 /** Converts a literal to a tick time. */
-constexpr cTickTimeLong operator ""_tick(const unsigned long long a_Ticks)
+constexpr cTickTimeLong operator""_tick (const unsigned long long a_Ticks)
 {
 	return cTickTimeLong(a_Ticks);
 }
@@ -378,11 +395,11 @@ using ContiguousByteBuffer = std::basic_string<std::byte>;
 using ContiguousByteBufferView = std::basic_string_view<std::byte>;
 
 #ifndef TOLUA_TEMPLATE_BIND
-	#define TOLUA_TEMPLATE_BIND(x)
+#define TOLUA_TEMPLATE_BIND(x)
 #endif
 
 #ifdef TOLUA_EXPOSITION
-	#error TOLUA_EXPOSITION should never actually be defined
+#error TOLUA_EXPOSITION should never actually be defined
 #endif
 
 template <typename T>

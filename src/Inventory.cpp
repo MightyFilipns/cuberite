@@ -18,10 +18,10 @@
 
 
 cInventory::cInventory(cPlayer & a_Owner) :
-	m_ArmorSlots    (1, 4),  // 1 x 4 slots
+	m_ArmorSlots(1, 4),  // 1 x 4 slots
 	m_InventorySlots(9, 3),  // 9 x 3 slots
-	m_HotbarSlots   (9, 1),  // 9 x 1 slots
-	m_ShieldSlots   (1, 1),  // 1 x 1 slots
+	m_HotbarSlots(9, 1),  // 9 x 1 slots
+	m_ShieldSlots(1, 1),  // 1 x 1 slots
 	m_Owner(a_Owner)
 {
 	// Ask each ItemGrid to report changes to us:
@@ -222,7 +222,7 @@ cItem * cInventory::FindItem(const cItem & a_RecipeItem)
 		return Item;
 	}
 
-	return 	m_InventorySlots.FindItem(a_RecipeItem);
+	return m_InventorySlots.FindItem(a_RecipeItem);
 }
 
 
@@ -289,8 +289,7 @@ int cInventory::ReplaceOneEquippedItem(const cItem & a_Item, bool a_TryOtherSlot
 
 int cInventory::HowManyItems(const cItem & a_Item)
 {
-	return
-		m_ArmorSlots.HowManyItems(a_Item) +
+	return m_ArmorSlots.HowManyItems(a_Item) +
 		m_InventorySlots.HowManyItems(a_Item) +
 		m_HotbarSlots.HowManyItems(a_Item) +
 		m_ShieldSlots.HowManyItems(a_Item);
@@ -847,8 +846,10 @@ void cInventory::OnSlotChanged(cItemGrid * a_ItemGrid, int a_SlotNum)
 	if ((a_ItemGrid == &m_ArmorSlots) && (World != nullptr))
 	{
 		World->BroadcastEntityEquipment(
-			m_Owner, static_cast<short>(ArmorSlotNumToEntityEquipmentID(static_cast<short>(a_SlotNum))),
-			m_ArmorSlots.GetSlot(a_SlotNum), m_Owner.GetClientHandle()
+			m_Owner,
+			static_cast<short>(ArmorSlotNumToEntityEquipmentID(static_cast<short>(a_SlotNum))),
+			m_ArmorSlots.GetSlot(a_SlotNum),
+			m_Owner.GetClientHandle()
 		);
 	}
 

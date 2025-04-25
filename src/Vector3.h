@@ -10,38 +10,43 @@ template <typename T>
 class Vector3
 {
 
-	TOLUA_TEMPLATE_BIND((T, int, float, double))
+	TOLUA_TEMPLATE_BIND((T, int, float, double) )
 
-public:
-
+	public:
 	T x, y, z;
 
 
-	constexpr Vector3(void) : x(0), y(0), z(0) {}
-	constexpr Vector3(T a_x, T a_y, T a_z) : x(a_x), y(a_y), z(a_z) {}
+	constexpr Vector3(void) :
+		x(0), y(0), z(0)
+	{
+	}
+	constexpr Vector3(T a_x, T a_y, T a_z) :
+		x(a_x), y(a_y), z(a_z)
+	{
+	}
 
 
-	#ifdef TOLUA_EXPOSITION  // Hardcoded copy constructors (tolua++ does not support function templates .. yet)
-		Vector3(const Vector3<float>  & a_Rhs);
-		Vector3(const Vector3<double> & a_Rhs);
-		Vector3(const Vector3<int>    & a_Rhs);
-	#endif
+#ifdef TOLUA_EXPOSITION  // Hardcoded copy constructors (tolua++ does not support function templates .. yet)
+	Vector3(const Vector3<float> & a_Rhs);
+	Vector3(const Vector3<double> & a_Rhs);
+	Vector3(const Vector3<int> & a_Rhs);
+#endif
 
 
 	// tolua_end
 	// Conversion constructors where U is not the same as T leaving the copy-constructor implicitly generated
 	template <typename U, std::enable_if_t<(!std::is_same<U, T>::value) && ((!std::is_integral<T>::value) || (std::is_integral<U>::value)), bool> = true>
-	constexpr Vector3(const Vector3<U> & a_Rhs):
-			x(static_cast<T>(a_Rhs.x)),
-			y(static_cast<T>(a_Rhs.y)),
-			z(static_cast<T>(a_Rhs.z))
+	constexpr Vector3(const Vector3<U> & a_Rhs) :
+		x(static_cast<T>(a_Rhs.x)),
+		y(static_cast<T>(a_Rhs.y)),
+		z(static_cast<T>(a_Rhs.z))
 	{
 	}
 	template <typename U, std::enable_if_t<(!std::is_same<U, T>::value) && ((std::is_integral<T>::value) && (!std::is_integral<U>::value)), bool> = true>
-	constexpr Vector3(const Vector3<U> & a_Rhs):
-			x(static_cast<T>(std::floor(a_Rhs.x))),
-			y(static_cast<T>(std::floor(a_Rhs.y))),
-			z(static_cast<T>(std::floor(a_Rhs.z)))
+	constexpr Vector3(const Vector3<U> & a_Rhs) :
+		x(static_cast<T>(std::floor(a_Rhs.x))),
+		y(static_cast<T>(std::floor(a_Rhs.y))),
+		z(static_cast<T>(std::floor(a_Rhs.z)))
 	{
 	}
 	// tolua_begin
@@ -92,16 +97,16 @@ public:
 
 	inline bool HasNonZeroLength(void) const
 	{
-		#ifdef __clang__
-			#pragma clang diagnostic push
-			#pragma clang diagnostic ignored "-Wfloat-equal"
-		#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wfloat-equal"
+#endif
 
 		return ((x != 0) || (y != 0) || (z != 0));
 
-		#ifdef __clang__
-			#pragma clang diagnostic pop
-		#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 	}
 
 	inline double Length(void) const
@@ -149,16 +154,16 @@ public:
 		// Perform a strict comparison of the contents - we want to know whether this object is exactly equal
 		// To perform EPS-based comparison, use the EqualsEps() function
 
-		#ifdef __clang__
-			#pragma clang diagnostic push
-			#pragma clang diagnostic ignored "-Wfloat-equal"
-		#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wfloat-equal"
+#endif
 
 		return !((x != a_Rhs.x) || (y != a_Rhs.y) || (z != a_Rhs.z));
 
-		#ifdef __clang__
-			#pragma clang diagnostic pop
-		#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 	}
 
 	inline bool EqualsEps(const Vector3<T> & a_Rhs, T a_Eps) const
@@ -202,48 +207,48 @@ public:
 
 	// tolua_end
 
-	inline bool operator != (const Vector3<T> & a_Rhs) const
+	inline bool operator!= (const Vector3<T> & a_Rhs) const
 	{
 		return !Equals(a_Rhs);
 	}
 
-	inline bool operator == (const Vector3<T> & a_Rhs) const
+	inline bool operator== (const Vector3<T> & a_Rhs) const
 	{
 		return Equals(a_Rhs);
 	}
 
-	inline bool operator > (const Vector3<T> & a_Rhs) const
+	inline bool operator> (const Vector3<T> & a_Rhs) const
 	{
 		return (SqrLength() > a_Rhs.SqrLength());
 	}
 
-	inline bool operator < (const Vector3<T> & a_Rhs) const
+	inline bool operator< (const Vector3<T> & a_Rhs) const
 	{
 		return (SqrLength() < a_Rhs.SqrLength());
 	}
 
-	inline void operator += (const Vector3<T> & a_Rhs)
+	inline void operator+= (const Vector3<T> & a_Rhs)
 	{
 		x += a_Rhs.x;
 		y += a_Rhs.y;
 		z += a_Rhs.z;
 	}
 
-	inline void operator -= (const Vector3<T> & a_Rhs)
+	inline void operator-= (const Vector3<T> & a_Rhs)
 	{
 		x -= a_Rhs.x;
 		y -= a_Rhs.y;
 		z -= a_Rhs.z;
 	}
 
-	inline void operator *= (const Vector3<T> & a_Rhs)
+	inline void operator*= (const Vector3<T> & a_Rhs)
 	{
 		x *= a_Rhs.x;
 		y *= a_Rhs.y;
 		z *= a_Rhs.z;
 	}
 
-	inline void operator *= (T a_v)
+	inline void operator*= (T a_v)
 	{
 		x *= a_v;
 		y *= a_v;
@@ -252,7 +257,7 @@ public:
 
 	// tolua_begin
 
-	inline Vector3<T> operator + (const Vector3<T>& a_Rhs) const
+	inline Vector3<T> operator+ (const Vector3<T> & a_Rhs) const
 	{
 		return Vector3<T>(
 			x + a_Rhs.x,
@@ -261,7 +266,7 @@ public:
 		);
 	}
 
-	inline Vector3<T> operator - (const Vector3<T>& a_Rhs) const
+	inline Vector3<T> operator- (const Vector3<T> & a_Rhs) const
 	{
 		return Vector3<T>(
 			x - a_Rhs.x,
@@ -270,12 +275,12 @@ public:
 		);
 	}
 
-	inline Vector3<T> operator - (void) const
+	inline Vector3<T> operator- (void) const
 	{
 		return Vector3<T>(-x, -y, -z);
 	}
 
-	inline Vector3<T> operator * (const Vector3<T>& a_Rhs) const
+	inline Vector3<T> operator* (const Vector3<T> & a_Rhs) const
 	{
 		return Vector3<T>(
 			x * a_Rhs.x,
@@ -284,7 +289,7 @@ public:
 		);
 	}
 
-	inline Vector3<T> operator / (const Vector3<T> & a_Rhs)
+	inline Vector3<T> operator/ (const Vector3<T> & a_Rhs)
 	{
 		return Vector3<T>(
 			x / a_Rhs.x,
@@ -293,7 +298,7 @@ public:
 		);
 	}
 
-	inline Vector3<T> operator * (T a_v) const
+	inline Vector3<T> operator* (T a_v) const
 	{
 		return Vector3<T>(
 			x * a_v,
@@ -302,7 +307,7 @@ public:
 		);
 	}
 
-	inline Vector3<T> operator / (T a_v) const
+	inline Vector3<T> operator/ (T a_v) const
 	{
 		return Vector3<T>(
 			x / a_v,
@@ -416,7 +421,7 @@ class fmt::formatter<Vector3<What>> : public fmt::formatter<What>
 	using Super = fmt::formatter<What>;
 
 	template <typename FormatContext, size_t Len>
-	void Write(FormatContext & a_Ctx, const char (& a_Str)[Len]) const
+	void Write(FormatContext & a_Ctx, const char (&a_Str)[Len]) const
 	{
 		const auto Itr = std::copy_n(&a_Str[0], Len - 1, a_Ctx.out());
 		a_Ctx.advance_to(Itr);
@@ -429,8 +434,7 @@ class fmt::formatter<Vector3<What>> : public fmt::formatter<What>
 		a_Ctx.advance_to(Itr);
 	}
 
-public:
-
+	public:
 	template <typename FormatContext>
 	auto format(const Vector3<What> & a_Vec, FormatContext & a_Ctx) const
 	{
@@ -449,7 +453,8 @@ public:
 
 
 
-template <> inline Vector3<int> Vector3<int>::Floor(void) const
+template <>
+inline Vector3<int> Vector3<int>::Floor(void) const
 {
 	return *this;
 }
@@ -461,9 +466,9 @@ template <> inline Vector3<int> Vector3<int>::Floor(void) const
 template <typename What>
 class VectorHasher
 {
-public:
+	public:
 	/** Provides a hash of a vector's contents */
-	size_t operator()(const Vector3<What> & a_Vector) const
+	size_t operator() (const Vector3<What> & a_Vector) const
 	{
 		// Guaranteed to have non repeating hashes for any 128x128x128 area
 		size_t Hash = static_cast<size_t>(a_Vector.y);
@@ -490,8 +495,8 @@ const double Vector3<T>::NO_INTERSECTION = 1e70;
 
 // tolua_begin
 typedef Vector3<double> Vector3d;
-typedef Vector3<float>  Vector3f;
-typedef Vector3<int>    Vector3i;
+typedef Vector3<float> Vector3f;
+typedef Vector3<int> Vector3i;
 // tolua_end
 
 

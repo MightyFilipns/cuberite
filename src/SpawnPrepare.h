@@ -8,13 +8,14 @@ class cWorld;
 
 
 /** Generates and lights the spawn area of the world. Runs as a separate thread. */
-class cSpawnPrepare:
-	public std::enable_shared_from_this<cSpawnPrepare>
+class cSpawnPrepare : public std::enable_shared_from_this<cSpawnPrepare>
 {
 	/** Private tag allows public constructors that can only be used with private access. */
-	struct sMakeSharedTag {};
-public:
+	struct sMakeSharedTag
+	{
+	};
 
+	public:
 	cSpawnPrepare(cWorld & a_World, int a_SpawnChunkX, int a_SpawnChunkZ, int a_PrepareDistance, int a_FirstIdx, sMakeSharedTag);
 
 	static void PrepareChunks(cWorld & a_World, int a_SpawnChunkX, int a_SpawnChunkZ, int a_PrepareDistance);
@@ -24,7 +25,7 @@ public:
 		PrepareChunks(a_World, a_SpawnChunk.m_ChunkX, a_SpawnChunk.m_ChunkZ, a_PrepareDistance);
 	}
 
-protected:
+	protected:
 	cWorld & m_World;
 	int m_SpawnChunkX;
 	int m_SpawnChunkZ;
@@ -54,6 +55,4 @@ protected:
 	void DecodeChunkCoords(int a_Idx, int & a_ChunkX, int & a_ChunkZ);
 
 	friend class cSpawnPrepareCallback;
-
 };
-

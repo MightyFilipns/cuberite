@@ -13,7 +13,7 @@
 
 class cBrewingRecipes
 {
-public:
+	public:
 	cBrewingRecipes(void);
 
 	void ReloadRecipes(void);
@@ -43,7 +43,8 @@ public:
 
 	/** Returns true if the item is the fuel, false if not. */
 	bool IsFuel(const cItem & a_Item) const;
-private:
+
+	private:
 	using cRecipes = std::vector<std::unique_ptr<cBrewingRecipes::cRecipe>>;
 
 	void ClearRecipes(void);

@@ -45,13 +45,11 @@ class cWorld;
 
 
 
-class cLightingThread:
-	public cIsThread
+class cLightingThread : public cIsThread
 {
 	using Super = cIsThread;
 
-public:
-
+	public:
 	cLightingThread(cWorld & a_World);
 	virtual ~cLightingThread() override;
 
@@ -66,12 +64,10 @@ public:
 
 	size_t GetQueueLength(void);
 
-protected:
-
-	class cLightingChunkStay :
-		public cChunkStay
+	protected:
+	class cLightingChunkStay : public cChunkStay
 	{
-	public:
+		public:
 		cLightingThread & m_LightingThread;
 		int m_ChunkX;
 		int m_ChunkZ;
@@ -79,7 +75,7 @@ protected:
 
 		cLightingChunkStay(cLightingThread & a_LightingThread, int a_ChunkX, int a_ChunkZ, std::unique_ptr<cChunkCoordCallback> a_CallbackAfter);
 
-	protected:
+		protected:
 		virtual void OnChunkAvailable(int a_ChunkX, int a_ChunkZ) override
 		{
 			UNUSED(a_ChunkX);
@@ -87,7 +83,7 @@ protected:
 		}
 		virtual bool OnAllChunksAvailable(void) override;
 		virtual void OnDisabled(void) override;
-	} ;
+	};
 
 	typedef std::list<cChunkStay *> cChunkStays;
 
@@ -103,8 +99,8 @@ protected:
 	/** The ChunkStays that are waiting for load. Used for stopping the thread. */
 	cChunkStays m_PendingQueue;
 
-	cEvent m_evtItemAdded;    // Set when queue is appended, or to stop the thread
-	cEvent m_evtQueueEmpty;   // Set when the queue gets empty
+	cEvent m_evtItemAdded;  // Set when queue is appended, or to stop the thread
+	cEvent m_evtQueueEmpty;  // Set when the queue gets empty
 
 	/** The highest block in the current 3x3 chunk data */
 	HEIGHTTYPE m_MaxHeight;
@@ -116,20 +112,20 @@ protected:
 	// The blobs are XZY organized as a whole, instead of 3x3 XZY-organized subarrays ->
 	//  -> This means data has to be scatterred when reading and gathered when writing!
 	static const int BlocksPerYLayer = cChunkDef::Width * cChunkDef::Width * 3 * 3;
-	BlockState m_Blocks    [BlocksPerYLayer * cChunkDef::Height];
-	LIGHTTYPE  m_BlockLight[BlocksPerYLayer * cChunkDef::Height];
-	LIGHTTYPE  m_SkyLight  [BlocksPerYLayer * cChunkDef::Height];
-	HEIGHTTYPE m_HeightMap [BlocksPerYLayer];
+	BlockState m_Blocks[BlocksPerYLayer * cChunkDef::Height];
+	LIGHTTYPE m_BlockLight[BlocksPerYLayer * cChunkDef::Height];
+	LIGHTTYPE m_SkyLight[BlocksPerYLayer * cChunkDef::Height];
+	HEIGHTTYPE m_HeightMap[BlocksPerYLayer];
 
 	// Seed management (5.7 MiB)
 	// Two buffers, in each calc step one is set as input and the other as output, then in the next step they're swapped
 	// Each seed is represented twice in this structure - both as a "list" and as a "position".
 	// "list" allows fast traversal from seed to seed
 	// "position" allows fast checking if a coord is already a seed
-	unsigned char m_IsSeed1 [BlocksPerYLayer * cChunkDef::Height];
-	unsigned int  m_SeedIdx1[BlocksPerYLayer * cChunkDef::Height];
-	unsigned char m_IsSeed2 [BlocksPerYLayer * cChunkDef::Height];
-	unsigned int  m_SeedIdx2[BlocksPerYLayer * cChunkDef::Height];
+	unsigned char m_IsSeed1[BlocksPerYLayer * cChunkDef::Height];
+	unsigned int m_SeedIdx1[BlocksPerYLayer * cChunkDef::Height];
+	unsigned char m_IsSeed2[BlocksPerYLayer * cChunkDef::Height];
+	unsigned int m_SeedIdx2[BlocksPerYLayer * cChunkDef::Height];
 	size_t m_NumSeeds;
 
 	virtual void Execute(void) override;
@@ -152,8 +148,12 @@ protected:
 	/** Does one step in the light calculation - one seed propagation and seed recalculation */
 	void CalcLightStep(
 		LIGHTTYPE * a_Light,
-		size_t a_NumSeedsIn,    unsigned char * a_IsSeedIn,  unsigned int * a_SeedIdxIn,
-		size_t & a_NumSeedsOut, unsigned char * a_IsSeedOut, unsigned int * a_SeedIdxOut
+		size_t a_NumSeedsIn,
+		unsigned char * a_IsSeedIn,
+		unsigned int * a_SeedIdxIn,
+		size_t & a_NumSeedsOut,
+		unsigned char * a_IsSeedOut,
+		unsigned int * a_SeedIdxOut
 	);
 
 	/** Compresses from 1-block-per-byte (faster calc) into 2-blocks-per-byte (MC storage): */
@@ -161,16 +161,14 @@ protected:
 
 	void PropagateLight(
 		LIGHTTYPE * a_Light,
-		unsigned int a_SrcIdx, unsigned int a_DstIdx,
-		size_t & a_NumSeedsOut, unsigned char * a_IsSeedOut, unsigned int * a_SeedIdxOut
+		unsigned int a_SrcIdx,
+		unsigned int a_DstIdx,
+		size_t & a_NumSeedsOut,
+		unsigned char * a_IsSeedOut,
+		unsigned int * a_SeedIdxOut
 	);
 
 	/** Queues a chunkstay that has all of its chunks loaded.
 	Called by cLightingChunkStay when all of its chunks are loaded. */
 	void QueueChunkStay(cLightingChunkStay & a_ChunkStay);
-
-} ;
-
-
-
-
+};

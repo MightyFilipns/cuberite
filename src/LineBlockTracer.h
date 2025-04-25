@@ -22,19 +22,17 @@ class cChunk;
 
 
 
-class cLineBlockTracer:
-	public cBlockTracer
+class cLineBlockTracer : public cBlockTracer
 {
 	using Super = cBlockTracer;
 
-public:
-
+	public:
 	enum eLineOfSight
 	{
 		// Bit flags used for LineOfSightTrace's Sight parameter:
-		losAir = 1,    // Can see through air
+		losAir = 1,  // Can see through air
 		losWater = 2,  // Can see through water
-		losLava = 4,   // Can see through lava
+		losLava = 4,  // Can see through lava
 
 		// Common combinations:
 		losAirWaterLava = losAir | losWater | losLava,
@@ -65,13 +63,14 @@ public:
 	a_HitBlockFace is the face of the solid block that was hit. */
 	static bool FirstSolidHitTrace(
 		cWorld & a_World,
-		const Vector3d & a_Start, const Vector3d & a_End,
+		const Vector3d & a_Start,
+		const Vector3d & a_End,
 		Vector3d & a_HitCoords,
 		Vector3i & a_HitBlockCoords,
 		eBlockFace & a_HitBlockFace
 	);
 
-protected:
+	protected:
 	/** The start point of the trace */
 	Vector3d m_Start;
 
@@ -104,7 +103,4 @@ protected:
 	bool MoveToNextBlock(void);
 
 	bool ChunkCallback(cChunk * a_Chunk);
-} ;
-
-
-
+};

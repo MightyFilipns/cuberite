@@ -23,19 +23,19 @@
 
 
 /** Callback that can be used to notify chunk sender upon another chunkcoord notification */
-class cNotifyChunkSender :
-	public cChunkCoordCallback
+class cNotifyChunkSender : public cChunkCoordCallback
 {
 	virtual void Call(cChunkCoords a_Coords, bool a_IsSuccess) override
 	{
 		cChunkSender & ChunkSender = m_ChunkSender;
 		m_World.DoWithChunk(
-			a_Coords.m_ChunkX, a_Coords.m_ChunkZ,
-			[&ChunkSender] (cChunk & a_Chunk) -> bool
-			{
-				ChunkSender.QueueSendChunkTo(a_Chunk.GetPosX(), a_Chunk.GetPosZ(), cChunkSender::Priority::High, a_Chunk.GetAllClients());
-				return true;
-			}
+			a_Coords.m_ChunkX,
+			a_Coords.m_ChunkZ,
+			[&ChunkSender](cChunk & a_Chunk) -> bool
+		{
+			ChunkSender.QueueSendChunkTo(a_Chunk.GetPosX(), a_Chunk.GetPosZ(), cChunkSender::Priority::High, a_Chunk.GetAllClients());
+			return true;
+		}
 		);
 	}
 
@@ -43,8 +43,8 @@ class cNotifyChunkSender :
 
 	cWorld & m_World;
 
-public:
-	cNotifyChunkSender(cChunkSender & a_ChunkSender, cWorld & a_World):
+	public:
+	cNotifyChunkSender(cChunkSender & a_ChunkSender, cWorld & a_World) :
 		m_ChunkSender(a_ChunkSender),
 		m_World(a_World)
 	{
@@ -93,7 +93,7 @@ void cChunkSender::QueueSendChunkTo(int a_ChunkX, int a_ChunkZ, Priority a_Prior
 {
 	ASSERT(a_Client != nullptr);
 	{
-		cChunkCoords Chunk{a_ChunkX, a_ChunkZ};
+		cChunkCoords Chunk { a_ChunkX, a_ChunkZ };
 		cCSLock Lock(m_CS);
 		auto iter = m_ChunkInfo.find(Chunk);
 		if (iter != m_ChunkInfo.end())
@@ -101,15 +101,15 @@ void cChunkSender::QueueSendChunkTo(int a_ChunkX, int a_ChunkZ, Priority a_Prior
 			auto & info = iter->second;
 			if (info.m_Priority < a_Priority)  // Was the chunk's priority boosted?
 			{
-				m_SendChunks.push(sChunkQueue{a_Priority, Chunk});
+				m_SendChunks.push(sChunkQueue { a_Priority, Chunk });
 				info.m_Priority = a_Priority;
 			}
 			info.m_Clients.insert(a_Client->shared_from_this());
 		}
 		else
 		{
-			m_SendChunks.push(sChunkQueue{a_Priority, Chunk});
-			auto info = sSendChunk{Chunk, a_Priority};
+			m_SendChunks.push(sChunkQueue { a_Priority, Chunk });
+			auto info = sSendChunk { Chunk, a_Priority };
 			info.m_Clients.insert(a_Client->shared_from_this());
 			m_ChunkInfo.emplace(Chunk, info);
 		}
@@ -124,7 +124,7 @@ void cChunkSender::QueueSendChunkTo(int a_ChunkX, int a_ChunkZ, Priority a_Prior
 void cChunkSender::QueueSendChunkTo(int a_ChunkX, int a_ChunkZ, Priority a_Priority, const std::vector<cClientHandle *> & a_Clients)
 {
 	{
-		cChunkCoords Chunk{a_ChunkX, a_ChunkZ};
+		cChunkCoords Chunk { a_ChunkX, a_ChunkZ };
 		cCSLock Lock(m_CS);
 		auto iter = m_ChunkInfo.find(Chunk);
 		if (iter != m_ChunkInfo.end())
@@ -132,7 +132,7 @@ void cChunkSender::QueueSendChunkTo(int a_ChunkX, int a_ChunkZ, Priority a_Prior
 			auto & info = iter->second;
 			if (info.m_Priority < a_Priority)  // Was the chunk's priority boosted?
 			{
-				m_SendChunks.push(sChunkQueue{a_Priority, Chunk});
+				m_SendChunks.push(sChunkQueue { a_Priority, Chunk });
 				info.m_Priority = a_Priority;
 			}
 			for (const auto & Client : a_Clients)
@@ -142,8 +142,8 @@ void cChunkSender::QueueSendChunkTo(int a_ChunkX, int a_ChunkZ, Priority a_Prior
 		}
 		else
 		{
-			m_SendChunks.push(sChunkQueue{a_Priority, Chunk});
-			auto info = sSendChunk{Chunk, a_Priority};
+			m_SendChunks.push(sChunkQueue { a_Priority, Chunk });
+			auto info = sSendChunk { Chunk, a_Priority };
 			for (const auto & Client : a_Clients)
 			{
 				info.m_Clients.insert(Client->shared_from_this());
@@ -232,7 +232,7 @@ void cChunkSender::SendChunk(int a_ChunkX, int a_ChunkZ, const WeakClients & a_C
 	}
 
 	// Query and prepare chunk data:
-	if (!m_World.GetChunkData({a_ChunkX, a_ChunkZ}, *this))
+	if (!m_World.GetChunkData({ a_ChunkX, a_ChunkZ }, *this))
 	{
 		return;
 	}

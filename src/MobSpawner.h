@@ -14,7 +14,7 @@ but it also has dynamic part depending on the world.ini settings.
 */
 class cMobSpawner
 {
-public :
+	public:
 	/** Constructor
 	a_MobFamily is the Family of mobs that this spawner will spawn
 	a_AllowedTypes is the set of types allowed for mobs it will spawn. Empty set would result in no spawn at all
@@ -49,8 +49,7 @@ public :
 	static std::set<eEntityType> GetAllowedMobTypes(EMCSBiome a_Biome);
 
 
-protected :
-
+	protected:
 	/** Returns a random type that can spawn in the specified biome.
 	Returns mtInvalidType if none is possible. */
 	eEntityType ChooseMobType(EMCSBiome a_Biome);
@@ -60,8 +59,4 @@ protected :
 	bool m_NewPack;
 	eEntityType m_MobType;
 	std::vector<std::unique_ptr<cMonster>> m_Spawned;
-} ;
-
-
-
-
+};

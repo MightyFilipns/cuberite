@@ -37,12 +37,9 @@ cDeadlockDetect::~cDeadlockDetect()
 	if (!m_TrackedCriticalSections.empty())
 	{
 		LOGWARNING("DeadlockDetect: Some CS objects (%u) haven't been removed from tracking", static_cast<unsigned>(m_TrackedCriticalSections.size()));
-		for (const auto & tcs: m_TrackedCriticalSections)
+		for (const auto & tcs : m_TrackedCriticalSections)
 		{
-			LOGWARNING("  CS %p / %s",
-				static_cast<void *>(tcs.first),
-				tcs.second.c_str()
-			);
+			LOGWARNING("  CS %p / %s", static_cast<void *>(tcs.first), tcs.second.c_str());
 		}
 	}
 }
@@ -158,9 +155,7 @@ void cDeadlockDetect::CheckWorldAge(const AString & a_WorldName, const cTickTime
 
 void cDeadlockDetect::DeadlockDetected(const AString & a_WorldName, const cTickTimeLong a_WorldAge)
 {
-	LOGERROR("Deadlock detected: world %s has been stuck at age %lld. Aborting the server.",
-		a_WorldName.c_str(), static_cast<long long>(a_WorldAge.count())
-	);
+	LOGERROR("Deadlock detected: world %s has been stuck at age %lld. Aborting the server.", a_WorldName.c_str(), static_cast<long long>(a_WorldAge.count()));
 	ListTrackedCSs();
 	ASSERT(!"Deadlock detected");
 	std::abort();
@@ -173,11 +168,13 @@ void cDeadlockDetect::DeadlockDetected(const AString & a_WorldName, const cTickT
 void cDeadlockDetect::ListTrackedCSs(void)
 {
 	cCSLock lock(m_CS);
-	for (const auto & cs: m_TrackedCriticalSections)
+	for (const auto & cs : m_TrackedCriticalSections)
 	{
 		LOG("CS at %p, %s: RecursionCount = %d, ThreadIDHash = %04llx",
-			static_cast<void *>(cs.first), cs.second.c_str(),
-			cs.first->m_RecursionCount, static_cast<UInt64>(std::hash<std::thread::id>()(cs.first->m_OwningThreadID))
+			static_cast<void *>(cs.first),
+			cs.second.c_str(),
+			cs.first->m_RecursionCount,
+			static_cast<UInt64>(std::hash<std::thread::id>()(cs.first->m_OwningThreadID))
 		);
 	}
 }

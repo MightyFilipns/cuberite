@@ -34,7 +34,7 @@ different threads' - the caller, the Loader or the Generator thread.
 */
 class cChunkStay
 {
-public:
+	public:
 	cChunkStay(void);
 
 	/** Deletes the object. Note that this calls Clear(), which means that the ChunkStay needs to be disabled. */
@@ -54,7 +54,7 @@ public:
 
 	/** Enables the ChunkStay on the specified chunkmap, causing it to load and generate chunks.
 	All the contained chunks are queued for loading / generating. */
-	void Enable (cChunkMap & a_ChunkMap);
+	void Enable(cChunkMap & a_ChunkMap);
 
 	/** Disables the ChunkStay, the chunks are released and the ChunkStay object can be edited with Add() and Remove() again */
 	virtual void Disable(void);
@@ -72,8 +72,7 @@ public:
 	/** Called by the ChunkMap when the ChunkStay is disabled. The object may choose to delete itself. */
 	virtual void OnDisabled(void) = 0;
 
-protected:
-
+	protected:
 	friend class cChunkMap;
 
 
@@ -92,9 +91,4 @@ protected:
 	May be called for chunks outside this ChunkStay.
 	Returns true if the ChunkStay is to be automatically disabled by the ChunkMap; returns false to keep the ChunkStay. */
 	bool ChunkAvailable(int a_ChunkX, int a_ChunkZ);
-} ;
-
-
-
-
-
+};

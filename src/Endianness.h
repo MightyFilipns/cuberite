@@ -13,11 +13,11 @@ using std::bit_cast;
 #else
 // bit-for-bit convert one type to another. In C++ the only non-UB way to do this is *memcpy*. Nearly every other
 // option is a strict aliasing violation.
-template<class To, class From>
+template <class To, class From>
 std::enable_if_t<
 	sizeof(To) == sizeof(From),
 	To>
-bit_cast(const From &src) noexcept
+bit_cast(const From & src) noexcept
 {
 	To dst;
 	std::memcpy(&dst, &src, sizeof(To));
@@ -30,12 +30,11 @@ bit_cast(const From &src) noexcept
 @tparam Value The host 16-bit type (Int16, UInt16). Usually inferred.
 @param a_Value The input integer or float value.
 @return The resulting bytes. */
-template<typename Value, std::enable_if_t<sizeof(Value) == 2, bool> = true>
+template <typename Value, std::enable_if_t<sizeof(Value) == 2, bool> = true>
 inline Bytes<Value> HostToNetwork(Value a_Value)
 {
 	UInt16 Bits = bit_cast<UInt16>(a_Value);
-	return
-	{
+	return {
 		std::byte(Bits >> 8),
 		std::byte(Bits)
 	};
@@ -45,12 +44,11 @@ inline Bytes<Value> HostToNetwork(Value a_Value)
 @tparam Value The host 32-bit type (Int32, UInt32, float). Usually inferred.
 @param a_Value The input integer or float value.
 @return The resulting bytes. */
-template<typename Value, std::enable_if_t<sizeof(Value) == 4, bool> = true>
+template <typename Value, std::enable_if_t<sizeof(Value) == 4, bool> = true>
 inline Bytes<Value> HostToNetwork(Value a_Value)
 {
 	UInt32 Bits = bit_cast<UInt32>(a_Value);
-	return
-	{
+	return {
 		std::byte(Bits >> 24),
 		std::byte(Bits >> 16),
 		std::byte(Bits >> 8),
@@ -62,12 +60,11 @@ inline Bytes<Value> HostToNetwork(Value a_Value)
 @tparam Value The host 64-bit type (Int64, UInt64, double). Usually inferred.
 @param a_Value The input integer or float value.
 @return The resulting bytes. */
-template<typename Value, std::enable_if_t<sizeof(Value) == 8, bool> = true>
+template <typename Value, std::enable_if_t<sizeof(Value) == 8, bool> = true>
 inline Bytes<Value> HostToNetwork(Value a_Value)
 {
 	UInt64 Bits = bit_cast<UInt64>(a_Value);
-	return
-	{
+	return {
 		std::byte(Bits >> 56),
 		std::byte(Bits >> 48),
 		std::byte(Bits >> 40),
@@ -83,12 +80,13 @@ inline Bytes<Value> HostToNetwork(Value a_Value)
 @tparam Value The desired 16-bit type (Int16, UInt16)
 @param a_Value The input bytes.
 @return The resulting integer or float value. */
-template<typename Value, std::enable_if_t<sizeof(Value) == 2, bool> = true>
+template <typename Value, std::enable_if_t<sizeof(Value) == 2, bool> = true>
 inline Value NetworkToHost(Bytes<Value> a_Value)
 {
 	UInt16 val = UInt16(
 		UInt16(a_Value[0]) << 8 |
-		UInt16(a_Value[1]));
+		UInt16(a_Value[1])
+	);
 	return bit_cast<Value>(val);
 }
 
@@ -96,14 +94,15 @@ inline Value NetworkToHost(Bytes<Value> a_Value)
 @tparam Value The desired 32-bit type (Int32, UInt32, float)
 @param a_Value The input bytes.
 @return The resulting integer or float value. */
-template<typename Value, std::enable_if_t<sizeof(Value) == 4, bool> = true>
+template <typename Value, std::enable_if_t<sizeof(Value) == 4, bool> = true>
 inline Value NetworkToHost(Bytes<Value> a_Value)
 {
 	UInt32 val = UInt32(
 		UInt32(a_Value[0]) << 24 |
 		UInt32(a_Value[1]) << 16 |
 		UInt32(a_Value[2]) << 8 |
-		UInt32(a_Value[3]));
+		UInt32(a_Value[3])
+	);
 	return bit_cast<Value>(val);
 }
 
@@ -111,7 +110,7 @@ inline Value NetworkToHost(Bytes<Value> a_Value)
 @tparam Value The desired 64-bit type (Int64, UInt64, double)
 @param a_Value The input bytes.
 @return The resulting integer or float value. */
-template<typename Value, std::enable_if_t<sizeof(Value) == 8, bool> = true>
+template <typename Value, std::enable_if_t<sizeof(Value) == 8, bool> = true>
 inline Value NetworkToHost(Bytes<Value> a_Value)
 {
 	UInt64 val = UInt64(
@@ -122,7 +121,8 @@ inline Value NetworkToHost(Bytes<Value> a_Value)
 		UInt64(a_Value[4]) << 24 |
 		UInt64(a_Value[5]) << 16 |
 		UInt64(a_Value[6]) << 8 |
-		UInt64(a_Value[7]));
+		UInt64(a_Value[7])
+	);
 	return bit_cast<Value>(val);
 }
 
@@ -132,8 +132,8 @@ inline Value NetworkToHost(Bytes<Value> a_Value)
 @return The resulting integer or float value.
 
 Consider using NetworkToHost when the data is owned since it provides additional type safety (length is known). */
-template<typename Value>
-inline Value NetworkBufToHost(const std::byte* a_Mem)
+template <typename Value>
+inline Value NetworkBufToHost(const std::byte * a_Mem)
 {
 	// Copy unfortunately needed to add the length information required by the rest of the API.
 	// Gets completely optimised out in my testing.

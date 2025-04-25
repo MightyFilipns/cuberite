@@ -27,9 +27,9 @@
 #include "IniFile.h"
 
 #if defined(WIN32)
-	#define iniEOL endl
+#define iniEOL endl
 #else
-	#define iniEOL '\r' << endl
+#define iniEOL '\r' << endl
 #endif
 
 using namespace std;
@@ -55,8 +55,8 @@ bool cIniFile::ReadFile(const AString & a_FileName, bool a_AllowExampleRedirect)
 	// Normally you would use ifstream, but the SGI CC compiler has
 	// a few bugs with ifstream. So ... fstream used.
 	fstream f;
-	AString   line;
-	AString   keyname, valuename, value;
+	AString line;
+	AString keyname, valuename, value;
 	AString::size_type pLeft, pRight;
 	bool IsFromExampleRedirect = false;
 
@@ -135,7 +135,7 @@ bool cIniFile::ReadFile(const AString & a_FileName, bool a_AllowExampleRedirect)
 				if (
 					((pRight = line.find_last_of("]")) != AString::npos) &&
 					(pRight > pLeft)
-					)
+				)
 				{
 					keyname = line.substr(pLeft + 1, pRight - pLeft - 1);
 					AddKeyName(keyname);
@@ -631,7 +631,7 @@ bool cIniFile::DeleteKey(const AString & keyname)
 	}
 
 	vector<AString>::iterator npos = m_Names.begin() + keyID;
-	vector<key>::iterator    kpos = m_Keys.begin() + keyID;
+	vector<key>::iterator kpos = m_Keys.begin() + keyID;
 	m_Names.erase(npos, npos + 1);
 	m_Keys.erase(kpos, kpos + 1);
 
@@ -962,6 +962,3 @@ AStringVector ReadUpgradeIniPorts(
 
 	return Ports;
 }
-
-
-

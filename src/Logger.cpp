@@ -4,7 +4,7 @@
 
 #include "OSSupport/IsThread.h"
 #ifdef _WIN32
-	#include <time.h>
+#include <time.h>
 #endif
 
 
@@ -25,13 +25,20 @@ static void WriteLogOpener(fmt::memory_buffer & Buffer)
 #ifndef NDEBUG
 	const auto ThreadID = std::hash<std::thread::id>()(std::this_thread::get_id());
 	fmt::format_to(
-		std::back_inserter(Buffer), "[{0:04x}|{1:02d}:{2:02d}:{3:02d}] ",
-		ThreadID, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec
+		std::back_inserter(Buffer),
+		"[{0:04x}|{1:02d}:{2:02d}:{3:02d}] ",
+		ThreadID,
+		timeinfo.tm_hour,
+		timeinfo.tm_min,
+		timeinfo.tm_sec
 	);
 #else
 	fmt::format_to(
-		std::back_inserter(Buffer), "[{0:02d}:{1:02d}:{2:02d}] ",
-		timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec
+		std::back_inserter(Buffer),
+		"[{0:02d}:{1:02d}:{2:02d}] ",
+		timeinfo.tm_hour,
+		timeinfo.tm_min,
+		timeinfo.tm_sec
 	);
 #endif
 }
@@ -119,7 +126,7 @@ cLogger::cAttachment cLogger::AttachListener(std::unique_ptr<cListener> a_Listen
 		cCSLock Lock(m_CriticalSection);
 		m_LogListeners.push_back(std::move(a_Listener));
 	}
-	return cAttachment{nonOwning};
+	return cAttachment { nonOwning };
 }
 
 
@@ -134,9 +141,9 @@ void cLogger::DetachListener(cListener * a_Listener)
 			m_LogListeners.begin(),
 			m_LogListeners.end(),
 			[=](std::unique_ptr<cListener> & a_OtherListener) -> bool
-			{
-				return a_OtherListener.get() == a_Listener;
-			}
+	{
+		return a_OtherListener.get() == a_Listener;
+	}
 		)
 	);
 }

@@ -16,8 +16,8 @@
 
 // Disable MSVC warnings:
 #if defined(_MSC_VER)
-	#pragma warning(push)
-	#pragma warning(disable:4355)  // 'this' : used in base member initializer list
+#pragma warning(push)
+#pragma warning(disable : 4355)  // 'this' : used in base member initializer list
 #endif
 
 
@@ -28,11 +28,11 @@ enum
 {
 	// Client -> Server:
 	RCON_PACKET_COMMAND = 2,
-	RCON_PACKET_LOGIN   = 3,
+	RCON_PACKET_LOGIN = 3,
 
 	// Server -> Client:
 	RCON_PACKET_RESPONSE = 2,
-} ;
+};
 
 
 
@@ -41,17 +41,16 @@ enum
 ////////////////////////////////////////////////////////////////////////////////
 // cRCONListenCallbacks:
 
-class cRCONListenCallbacks:
-	public cNetwork::cListenCallbacks
+class cRCONListenCallbacks : public cNetwork::cListenCallbacks
 {
-public:
-	cRCONListenCallbacks(cRCONServer & a_RCONServer, UInt16 a_Port):
+	public:
+	cRCONListenCallbacks(cRCONServer & a_RCONServer, UInt16 a_Port) :
 		m_RCONServer(a_RCONServer),
 		m_Port(a_Port)
 	{
 	}
 
-protected:
+	protected:
 	/** The RCON server instance that we're attached to. */
 	cRCONServer & m_RCONServer;
 
@@ -78,10 +77,9 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////
 // cRCONCommandOutput:
 
-class cRCONCommandOutput :
-	public cCommandOutputCallback
+class cRCONCommandOutput : public cCommandOutputCallback
 {
-public:
+	public:
 	cRCONCommandOutput(cRCONServer::cConnection & a_Connection, UInt32 a_RequestID) :
 		m_Connection(a_Connection),
 		m_RequestID(a_RequestID)
@@ -100,11 +98,11 @@ public:
 		delete this;
 	}
 
-protected:
+	protected:
 	cRCONServer::cConnection & m_Connection;
 	UInt32 m_RequestID;
 	AString m_Buffer;
-} ;
+};
 
 
 
@@ -124,7 +122,7 @@ cRCONServer::cRCONServer(cServer & a_Server) :
 
 cRCONServer::~cRCONServer()
 {
-	for (const auto & srv: m_ListenServers)
+	for (const auto & srv : m_ListenServers)
 	{
 		srv->Close();
 	}
@@ -153,7 +151,7 @@ void cRCONServer::Initialize(cSettingsRepositoryInterface & a_Settings)
 	AStringVector Ports = ReadUpgradeIniPorts(a_Settings, "RCON", "Ports", "PortsIPv4", "PortsIPv6", "25575");
 
 	// Start listening on each specified port:
-	for (const auto & port: Ports)
+	for (const auto & port : Ports)
 	{
 		UInt16 PortNum;
 		if (!StringToInteger(port, PortNum))
@@ -215,9 +213,7 @@ void cRCONServer::cConnection::OnReceivedData(const char * a_Data, size_t a_Size
 		if (Length > 1500)
 		{
 			// Too long, drop the connection
-			LOGWARNING("Received an invalid RCON packet length (%d), dropping RCON connection to %s.",
-				Length, m_IPAddress.c_str()
-			);
+			LOGWARNING("Received an invalid RCON packet length (%d), dropping RCON connection to %s.", Length, m_IPAddress.c_str());
 			m_Link->Close();
 			m_Link.reset();
 			return;
@@ -228,7 +224,7 @@ void cRCONServer::cConnection::OnReceivedData(const char * a_Data, size_t a_Size
 			return;
 		}
 
-		UInt32 RequestID  = UIntFromBuffer(m_Buffer.data() + 4);
+		UInt32 RequestID = UIntFromBuffer(m_Buffer.data() + 4);
 		UInt32 PacketType = UIntFromBuffer(m_Buffer.data() + 8);
 		if (!ProcessPacket(RequestID, PacketType, Length - 10, m_Buffer.data() + 12))
 		{
@@ -304,9 +300,7 @@ bool cRCONServer::cConnection::ProcessPacket(UInt32 a_RequestID, UInt32 a_Packet
 	}
 
 	// Unknown packet type, drop the connection:
-	LOGWARNING("RCON: Client at %s has sent an unknown packet type %d, dropping connection.",
-		m_IPAddress.c_str(), a_PacketType
-	);
+	LOGWARNING("RCON: Client at %s has sent an unknown packet type %d, dropping connection.", m_IPAddress.c_str(), a_PacketType);
 	return false;
 }
 
@@ -327,7 +321,7 @@ UInt32 cRCONServer::cConnection::UIntFromBuffer(const char * a_Buffer)
 void cRCONServer::cConnection::UIntToBuffer(UInt32 a_Value, char * a_Buffer)
 {
 	a_Buffer[0] = static_cast<char>(a_Value & 0xff);
-	a_Buffer[1] = static_cast<char>((a_Value >> 8)  & 0xff);
+	a_Buffer[1] = static_cast<char>((a_Value >> 8) & 0xff);
 	a_Buffer[2] = static_cast<char>((a_Value >> 16) & 0xff);
 	a_Buffer[3] = static_cast<char>((a_Value >> 24) & 0xff);
 }
@@ -353,7 +347,3 @@ void cRCONServer::cConnection::SendResponse(UInt32 a_RequestID, UInt32 a_PacketT
 	}
 	m_Link->Send("\0", 2);  // Send two zero chars as the padding
 }
-
-
-
-

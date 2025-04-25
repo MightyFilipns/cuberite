@@ -250,10 +250,10 @@ void cChunkGeneratorThread::DoGenerate(cChunkCoords a_Coords)
 	m_Generator->Generate(ChunkDesc);
 	m_PluginInterface->CallHookChunkGenerated(ChunkDesc);
 
-	#ifndef NDEBUG
-		// Verify that the generator has produced valid data:
-		ChunkDesc.VerifyHeightmap();
-	#endif
+#ifndef NDEBUG
+	// Verify that the generator has produced valid data:
+	ChunkDesc.VerifyHeightmap();
+#endif
 
 	m_ChunkSink->OnChunkGenerated(ChunkDesc);
 }

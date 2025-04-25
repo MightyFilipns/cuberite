@@ -16,11 +16,13 @@
 class cWorld;
 
 
-class cBlockInServerPluginInterface :
-	public cBlockPluginInterface
+class cBlockInServerPluginInterface : public cBlockPluginInterface
 {
-public:
-	cBlockInServerPluginInterface(cWorld & a_World) : m_World(a_World) {}
+	public:
+	cBlockInServerPluginInterface(cWorld & a_World) :
+		m_World(a_World)
+	{
+	}
 
 	virtual bool CallHookBlockSpread(Vector3i a_BlockPos, eSpreadSource a_Source) override
 	{
@@ -37,10 +39,6 @@ public:
 		return cPluginManager::Get()->CallHookPlayerBrokenBlock(a_Player, a_BlockPos, a_BlockFace, a_Block);
 	}
 
-private:
+	private:
 	cWorld & m_World;
 };
-
-
-
-

@@ -16,16 +16,15 @@ class cBlockIDMap
 	// Making the map case-insensitive:
 	struct Comparator
 	{
-		bool operator ()(const AString & a_Item1, const AString & a_Item2) const
+		bool operator() (const AString & a_Item1, const AString & a_Item2) const
 		{
 			return (NoCaseCompare(a_Item1, a_Item2) > 0);
 		}
-	} ;
+	};
 
 	using ItemMap = std::map<AString, std::pair<short, short>, Comparator>;
 
-public:
-
+	public:
 	cBlockIDMap(void)
 	{
 		cIniFile Ini;
@@ -100,7 +99,7 @@ public:
 	}
 
 
-protected:
+	protected:
 	ItemMap m_Map;
 
 
@@ -127,7 +126,7 @@ protected:
 		}
 		m_Map[a_Name] = std::make_pair(ItemType, ItemDamage);
 	}
-} ;
+};
 
 
 
@@ -225,9 +224,3 @@ cItem GetIniItemSet(cIniFile & a_IniFile, const char * a_Section, const char * a
 	}
 	return res;
 }
-
-
-
-
-
-

@@ -36,18 +36,18 @@ static void ParseArguments(int argc, char ** argv, cMemorySettingsRepository & a
 {
 	// Parse the comand line args:
 	TCLAP::CmdLine cmd("Cuberite");
-	TCLAP::ValueArg<int> slotsArg    ("s", "max-players",         "Maximum number of slots for the server to use, overrides setting in setting.ini", false, -1, "number", cmd);
-	TCLAP::ValueArg<AString> confArg ("c", "config-file",         "Config file to use", false, "settings.ini", "string", cmd);
-	TCLAP::MultiArg<int> portsArg    ("p", "port",                "The port number the server should listen to", false, "port", cmd);
-	TCLAP::SwitchArg commLogArg      ("",  "log-comm",            "Log server client communications to file", cmd);
-	TCLAP::SwitchArg commLogInArg    ("",  "log-comm-in",         "Log inbound server client communications to file", cmd);
-	TCLAP::SwitchArg commLogOutArg   ("",  "log-comm-out",        "Log outbound server client communications to file", cmd);
-	TCLAP::SwitchArg crashDumpFull   ("",  "crash-dump-full",     "Crashdumps created by the server will contain full server memory", cmd);
-	TCLAP::SwitchArg crashDumpGlobals("",  "crash-dump-globals",  "Crashdumps created by the server will contain the global variables' values", cmd);
-	TCLAP::SwitchArg noBufArg        ("",  "no-output-buffering", "Disable output buffering", cmd);
-	TCLAP::SwitchArg noFileLogArg    ("",  "no-log-file",         "Disable logging to file", cmd);
-	TCLAP::SwitchArg runAsServiceArg ("d", "service",             "Run as a service on Windows, or daemon on UNIX like systems", cmd);
-	TCLAP::SwitchArg runDetached ("", "detached", "Run with detached stdin (useful for container/docker)", cmd);
+	TCLAP::ValueArg<int> slotsArg("s", "max-players", "Maximum number of slots for the server to use, overrides setting in setting.ini", false, -1, "number", cmd);
+	TCLAP::ValueArg<AString> confArg("c", "config-file", "Config file to use", false, "settings.ini", "string", cmd);
+	TCLAP::MultiArg<int> portsArg("p", "port", "The port number the server should listen to", false, "port", cmd);
+	TCLAP::SwitchArg commLogArg("", "log-comm", "Log server client communications to file", cmd);
+	TCLAP::SwitchArg commLogInArg("", "log-comm-in", "Log inbound server client communications to file", cmd);
+	TCLAP::SwitchArg commLogOutArg("", "log-comm-out", "Log outbound server client communications to file", cmd);
+	TCLAP::SwitchArg crashDumpFull("", "crash-dump-full", "Crashdumps created by the server will contain full server memory", cmd);
+	TCLAP::SwitchArg crashDumpGlobals("", "crash-dump-globals", "Crashdumps created by the server will contain the global variables' values", cmd);
+	TCLAP::SwitchArg noBufArg("", "no-output-buffering", "Disable output buffering", cmd);
+	TCLAP::SwitchArg noFileLogArg("", "no-log-file", "Disable logging to file", cmd);
+	TCLAP::SwitchArg runAsServiceArg("d", "service", "Run as a service on Windows, or daemon on UNIX like systems", cmd);
+	TCLAP::SwitchArg runDetached("", "detached", "Run with detached stdin (useful for container/docker)", cmd);
 	cmd.parse(argc, argv);
 
 	// Copy the parsed args' values into a settings repository:
@@ -67,7 +67,7 @@ static void ParseArguments(int argc, char ** argv, cMemorySettingsRepository & a
 	}
 	if (portsArg.isSet())
 	{
-		for (auto port: portsArg.getValue())
+		for (auto port : portsArg.getValue())
 		{
 			a_Settings.AddValue("Server", "Ports", std::to_string(port));
 		}
@@ -219,7 +219,7 @@ static int UniversalMain(int argc, char * argv[], const bool a_RunningAsService)
 int main(int argc, char ** argv)
 {
 #if !defined(NDEBUG) && defined(_MSC_VER)
-	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	// _X: The simple built-in CRT leak finder - simply break when allocating the Nth block ({N} is listed in the leak output)
 	// Only useful when the leak is in the same sequence all the time

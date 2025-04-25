@@ -44,21 +44,20 @@ cObjective::eType cObjective::StringToType(const AString & a_Name)
 	{
 		eType m_Type;
 		const char * m_String;
-	} TypeMap [] =
-	{
-		{otDummy,              "dummy"              },
-		{otDeathCount,         "deathCount"         },
-		{otPlayerKillCount,    "playerKillCount"    },
-		{otTotalKillCount,     "totalKillCount"     },
-		{otHealth,             "health"             },
-		{otAchievement,        "achievement"        },
-		{otStat,               "stat"               },
-		{otStatItemCraft,      "stat.craftItem"     },
-		{otStatItemUse,        "stat.useItem"       },
-		{otStatItemBreak,      "stat.breakItem"     },
-		{otStatBlockMine,      "stat.mineBlock"     },
-		{otStatEntityKill,     "stat.killEntity"    },
-		{otStatEntityKilledBy, "stat.entityKilledBy"}
+	} TypeMap[] = {
+		{ otDummy, "dummy" },
+		{ otDeathCount, "deathCount" },
+		{ otPlayerKillCount, "playerKillCount" },
+		{ otTotalKillCount, "totalKillCount" },
+		{ otHealth, "health" },
+		{ otAchievement, "achievement" },
+		{ otStat, "stat" },
+		{ otStatItemCraft, "stat.craftItem" },
+		{ otStatItemUse, "stat.useItem" },
+		{ otStatItemBreak, "stat.breakItem" },
+		{ otStatBlockMine, "stat.mineBlock" },
+		{ otStatEntityKill, "stat.killEntity" },
+		{ otStatEntityKilledBy, "stat.entityKilledBy" }
 	};
 	for (size_t i = 0; i < ARRAYCOUNT(TypeMap); i++)
 	{
@@ -74,11 +73,8 @@ cObjective::eType cObjective::StringToType(const AString & a_Name)
 
 
 
-cObjective::cObjective(const AString & a_Name, const AString & a_DisplayName, cObjective::eType a_Type, cWorld * a_World)
-	: m_DisplayName(a_DisplayName)
-	, m_Name(a_Name)
-	, m_Type(a_Type)
-	, m_World(a_World)
+cObjective::cObjective(const AString & a_Name, const AString & a_DisplayName, cObjective::eType a_Type, cWorld * a_World) :
+	m_DisplayName(a_DisplayName), m_Name(a_Name), m_Type(a_Type), m_World(a_World)
 {
 }
 
@@ -194,15 +190,12 @@ void cObjective::SendTo(cClientHandle & a_Client)
 
 
 cTeam::cTeam(
-	const AString & a_Name, const AString & a_DisplayName,
-	const AString & a_Prefix, const AString & a_Suffix
-)
-	: m_AllowsFriendlyFire(true)
-	, m_CanSeeFriendlyInvisible(false)
-	, m_DisplayName(a_DisplayName)
-	, m_Name(a_Name)
-	, m_Prefix(a_Prefix)
-	, m_Suffix(a_Suffix)
+	const AString & a_Name,
+	const AString & a_DisplayName,
+	const AString & a_Prefix,
+	const AString & a_Suffix
+) :
+	m_AllowsFriendlyFire(true), m_CanSeeFriendlyInvisible(false), m_DisplayName(a_DisplayName), m_Name(a_Name), m_Prefix(a_Prefix), m_Suffix(a_Suffix)
 {
 }
 
@@ -270,7 +263,8 @@ size_t cTeam::GetNumPlayers(void) const
 
 
 
-cScoreboard::cScoreboard(cWorld * a_World) : m_World(a_World)
+cScoreboard::cScoreboard(cWorld * a_World) :
+	m_World(a_World)
 {
 	for (int i = 0; i < static_cast<int>(dsCount); ++i)
 	{
@@ -357,8 +351,10 @@ cObjective * cScoreboard::GetObjective(const AString & a_Name)
 
 
 cTeam * cScoreboard::RegisterTeam(
-	const AString & a_Name, const AString & a_DisplayName,
-	const AString & a_Prefix, const AString & a_Suffix
+	const AString & a_Name,
+	const AString & a_DisplayName,
+	const AString & a_Prefix,
+	const AString & a_Suffix
 )
 {
 	auto [TeamIterator, TeamExists] = m_Teams.try_emplace(a_Name, a_Name, a_DisplayName, a_Prefix, a_Suffix);
@@ -420,7 +416,7 @@ AStringVector cScoreboard::GetTeamNames()
 {
 	AStringVector TeamNames;
 
-	for (const auto & Team: m_Teams)
+	for (const auto & Team : m_Teams)
 	{
 		TeamNames.push_back(Team.first);
 	}
@@ -602,8 +598,3 @@ size_t cScoreboard::GetNumTeams(void) const
 {
 	return m_Teams.size();
 }
-
-
-
-
-

@@ -28,12 +28,12 @@ class cWorld;
 
 class cBlockTracer abstract
 {
-public:
+	public:
 	/** The callback class is used to notify the caller of individual events that are being traced.
-	*/
+	 */
 	class cCallbacks abstract
 	{
-	public:
+		public:
 		// Force a virtual destructor in descendants:
 		virtual ~cCallbacks() {}
 
@@ -85,7 +85,7 @@ public:
 		This usually means that the tracing is aborted.
 		*/
 		virtual void OnNoChunk(void) {}
-	} ;
+	};
 
 
 	/** Creates the BlockTracer parent with the specified callbacks */
@@ -113,14 +113,10 @@ public:
 		return Old;
 	}
 
-protected:
+	protected:
 	/** The world upon which to operate */
 	cWorld * m_World;
 
 	/** The callback to use for reporting */
 	cCallbacks * m_Callbacks;
-} ;
-
-
-
-
+};

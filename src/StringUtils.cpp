@@ -136,25 +136,21 @@ AString StringJoin(const AStringVector & a_Strings, const AString & a_Delimeter)
 	// Do a dry run to gather the size
 	const auto DelimSize = a_Delimeter.size();
 	size_t ResultSize = a_Strings[0].size();
-	std::for_each(a_Strings.begin() + 1, a_Strings.end(),
-		[&](const AString & a_String)
-		{
-			ResultSize += DelimSize;
-			ResultSize += a_String.size();
-		}
-	);
+	std::for_each(a_Strings.begin() + 1, a_Strings.end(), [&](const AString & a_String)
+	{
+		ResultSize += DelimSize;
+		ResultSize += a_String.size();
+	});
 
 	// Now do the actual join
 	AString Result;
 	Result.reserve(ResultSize);
 	Result.append(a_Strings[0]);
-	std::for_each(a_Strings.begin() + 1, a_Strings.end(),
-		[&](const AString & a_String)
-		{
-			Result += a_Delimeter;
-			Result += a_String;
-		}
-	);
+	std::for_each(a_Strings.begin() + 1, a_Strings.end(), [&](const AString & a_String)
+	{
+		Result += a_Delimeter;
+		Result += a_String;
+	});
 	return Result;
 }
 
@@ -263,11 +259,11 @@ AString StrToUpper(const AString & s)
 
 int NoCaseCompare(const AString & s1, const AString & s2)
 {
-	#ifdef _MSC_VER
-		return _stricmp(s1.c_str(), s2.c_str());
-	#else
-		return strcasecmp(s1.c_str(), s2.c_str());
-	#endif  // else _MSC_VER
+#ifdef _MSC_VER
+	return _stricmp(s1.c_str(), s2.c_str());
+#else
+	return strcasecmp(s1.c_str(), s2.c_str());
+#endif  // else _MSC_VER
 }
 
 
@@ -316,7 +312,7 @@ void ReplaceString(AString & iHayStack, const AString & iNeedle, const AString &
 	size_t pos1 = iHayStack.find(iNeedle);
 	while (pos1 != AString::npos)
 	{
-		iHayStack.replace( pos1, iNeedle.size(), iReplaceWith);
+		iHayStack.replace(pos1, iNeedle.size(), iReplaceWith);
 		pos1 = iHayStack.find(iNeedle, pos1 + iReplaceWith.size());
 	}
 }
@@ -355,12 +351,11 @@ AString UnicodeCharToUtf8(unsigned a_UnicodeChar)
 {
 	if (a_UnicodeChar < 0x80)
 	{
-		return AString{static_cast<char>(a_UnicodeChar)};
+		return AString { static_cast<char>(a_UnicodeChar) };
 	}
 	else if (a_UnicodeChar < 0x800)
 	{
-		return AString
-		{
+		return AString {
 			static_cast<char>(192 + a_UnicodeChar / 64),
 			static_cast<char>(128 + a_UnicodeChar % 64),
 		};
@@ -372,8 +367,7 @@ AString UnicodeCharToUtf8(unsigned a_UnicodeChar)
 	}
 	else if (a_UnicodeChar < 0x10000)
 	{
-		return AString
-		{
+		return AString {
 			static_cast<char>(224 + a_UnicodeChar / 4096),
 			static_cast<char>(128 + (a_UnicodeChar / 64) % 64),
 			static_cast<char>(128 + a_UnicodeChar % 64)
@@ -381,8 +375,7 @@ AString UnicodeCharToUtf8(unsigned a_UnicodeChar)
 	}
 	else if (a_UnicodeChar < 0x110000)
 	{
-		return AString
-		{
+		return AString {
 			static_cast<char>(240 + a_UnicodeChar / 262144),
 			static_cast<char>(128 + (a_UnicodeChar / 4096) % 64),
 			static_cast<char>(128 + (a_UnicodeChar / 64) % 64),
@@ -434,36 +427,286 @@ Notice from the original file:
 * remains attached.
 */
 
-#define UNI_MAX_BMP         0x0000FFFF
-#define UNI_MAX_UTF16       0x0010FFFF
-#define UNI_SUR_HIGH_START  0xD800
-#define UNI_SUR_LOW_START   0xDC00
-#define UNI_SUR_LOW_END     0xDFFF
+#define UNI_MAX_BMP 0x0000FFFF
+#define UNI_MAX_UTF16 0x0010FFFF
+#define UNI_SUR_HIGH_START 0xD800
+#define UNI_SUR_LOW_START 0xDC00
+#define UNI_SUR_LOW_END 0xDFFF
 
 
 
 
 
-static const Byte trailingBytesForUTF8[256] =
-{
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5
+static const Byte trailingBytesForUTF8[256] = {
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
+	2,
+	3,
+	3,
+	3,
+	3,
+	3,
+	3,
+	3,
+	3,
+	4,
+	4,
+	4,
+	4,
+	5,
+	5,
+	5,
+	5
 };
 
 
 
 
 
-static const unsigned int offsetsFromUTF8[6] =
-{
-	0x00000000UL, 0x00003080UL, 0x000E2080UL,
-	0x03C82080UL, 0xFA082080UL, 0x82082080UL
+static const unsigned int offsetsFromUTF8[6] = {
+	0x00000000UL,
+	0x00003080UL,
+	0x000E2080UL,
+	0x03C82080UL,
+	0xFA082080UL,
+	0x82082080UL
 };
 
 
@@ -478,8 +721,12 @@ static bool isLegalUTF8(const unsigned char * source, int length)
 	{
 		default: return false;
 		// Everything else falls through when "true"...
-		case 4: if (((a = (*--srcptr)) < 0x80) || (a > 0xbf)) return false;
-		case 3: if (((a = (*--srcptr)) < 0x80) || (a > 0xbf)) return false;
+		case 4:
+			if (((a = (*--srcptr)) < 0x80) || (a > 0xbf))
+				return false;
+		case 3:
+			if (((a = (*--srcptr)) < 0x80) || (a > 0xbf))
+				return false;
 		case 2:
 		{
 			if ((a = (*--srcptr)) > 0xbf)
@@ -489,14 +736,30 @@ static bool isLegalUTF8(const unsigned char * source, int length)
 			switch (*source)
 			{
 				// no fall-through in this inner switch
-				case 0xe0: if (a < 0xa0) return false; break;
-				case 0xed: if (a > 0x9f) return false; break;
-				case 0xf0: if (a < 0x90) return false; break;
-				case 0xf4: if (a > 0x8f) return false; break;
-				default:   if (a < 0x80) return false;
+				case 0xe0:
+					if (a < 0xa0)
+						return false;
+					break;
+				case 0xed:
+					if (a > 0x9f)
+						return false;
+					break;
+				case 0xf0:
+					if (a < 0x90)
+						return false;
+					break;
+				case 0xf4:
+					if (a > 0x8f)
+						return false;
+					break;
+				default:
+					if (a < 0x80)
+						return false;
 			}
 		}
-		case 1: if ((*source >= 0x80) && (*source < 0xc2)) return false;
+		case 1:
+			if ((*source >= 0x80) && (*source < 0xc2))
+				return false;
 	}
 	return (*source <= 0xf4);
 }
@@ -510,9 +773,9 @@ std::u16string UTF8ToRawBEUTF16(const AString & a_UTF8)
 	std::u16string UTF16;
 	UTF16.reserve(a_UTF8.size() * 2);
 
-	const unsigned char * source    = reinterpret_cast<const unsigned char *>(a_UTF8.data());
+	const unsigned char * source = reinterpret_cast<const unsigned char *>(a_UTF8.data());
 	const unsigned char * sourceEnd = source + a_UTF8.size();
-	const int halfShift  = 10;  // used for shifting by 10 bits
+	const int halfShift = 10;  // used for shifting by 10 bits
 	const unsigned int halfBase = 0x0010000UL;
 	const unsigned int halfMask = 0x3ffUL;
 
@@ -642,8 +905,12 @@ AString & CreateHexDump(AString & a_Out, const void * a_Data, size_t a_Size, siz
 		auto HexStr = fmt::string_view(Hex.data(), Hex.size());
 		auto CharsStr = fmt::string_view(Chars.data(), Chars.size());
 		fmt::format_to(
-			std::back_inserter(Output), "{0:08x}: {1:{2}} {3}\n",
-			i, HexStr, a_BytesPerLine * 3, CharsStr
+			std::back_inserter(Output),
+			"{0:08x}: {1:{2}} {3}\n",
+			i,
+			HexStr,
+			a_BytesPerLine * 3,
+			CharsStr
 		);
 
 		Hex.clear();
@@ -827,11 +1094,11 @@ AString ReplaceAllCharOccurrences(const AString & a_String, char a_From, char a_
 /** Converts one Hex character in a Base64 encoding into the data value */
 static inline int UnBase64(char c)
 {
-	if ((c >='A') && (c <= 'Z'))
+	if ((c >= 'A') && (c <= 'Z'))
 	{
 		return c - 'A';
 	}
-	if ((c >='a') && (c <= 'z'))
+	if ((c >= 'a') && (c <= 'z'))
 	{
 		return c - 'a' + 26;
 	}
@@ -873,8 +1140,14 @@ AString Base64Decode(const AString & a_Base64String)
 			switch (o & 7)
 			{
 				case 0: res[o >> 3] |= (c << 2); break;
-				case 6: res[o >> 3] |= (c >> 4); res[(o >> 3) + 1] |= (c << 4); break;
-				case 4: res[o >> 3] |= (c >> 2); res[(o >> 3) + 1] |= (c << 6); break;
+				case 6:
+					res[o >> 3] |= (c >> 4);
+					res[(o >> 3) + 1] |= (c << 4);
+					break;
+				case 4:
+					res[o >> 3] |= (c >> 2);
+					res[(o >> 3) + 1] |= (c << 6);
+					break;
 				case 2: res[o >> 3] |= c; break;
 			}
 			o += 6;
@@ -896,12 +1169,71 @@ AString Base64Decode(const AString & a_Base64String)
 
 AString Base64Encode(const AString & a_Input)
 {
-	static const char BASE64[64] =
-	{
-		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-		'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-		'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-		'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+	static const char BASE64[64] = {
+		'A',
+		'B',
+		'C',
+		'D',
+		'E',
+		'F',
+		'G',
+		'H',
+		'I',
+		'J',
+		'K',
+		'L',
+		'M',
+		'N',
+		'O',
+		'P',
+		'Q',
+		'R',
+		'S',
+		'T',
+		'U',
+		'V',
+		'W',
+		'X',
+		'Y',
+		'Z',
+		'a',
+		'b',
+		'c',
+		'd',
+		'e',
+		'f',
+		'g',
+		'h',
+		'i',
+		'j',
+		'k',
+		'l',
+		'm',
+		'n',
+		'o',
+		'p',
+		'q',
+		'r',
+		's',
+		't',
+		'u',
+		'v',
+		'w',
+		'x',
+		'y',
+		'z',
+		'0',
+		'1',
+		'2',
+		'3',
+		'4',
+		'5',
+		'6',
+		'7',
+		'8',
+		'9',
+		'+',
+		'/'
 	};
 
 	AString output;
@@ -1017,7 +1349,7 @@ AString StringsConcat(const AStringVector & a_Strings, char a_Separator)
 
 bool StringToFloat(const AString & a_String, float & a_Num)
 {
-	char *err;
+	char * err;
 	a_Num = strtof(a_String.c_str(), &err);
 	return (*err == 0);
 }

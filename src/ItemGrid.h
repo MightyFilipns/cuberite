@@ -18,25 +18,25 @@
 // tolua_begin
 class cItemGrid
 {
-public:
+	public:
 	// tolua_end
 
 	/** This class is used as a callback for when a slot changes */
 	class cListener
 	{
-	public:
+		public:
 		virtual ~cListener() {}
 
 		/** Called whenever a slot changes */
 		virtual void OnSlotChanged(cItemGrid * a_ItemGrid, int a_SlotNum) = 0;
-	} ;
+	};
 	typedef std::vector<cListener *> cListeners;
 
 	cItemGrid(int a_Width, int a_Height);
 
 	// tolua_begin
-	int GetWidth   (void) const { return m_Width; }
-	int GetHeight  (void) const { return m_Height; }
+	int GetWidth(void) const { return m_Width; }
+	int GetHeight(void) const { return m_Height; }
 	int GetNumSlots(void) const { return m_Slots.size(); }
 
 	/** Converts XY coords into slot number; returns -1 on invalid coords */
@@ -183,14 +183,14 @@ public:
 
 	// tolua_begin
 
-protected:
-	int     m_Width;
-	int     m_Height;
+	protected:
+	int m_Width;
+	int m_Height;
 	cLazyArray<cItem> m_Slots;
 
-	cListeners       m_Listeners;    ///< Listeners which should be notified on slot changes; the pointers are not owned by this object
+	cListeners m_Listeners;  ///< Listeners which should be notified on slot changes; the pointers are not owned by this object
 	cCriticalSection m_CSListeners;  ///< CS that guards the m_Listeners against multi-thread access
-	bool             m_IsInTriggerListeners;  ///< Set to true while TriggerListeners is running, to detect attempts to manipulate listener list while triggerring
+	bool m_IsInTriggerListeners;  ///< Set to true while TriggerListeners is running, to detect attempts to manipulate listener list while triggerring
 
 	/** Calls all m_Listeners for the specified slot number */
 	void TriggerListeners(int a_SlotNum);
@@ -199,5 +199,5 @@ protected:
 	Returns the number of items that did fit.
 	*/
 	char AddItemToSlot(const cItem & a_ItemStack, int a_Slot, int a_Num, int a_MaxStack);
-} ;
+};
 // tolua_end

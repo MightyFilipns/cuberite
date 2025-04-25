@@ -39,7 +39,7 @@ namespace Json
 // tolua_begin
 class cItem
 {
-public:
+	public:
 	/** Creates an empty item */
 	cItem(void);
 
@@ -52,14 +52,14 @@ public:
 		const AStringVector & a_LoreTable = {}
 	);
 
-	// The constructor is disabled in code, because the compiler generates it anyway,
-	// but it needs to stay because ToLua needs to generate the binding for it
-	#ifdef TOLUA_EXPOSITION
+// The constructor is disabled in code, because the compiler generates it anyway,
+// but it needs to stay because ToLua needs to generate the binding for it
+#ifdef TOLUA_EXPOSITION
 
 	/** Creates an exact copy of the item */
 	cItem(const cItem & a_CopyFrom);
 
-	#endif
+#endif
 
 	/** Empties the item and frees up any dynamic storage used by the internals. */
 	void Empty(void);
@@ -126,7 +126,7 @@ public:
 
 	// tolua_end
 
-	bool operator == (const cItem & rhs) const { return this->IsEqual(rhs); }
+	bool operator== (const cItem & rhs) const { return this->IsEqual(rhs); }
 
 	/** Returns the cItemHandler responsible for this item type */
 	const cItemHandler & GetHandler(void) const;
@@ -165,15 +165,15 @@ public:
 
 	// tolua_begin
 
-	Item           m_ItemType;
-	char           m_ItemCount;
+	Item m_ItemType;
+	char m_ItemCount;
 	// short          m_ItemDamage;
-	cEnchantments  m_Enchantments;
+	cEnchantments m_Enchantments;
 	// AString        m_CustomName;
 
 	// tolua_end
 
-	AStringVector  m_LoreTable;  // Exported in ManualBindings.cpp
+	AStringVector m_LoreTable;  // Exported in ManualBindings.cpp
 
 	/**
 	Compares two items for the same type or category. Type of item is defined
@@ -198,7 +198,8 @@ public:
 
 	const std::map<size_t, DataComponents::DataComponent> & GetDefaultItemComponents(void) const;
 
-	template <typename TypeToFind> TypeToFind & GetOrAdd()
+	template <typename TypeToFind>
+	TypeToFind & GetOrAdd()
 	{
 		if (HasComponent<TypeToFind>())
 		{
@@ -228,7 +229,8 @@ public:
 		m_ItemComponents.AddComp(a_comp);
 	}
 
-	template <typename TypeToFind> const TypeToFind & GetComponentOrDefault() const
+	template <typename TypeToFind>
+	const TypeToFind & GetComponentOrDefault() const
 	{
 		const auto & comps = GetDefaultItemComponents();
 		if (m_ItemComponents.HasComponent<TypeToFind>())
@@ -244,13 +246,15 @@ public:
 	}
 
 	// Check if the given component is present or is a default component
-	template <typename TypeToFind> bool HasComponent() const
+	template <typename TypeToFind>
+	bool HasComponent() const
 	{
 		auto comps = GetDefaultItemComponents();
 		return m_ItemComponents.HasComponent<TypeToFind>() || comps.contains(DataComponents::GetIndexOfDataComponent<TypeToFind>());
 	}
 
-	template <typename TypeToFind> void RemoveComp()
+	template <typename TypeToFind>
+	void RemoveComp()
 	{
 		if (m_ItemComponents.HasComponent<TypeToFind>())
 		{
@@ -261,14 +265,15 @@ public:
 
 	const DataComponents::DataComponentMap & GetDataComponents(void) const { return m_ItemComponents; }
 
-private:
+	private:
 	DataComponents::DataComponentMap m_ItemComponents;
-public:
+
+	public:
 	// tolua_begin
 
 	// int            m_RepairCost;
-	cFireworkItem  m_FireworkItem;
-	cColor         m_ItemColor;
+	cFireworkItem m_FireworkItem;
+	cColor m_ItemColor;
 };
 // tolua_end
 
@@ -282,12 +287,11 @@ Note that this class is zero-indexed!
 class cItems  // tolua_export
 	: public std::vector<cItem>
 {  // tolua_export
-public:
-
+	public:
 	cItems(const cItems &) = default;
 	cItems(cItems &&) = default;
-	cItems & operator = (const cItems &) = default;
-	cItems & operator = (cItems &&) = default;
+	cItems & operator= (const cItems &) = default;
+	cItems & operator= (cItems &&) = default;
 
 	/** Constructs a new instance containing the specified item. */
 	cItems(cItem && a_InitialItem);
@@ -297,23 +301,23 @@ public:
 	/** Need a Lua-accessible constructor */
 	cItems(void) {}
 
-	cItem * Get   (int a_Idx);
-	void    Set   (int a_Idx, const cItem & a_Item);
-	void    Add   (const cItem & a_Item) { push_back(a_Item); }
-	void    Add   (enum Item a_ItemType) { emplace_back(a_ItemType); }
-	void    Add   (enum Item a_ItemType, char a_ItemCount) { emplace_back(a_ItemType, a_ItemCount); }
-	void    Delete(int a_Idx);
-	void    Clear (void) {clear(); }
-	size_t  Size  (void) const { return size(); }
-	void    Set   (int a_Idx, Item a_Item, char a_ItemCount);
-	bool    Contains(const cItem & a_Item);
-	bool    ContainsType(const cItem & a_Item);
+	cItem * Get(int a_Idx);
+	void Set(int a_Idx, const cItem & a_Item);
+	void Add(const cItem & a_Item) { push_back(a_Item); }
+	void Add(enum Item a_ItemType) { emplace_back(a_ItemType); }
+	void Add(enum Item a_ItemType, char a_ItemCount) { emplace_back(a_ItemType, a_ItemCount); }
+	void Delete(int a_Idx);
+	void Clear(void) { clear(); }
+	size_t Size(void) const { return size(); }
+	void Set(int a_Idx, Item a_Item, char a_ItemCount);
+	bool Contains(const cItem & a_Item);
+	bool ContainsType(const cItem & a_Item);
 
 	/** Adds a copy of all items in a_ItemGrid. */
 	void AddItemGrid(const cItemGrid & a_ItemGrid);
 
 	// tolua_end
-} ;  // tolua_export
+};  // tolua_export
 
 
 
@@ -322,16 +326,17 @@ public:
 /** Used to store loot probability tables */
 class cLootProbab
 {
-public:
+	public:
 	cItem m_Item;
-	int   m_MinAmount;
-	int   m_MaxAmount;
-	int   m_Weight;
-} ;
+	int m_MinAmount;
+	int m_MaxAmount;
+	int m_Weight;
+};
 
-template<> class fmt::formatter<Item> : public fmt::formatter<std::string_view>
+template <>
+class fmt::formatter<Item> : public fmt::formatter<std::string_view>
 {
-public:
+	public:
 	template <typename FormatContext>
 	auto format(const Item & a_Item, FormatContext & a_Ctx) const
 	{

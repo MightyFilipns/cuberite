@@ -3,7 +3,7 @@
 set -e
 
 # This script cross-compiles cuberite for the android platform. It uses
-# the following enviroment variables
+# the following environment variables
 #   CMAKE: Should be the path to a cmake executable of version 3.12.4+
 #   NDK: Should be the path to the android ndk root
 #   (optional) TYPE: either Release or Debug, sets the build type

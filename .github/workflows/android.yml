@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "master" ]
 env:
-  NDK: ANDROID_NDK_LATEST_HOME
+  NDK: $ANDROID_NDK_LATEST_HOME
   CMAKE: cmake
   TYPE: Debug
 
@@ -22,7 +22,7 @@ jobs:
           submodules: 'recursive'
 
       - name: Build Android
-        run: ./android/compile.sh
+        run: ./android/compile.sh all
 
 
       # TODO: There must be a better way to upload artifacts

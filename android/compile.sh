@@ -25,6 +25,7 @@ if [ "$1" == "clean" ]; then
 fi
 
 if [ -z "$CMAKE" -o -z "$NDK" ]; then
+  echo "ERROR: CMAKE or NDK aren't set";
 	usage;
 fi
 
@@ -89,6 +90,7 @@ case "$1" in
 	;;
 
 	*)
+	  echo "ERROR: invalid argument passed";
 		usage;
 	;;
 esac

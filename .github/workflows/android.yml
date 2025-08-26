@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "master" ]
 env:
-  NDK: $ANDROID_NDK_LATEST_HOME
+  NDK: ${{ ANDROID_NDK_LATEST_HOME }}
   CMAKE: cmake
   TYPE: Debug
 

@@ -1,0 +1,62 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+env:
+  NDK: ANDROID_NDK_LATEST_HOME
+  CMAKE: cmake
+  TYPE: Debug
+
+jobs:
+  build:
+    timeout-minutes: 60
+    permissions: {}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Build Android
+        run: ./android/compile.sh
+
+
+      # TODO: There must be a better way to upload artifacts
+      - name: Upload server.zip
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: 'error'
+          name: Android server.zip
+          path: Server/server.zip
+
+      - name: Upload armabi-v7a.zip
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: 'error'
+          name: Android armeabi-v7a.zip
+          path: Server/armeabi-v7a.zip
+
+      - name: Upload arm64-v8a.zip
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: 'error'
+          name: Android arm64-v8a.zip
+          path: Server/arm64-v8a.zip
+
+      - name: Upload x86.zip
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: 'error'
+          name: Android x86.zip
+          path: Server/x86.zip
+
+      - name: Upload x86_64.zip
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: 'error'
+          name: Android x86_64.zip
+          path: Server/x86_64.zip

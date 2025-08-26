@@ -29,6 +29,7 @@ if [ -z "$CMAKE" -o -z "$NDK" ]; then
     echo "ERROR: CMAKE isn't set";
   fi
   if [ -z "$NDK" ]; then
+    echo "NDK script: " + "$NDK"
     echo "ERROR: NDK isn't set";
   fi
   echo "ERROR: CMAKE or NDK aren't set";

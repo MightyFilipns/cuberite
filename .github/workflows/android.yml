@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ "master" ]
 env:
-  NDK: ${{ ANDROID_NDK_LATEST_HOME }}
   CMAKE: cmake
   TYPE: Debug
 
@@ -24,6 +23,7 @@ jobs:
       - name: Build Android
         run: |
               CMAKE=$(which cmake)
+              NDK=$ANDROID_NDK_LATEST_HOME
               ./android/compile.sh all
 
 

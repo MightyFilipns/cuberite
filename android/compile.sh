@@ -2,6 +2,8 @@
 
 set -e
 
+echo "$NDK"
+
 # This script cross-compiles cuberite for the android platform. It uses
 # the following environment variables
 #   CMAKE: Should be the path to a cmake executable of version 3.12.4+

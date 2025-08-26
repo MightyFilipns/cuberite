@@ -24,6 +24,8 @@ jobs:
         run: |
               CMAKE=$(which cmake)
               NDK=$ANDROID_NDK_LATEST_HOME
+              echo $ANDROID_NDK_LATEST_HOME
+              echo $NDK
               ./android/compile.sh all
 
 

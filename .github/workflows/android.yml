@@ -6,6 +6,7 @@ on:
   pull_request:
     branches: [ "master" ]
 env:
+  NDK: NO_NDK_SET
   CMAKE: cmake
   TYPE: Debug
 
